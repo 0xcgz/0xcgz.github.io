@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>dorkforge</title>
+<title>DarkDork</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,10 +13,7 @@
   --fg: #111;
   --muted: #888;
   --border: #d4d2cc;
-  --accent: #111;
   --tag: #e8e6e0;
-  --active-bg: #111;
-  --active-fg: #f5f4f0;
   --red: #c0392b;
 }
 
@@ -30,12 +27,8 @@ body {
   padding: 48px 24px 80px;
 }
 
-.wrap {
-  max-width: 720px;
-  margin: 0 auto;
-}
+.wrap { max-width: 760px; margin: 0 auto; }
 
-/* Header */
 header {
   margin-bottom: 40px;
   border-bottom: 1px solid var(--border);
@@ -49,7 +42,7 @@ header {
 
 .wordmark {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -57,48 +50,37 @@ header {
 .wordmark span { color: var(--muted); font-weight: 400; }
 
 .header-sub {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--muted);
   font-family: 'IBM Plex Mono', monospace;
 }
 
-/* Query output */
 .query-box {
   background: var(--fg);
   color: var(--bg);
   border-radius: 4px;
   padding: 16px 18px;
-  margin-bottom: 24px;
-  min-height: 56px;
+  margin-bottom: 16px;
+  min-height: 54px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85rem;
-  line-height: 1.8;
+  line-height: 1.9;
   word-break: break-all;
-  position: relative;
+  user-select: all;
 }
 
-.query-box .placeholder { color: #555; font-style: italic; }
+.query-box .ph { color: #555; font-style: italic; }
 
-.t-site    { color: #f39c12; }
-.t-inurl   { color: #1abc9c; }
-.t-filetype{ color: #9b59b6; }
-.t-intitle { color: #3498db; }
-.t-intext  { color: #e74c3c; }
-.t-ext     { color: #e67e22; }
-.t-other   { color: #95a5a6; }
-.t-base    { color: #f5f4f0; }
-
-/* Actions row */
 .actions {
   display: flex;
   gap: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
   flex-wrap: wrap;
 }
 
 button, a.btn {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 500;
   padding: 7px 14px;
   border-radius: 3px;
@@ -120,161 +102,140 @@ button:hover, a.btn:hover {
   border-color: var(--fg);
 }
 
-button.danger { color: var(--red); border-color: #e8b4b0; }
-button.danger:hover { background: var(--red); color: white; border-color: var(--red); }
+button.ghost { color: var(--muted); }
+button.ghost:hover { color: var(--bg); }
 
-/* Section */
-.section { margin-bottom: 28px; }
-
-.label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.68rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-/* Base input */
-input[type="text"] {
-  width: 100%;
+.search-box {
+  flex: 1;
+  min-width: 180px;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 3px;
-  padding: 9px 12px;
+  padding: 8px 12px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   color: var(--fg);
   outline: none;
   transition: border-color 0.15s;
 }
 
-input[type="text"]:focus { border-color: var(--fg); }
-input[type="text"]::placeholder { color: var(--muted); }
+.search-box:focus { border-color: var(--fg); }
+.search-box::placeholder { color: var(--muted); }
 
-/* Operators */
-.ops-list { display: flex; flex-direction: column; gap: 1px; }
-
-.op-row {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  align-items: center;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-  transition: border-color 0.15s;
-  background: var(--bg);
+.count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  white-space: nowrap;
 }
 
-.op-row:focus-within, .op-row.active { border-color: var(--fg); }
-
-.op-toggle {
+.cats {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.cat-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.67rem;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+
+.cat-btn:hover { color: var(--fg); border-color: var(--fg); background: transparent; }
+.cat-btn.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px;
+  margin-bottom: 40px;
+}
+
+.preset-card {
+  border: 1px solid var(--border);
+  border-radius: 3px;
   padding: 10px 12px;
   cursor: pointer;
-  border-right: 1px solid var(--border);
-  background: transparent;
-  transition: background 0.1s;
-  user-select: none;
-  height: 100%;
-}
-
-.op-toggle:hover { background: var(--tag); }
-
-.op-row.active .op-toggle {
-  background: var(--fg);
-  border-right-color: var(--fg);
-}
-
-.op-check {
-  width: 14px;
-  height: 14px;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 9px;
   transition: all 0.1s;
-}
-
-.op-row.active .op-check {
   background: var(--bg);
-  border-color: var(--bg);
-  color: var(--fg);
 }
 
-.op-keyword-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--fg);
-  white-space: nowrap;
-}
-
-.op-row.active .op-keyword-label { color: var(--bg); }
-
-.op-input-wrap { padding: 6px 10px; }
-
-.op-input-wrap input {
-  border: none;
-  padding: 4px 0;
-  font-size: 0.8rem;
-}
-
-.op-input-wrap input:focus { border-color: transparent; }
-
-.op-hint {
-  font-size: 0.68rem;
-  color: var(--muted);
-  padding: 0 10px 6px;
-  grid-column: 2;
-  font-family: 'IBM Plex Mono', monospace;
-  display: none;
-}
-
-.op-row:focus-within .op-hint { display: block; }
-.op-row.active .op-hint { display: block; }
-
-/* Presets */
-.presets { display: flex; flex-wrap: wrap; gap: 6px; }
-
-.preset {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.7rem;
-  padding: 5px 10px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  cursor: pointer;
-  color: var(--muted);
-  background: transparent;
-  transition: all 0.1s;
-  white-space: nowrap;
-}
-
-.preset:hover {
-  color: var(--fg);
+.preset-card:hover,
+.preset-card.selected {
   border-color: var(--fg);
-  background: transparent;
+  background: var(--fg);
+  color: var(--bg);
 }
 
-/* Footer */
+.preset-card:hover .pc-query,
+.preset-card.selected .pc-query { color: #999; }
+
+.preset-card:hover .pc-cat,
+.preset-card.selected .pc-cat { color: #666; }
+
+.pc-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.73rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pc-query {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+
+.pc-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.58rem;
+  color: #c0bfba;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.no-results {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  padding: 20px 0;
+  grid-column: 1/-1;
+}
+
 footer {
-  margin-top: 48px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--muted);
-  line-height: 1.8;
+  line-height: 1.9;
 }
 
 footer a { color: var(--muted); }
 
-/* Toast */
 .toast {
   position: fixed;
   bottom: 24px;
@@ -293,8 +254,8 @@ footer a { color: var(--muted); }
 
 .toast.show { opacity: 1; transform: translateY(0); }
 
-@media (max-width: 520px) {
-  .op-row { grid-template-columns: 90px 1fr; }
+@media (max-width: 500px) {
+  .presets-grid { grid-template-columns: 1fr 1fr; }
   header { flex-direction: column; gap: 4px; }
 }
 </style>
@@ -303,42 +264,30 @@ footer a { color: var(--muted); }
 <div class="wrap">
 
   <header>
-    <div class="wordmark">dorkforge<span>.io</span></div>
-    <div class="header-sub">google dork query builder</div>
+    <div class="wordmark">Dark<span>Dork</span></div>
+    <div class="header-sub">google dork library — osint & recon</div>
   </header>
 
-  <!-- Live preview -->
   <div class="query-box" id="preview">
-    <span class="placeholder">your query will appear here...</span>
+    <span class="ph">← pick a dork below to load its query</span>
   </div>
 
-  <!-- Actions -->
   <div class="actions">
     <a class="btn" href="#" onclick="return doSearch()">↗ search google</a>
-    <button onclick="copyQ()">⎘ copy</button>
-    <button onclick="resetAll()" class="danger">× reset</button>
+    <button onclick="copyQ()">⎘ copy query</button>
+    <button class="ghost" onclick="clearSel()">× clear</button>
   </div>
 
-  <!-- Base term -->
-  <div class="section">
-    <div class="label">search term</div>
-    <input type="text" id="baseQ" placeholder='e.g. "index of" or leave blank' oninput="build()">
+  <div class="filter-row">
+    <input class="search-box" type="text" id="filterInput" placeholder="filter dorks..." oninput="renderCards()">
+    <span class="count" id="countLabel"></span>
   </div>
 
-  <!-- Operators -->
-  <div class="section">
-    <div class="label">operators</div>
-    <div class="ops-list" id="opsList"></div>
-  </div>
-
-  <!-- Presets -->
-  <div class="section">
-    <div class="label">presets</div>
-    <div class="presets" id="presetsList"></div>
-  </div>
+  <div class="cats" id="catTabs"></div>
+  <div class="presets-grid" id="grid"></div>
 
   <footer>
-    ⚠ for authorized testing & osint research only. unauthorized access is illegal.<br>
+    ⚠ for authorized security research & osint only. unauthorized access to systems is illegal.<br>
     built by <a href="https://0xcgz.github.io">0xcgz</a>
   </footer>
 
@@ -347,136 +296,242 @@ footer a { color: var(--muted); }
 <div class="toast" id="toast">copied!</div>
 
 <script>
-const OPS = [
-  { id:'site',     label:'site:',     hint:'restrict to a domain',            ph:'example.com'        },
-  { id:'inurl',    label:'inurl:',    hint:'word must appear in the URL',      ph:'admin'              },
-  { id:'intitle',  label:'intitle:',  hint:'word in the page title',           ph:'"index of"'         },
-  { id:'intext',   label:'intext:',   hint:'word in the page body',            ph:'password'           },
-  { id:'filetype', label:'filetype:', hint:'specific file type',               ph:'pdf'                },
-  { id:'ext',      label:'ext:',      hint:'file extension (alt to filetype)', ph:'sql'                },
-  { id:'cache',    label:'cache:',    hint:"google's cached version of URL",   ph:'example.com'        },
-  { id:'related',  label:'related:',  hint:'sites related to this domain',     ph:'example.com'        },
-  { id:'minus',    label:'-exclude',  hint:'exclude this word from results',   ph:'word'               },
-  { id:'or',       label:'OR',        hint:'match either term',                ph:'login | signin'     },
-];
-
 const PRESETS = [
-  { label:'open dirs',      ops:{ intitle:'"index of /"' } },
-  { label:'exposed .env',   ops:{ intitle:'"index of"', intext:'.env' } },
-  { label:'login panels',   ops:{ inurl:'login', intitle:'admin' } },
-  { label:'sql errors',     base:'SQL syntax', ops:{ intext:'mysql_fetch' } },
-  { label:'pdf files',      ops:{ filetype:'pdf' } },
-  { label:'backup files',   ops:{ ext:'bak', intitle:'"index of"' } },
-  { label:'exposed git',    ops:{ inurl:'.git/config' } },
-  { label:'phpmyadmin',     ops:{ intitle:'phpMyAdmin', inurl:'phpmyadmin' } },
-  { label:'webcams',        ops:{ intitle:'webcam', inurl:'view/index' } },
-  { label:'api keys',       base:'API_KEY', ops:{ filetype:'env' } },
-  { label:'wp config',      ops:{ inurl:'wp-config.php' } },
-  { label:'xls data',       ops:{ filetype:'xls', intitle:'"index of"' } },
+  // FILES & DIRECTORIES
+  { name:'Open directories',          cat:'files',  q:'intitle:"index of /"' },
+  { name:'Exposed .env files',        cat:'files',  q:'intitle:"index of" ".env"' },
+  { name:'Exposed .git config',       cat:'files',  q:'inurl:".git/config" intitle:"index of"' },
+  { name:'Exposed .htpasswd',         cat:'files',  q:'intitle:"index of" ".htpasswd"' },
+  { name:'Exposed .bash_history',     cat:'files',  q:'intitle:"index of" ".bash_history"' },
+  { name:'Exposed .ssh dir',          cat:'files',  q:'intitle:"index of /.ssh"' },
+  { name:'Private SSH keys',          cat:'files',  q:'intitle:"index of" "id_rsa"' },
+  { name:'Exposed DS_Store',          cat:'files',  q:'intitle:"index of" ".DS_Store"' },
+  { name:'Config files',              cat:'files',  q:'intitle:"index of" "config.php"' },
+  { name:'Backup files',              cat:'files',  q:'intitle:"index of" ext:bak' },
+  { name:'SQL dumps',                 cat:'files',  q:'intitle:"index of" ext:sql' },
+  { name:'ZIP archives',              cat:'files',  q:'intitle:"index of" ext:zip' },
+  { name:'Log files',                 cat:'files',  q:'intitle:"index of" ext:log' },
+  { name:'PHP backup files',          cat:'files',  q:'intitle:"index of" ext:php.bak' },
+  { name:'Database dumps',            cat:'files',  q:'intitle:"index of" (ext:sql OR ext:db OR ext:sqlite)' },
+  { name:'Docker compose files',      cat:'files',  q:'intitle:"index of" "docker-compose.yml"' },
+  { name:'Kubernetes configs',        cat:'files',  q:'intitle:"index of" "kubeconfig"' },
+  { name:'Terraform state files',     cat:'files',  q:'intitle:"index of" "terraform.tfstate"' },
+  { name:'Ansible vault files',       cat:'files',  q:'intitle:"index of" "vault.yml"' },
+  { name:'Exposed /proc dir',         cat:'files',  q:'intitle:"index of /proc"' },
+  { name:'XML config files',          cat:'files',  q:'intitle:"index of" ext:xml intext:"password"' },
+  { name:'YAML secrets',              cat:'files',  q:'intitle:"index of" ext:yml intext:"secret"' },
+  { name:'Private keys (.pem)',       cat:'files',  q:'intitle:"index of" ext:pem' },
+  { name:'Certificate files',         cat:'files',  q:'intitle:"index of" ext:crt OR ext:cer' },
+  { name:'Redis dump files',          cat:'files',  q:'intitle:"index of" "dump.rdb"' },
+
+  // CREDENTIALS & SECRETS
+  { name:'Passwords in .txt',         cat:'creds',  q:'inurl:password ext:txt' },
+  { name:'Credentials in logs',       cat:'creds',  q:'intext:"password" ext:log' },
+  { name:'DB credentials in .env',    cat:'creds',  q:'intext:"DB_PASSWORD" filetype:env' },
+  { name:'AWS access keys',           cat:'creds',  q:'intext:"AKIA" ext:env OR ext:cfg OR ext:yml' },
+  { name:'API keys in .env',          cat:'creds',  q:'intext:"API_KEY" filetype:env' },
+  { name:'Slack bot tokens',          cat:'creds',  q:'intext:"xoxb-" OR intext:"xoxp-" ext:env' },
+  { name:'GitHub personal tokens',    cat:'creds',  q:'intext:"ghp_" ext:env OR ext:cfg' },
+  { name:'Stripe secret keys',        cat:'creds',  q:'intext:"sk_live_" ext:env' },
+  { name:'Twilio credentials',        cat:'creds',  q:'intext:"TWILIO_AUTH_TOKEN" ext:env' },
+  { name:'Mailgun API keys',          cat:'creds',  q:'intext:"MAILGUN_API_KEY" ext:env' },
+  { name:'SendGrid keys',             cat:'creds',  q:'intext:"SENDGRID_API_KEY" ext:env' },
+  { name:'Firebase config',           cat:'creds',  q:'intext:"firebase" intext:"apiKey" ext:js' },
+  { name:'JWT secrets',               cat:'creds',  q:'intext:"JWT_SECRET" ext:env OR ext:cfg' },
+  { name:'OAuth secrets in JSON',     cat:'creds',  q:'intext:"client_secret" ext:json OR ext:yml' },
+  { name:'Passwords in XML',          cat:'creds',  q:'intext:"password" ext:xml' },
+  { name:'Private keys in code',      cat:'creds',  q:'intext:"BEGIN RSA PRIVATE KEY" ext:txt OR ext:pem' },
+  { name:'Heroku API keys',           cat:'creds',  q:'intext:"HEROKU_API_KEY" ext:env' },
+  { name:'Docker Hub tokens',         cat:'creds',  q:'intext:"DOCKER_PASSWORD" ext:env OR ext:yml' },
+  { name:'npm auth tokens',           cat:'creds',  q:'intext:"NPM_TOKEN" ext:env' },
+  { name:'Telegram bot tokens',       cat:'creds',  q:'intext:"bot" intext:"token" ext:env filetype:env' },
+  { name:'PayPal secrets',            cat:'creds',  q:'intext:"PAYPAL_SECRET" ext:env' },
+  { name:'Shopify API secrets',       cat:'creds',  q:'intext:"SHOPIFY_API_SECRET" ext:env' },
+  { name:'Google OAuth secrets',      cat:'creds',  q:'intext:"GOOGLE_CLIENT_SECRET" ext:env' },
+
+  // LOGIN & ADMIN PANELS
+  { name:'Generic admin login',       cat:'login',  q:'inurl:admin intitle:login' },
+  { name:'phpMyAdmin',                cat:'login',  q:'intitle:"phpMyAdmin" inurl:phpmyadmin' },
+  { name:'WordPress admin',           cat:'login',  q:'inurl:wp-login.php' },
+  { name:'Joomla admin',              cat:'login',  q:'inurl:administrator/index.php intitle:joomla' },
+  { name:'Drupal admin',              cat:'login',  q:'inurl:user/login intitle:drupal' },
+  { name:'cPanel login',              cat:'login',  q:'intitle:"cPanel" inurl:2082 OR inurl:2083' },
+  { name:'Webmin panel',              cat:'login',  q:'intitle:"Webmin" inurl:10000' },
+  { name:'Plesk panel',               cat:'login',  q:'intitle:"Plesk" inurl:8443' },
+  { name:'Django admin',              cat:'login',  q:'inurl:"/admin/" intitle:"Django site admin"' },
+  { name:'Laravel Horizon',           cat:'login',  q:'inurl:"/horizon" intitle:"Horizon"' },
+  { name:'Kibana dashboard',          cat:'login',  q:'intitle:"Kibana" inurl:5601' },
+  { name:'Grafana login',             cat:'login',  q:'intitle:"Grafana" inurl:3000' },
+  { name:'Jenkins CI',                cat:'login',  q:'intitle:"Dashboard [Jenkins]"' },
+  { name:'Portainer Docker UI',       cat:'login',  q:'intitle:"Portainer" inurl:9000' },
+  { name:'Traefik dashboard',         cat:'login',  q:'intitle:"Traefik" inurl:8080' },
+  { name:'RabbitMQ management',       cat:'login',  q:'intitle:"RabbitMQ Management" inurl:15672' },
+  { name:'Elasticsearch open',        cat:'login',  q:'intitle:"Elasticsearch" inurl:9200' },
+  { name:'Redis Commander',           cat:'login',  q:'intitle:"Redis Commander" inurl:8081' },
+  { name:'Netdata monitoring',        cat:'login',  q:'intitle:"Netdata" inurl:19999' },
+  { name:'Nagios core',               cat:'login',  q:'intitle:"Nagios Core"' },
+  { name:'Zabbix monitoring',         cat:'login',  q:'intitle:"Zabbix" inurl:zabbix' },
+  { name:'GitLab login',              cat:'login',  q:'intitle:"GitLab" inurl:users/sign_in' },
+  { name:'Phabricator',               cat:'login',  q:'intitle:"Phabricator" inurl:auth/login' },
+  { name:'SonarQube dashboard',       cat:'login',  q:'intitle:"SonarQube" inurl:sessions/new' },
+  { name:'Jupyter notebook',          cat:'login',  q:'intitle:"Jupyter Notebook" inurl:8888' },
+
+  // CAMERAS & IOT
+  { name:'Live webcams',              cat:'iot',    q:'inurl:view/index.shtml intitle:webcam' },
+  { name:'IP camera feeds',           cat:'iot',    q:'inurl:"/view.shtml" intitle:"Live View"' },
+  { name:'Axis IP cameras',           cat:'iot',    q:'intitle:"AXIS" inurl:view/view.shtml' },
+  { name:'Hikvision cameras',         cat:'iot',    q:'inurl:"/doc/page/login.asp" intitle:login' },
+  { name:'Netcam live stream',        cat:'iot',    q:'intitle:"NetCam Live Image"' },
+  { name:'DVR / NVR login panels',    cat:'iot',    q:'intitle:"DVR login" OR intitle:"NVR login"' },
+  { name:'Printer admin pages',       cat:'iot',    q:'intitle:"HP LaserJet" OR intitle:"Xerox" inurl:admin' },
+  { name:'Cisco router config',       cat:'iot',    q:'intitle:"Cisco" inurl:"/exec/show/config"' },
+  { name:'Mikrotik RouterOS',         cat:'iot',    q:'intitle:"RouterOS" inurl:8291' },
+  { name:'SCADA systems',             cat:'iot',    q:'intitle:"SCADA" inurl:login' },
+  { name:'Industrial HMI panels',     cat:'iot',    q:'intitle:"HMI" inurl:login OR intitle:"ICS"' },
+  { name:'VoIP / FreePBX panels',     cat:'iot',    q:'intitle:"FreePBX" inurl:admin OR intitle:"Asterisk"' },
+  { name:'Modbus devices',            cat:'iot',    q:'intitle:"Modbus" inurl:502' },
+  { name:'Open BACnet devices',       cat:'iot',    q:'intitle:"BACnet" inurl:47808' },
+  { name:'Smart meters / energy',     cat:'iot',    q:'intitle:"energy monitor" OR intitle:"smart meter" inurl:login' },
+
+  // SENSITIVE DOCUMENTS
+  { name:'Exposed Excel sheets',      cat:'docs',   q:'filetype:xls intext:"confidential"' },
+  { name:'HR payroll data',           cat:'docs',   q:'filetype:xls intext:"salary" OR intext:"payroll"' },
+  { name:'Internal Word docs',        cat:'docs',   q:'filetype:docx intext:"internal use only"' },
+  { name:'Sensitive PDFs',            cat:'docs',   q:'filetype:pdf intext:"confidential" OR intext:"not for distribution"' },
+  { name:'Employee directories',      cat:'docs',   q:'filetype:xls intext:"employee" intext:"email"' },
+  { name:'Financial reports',         cat:'docs',   q:'filetype:pdf intitle:"financial report" OR intitle:"annual report"' },
+  { name:'Network topology diagrams', cat:'docs',   q:'filetype:pdf intext:"network diagram" OR intext:"topology"' },
+  { name:'Pentest reports',           cat:'docs',   q:'filetype:pdf intext:"penetration test" intext:"findings"' },
+  { name:'CV / Resume leaks',         cat:'docs',   q:'filetype:pdf intitle:"curriculum vitae" OR intitle:"resume"' },
+  { name:'NDA contracts',             cat:'docs',   q:'filetype:pdf intext:"non-disclosure" OR intext:"NDA"' },
+  { name:'Medical records',           cat:'docs',   q:'filetype:pdf intext:"patient" intext:"diagnosis"' },
+  { name:'Legal case documents',      cat:'docs',   q:'filetype:pdf intext:"plaintiff" OR intext:"defendant"' },
+  { name:'Meeting minutes',           cat:'docs',   q:'filetype:pdf OR filetype:docx intitle:"minutes" intext:"confidential"' },
+  { name:'Investor pitch decks',      cat:'docs',   q:'filetype:pdf intitle:"pitch deck" OR intitle:"investor presentation"' },
+  { name:'Source code archives',      cat:'docs',   q:'filetype:zip OR filetype:tar intext:"src" intitle:"index of"' },
+
+  // VULNERABILITIES & ERRORS
+  { name:'MySQL errors',              cat:'vulns',  q:'intext:"mysql_fetch_array()" intext:"SQL syntax"' },
+  { name:'PHP fatal errors',          cat:'vulns',  q:'intext:"Fatal error:" intext:"on line" ext:php' },
+  { name:'Stack traces exposed',      cat:'vulns',  q:'intext:"Stack trace:" intext:"Exception"' },
+  { name:'Django debug mode',         cat:'vulns',  q:'intext:"DEBUG = True" ext:py OR intitle:"Django Debug"' },
+  { name:'Laravel whoops page',       cat:'vulns',  q:'intitle:"Whoops!" intext:"Laravel"' },
+  { name:'ASP.NET errors',            cat:'vulns',  q:'intitle:"ASP.NET" intext:"Exception Details"' },
+  { name:'Directory listing on',      cat:'vulns',  q:'intitle:"Index of" intext:"Parent Directory"' },
+  { name:'ODBC errors',               cat:'vulns',  q:'intext:"OLE DB Provider" intext:"error"' },
+  { name:'WordPress XML-RPC',         cat:'vulns',  q:'inurl:xmlrpc.php intitle:"XML-RPC"' },
+  { name:'phpinfo() exposed',         cat:'vulns',  q:'intitle:"phpinfo()" intext:"PHP Version"' },
+  { name:'Git HEAD exposed',          cat:'vulns',  q:'inurl:"/.git/HEAD"' },
+  { name:'Test/dev API endpoints',    cat:'vulns',  q:'inurl:test OR inurl:dev inurl:api -site:github.com' },
+  { name:'Unrestricted file upload',  cat:'vulns',  q:'inurl:upload intitle:"file upload"' },
+  { name:'Path traversal /etc/passwd',cat:'vulns',  q:'intext:"root:x:0:0:" filetype:txt' },
+  { name:'Spring Boot actuator',      cat:'vulns',  q:'inurl:actuator/env OR inurl:actuator/dump' },
+  { name:'Rails error pages',         cat:'vulns',  q:'intitle:"Action Controller" intext:"RuntimeError"' },
+  { name:'Node.js error stack',       cat:'vulns',  q:'intext:"at Object." intext:"node_modules" intext:"Error"' },
+  { name:'Apache server status',      cat:'vulns',  q:'intitle:"Apache Status" inurl:server-status' },
+  { name:'Nginx status page',         cat:'vulns',  q:'intitle:"Nginx Status" inurl:nginx_status' },
+  { name:'IIS default page',          cat:'vulns',  q:'intitle:"IIS Windows Server" OR intitle:"Welcome to IIS"' },
+
+  // CLOUD & INFRASTRUCTURE
+  { name:'S3 bucket listing',         cat:'cloud',  q:'site:s3.amazonaws.com intitle:"index of"' },
+  { name:'Azure blob public',         cat:'cloud',  q:'site:blob.core.windows.net intitle:"index of"' },
+  { name:'GCP storage public',        cat:'cloud',  q:'site:storage.googleapis.com intitle:"index of"' },
+  { name:'Heroku exposed apps',       cat:'cloud',  q:'site:herokuapp.com inurl:admin OR inurl:login' },
+  { name:'Vercel deployments',        cat:'cloud',  q:'site:vercel.app inurl:admin' },
+  { name:'Netlify exposed sites',     cat:'cloud',  q:'site:netlify.app inurl:admin OR inurl:login' },
+  { name:'Firebase rules exposed',    cat:'cloud',  q:'site:firebaseio.com intext:"rules"' },
+  { name:'Exposed Swagger UI',        cat:'cloud',  q:'intitle:"Swagger UI" inurl:api-docs OR inurl:swagger' },
+  { name:'GitHub secrets',            cat:'cloud',  q:'site:github.com intext:"BEGIN RSA PRIVATE KEY"' },
+  { name:'GitLab env secrets',        cat:'cloud',  q:'site:gitlab.com intext:"password" ext:env' },
+  { name:'Exposed Postman APIs',      cat:'cloud',  q:'site:getpostman.com intext:"apiKey"' },
+  { name:'DigitalOcean spaces',       cat:'cloud',  q:'site:digitaloceanspaces.com intitle:"index of"' },
+  { name:'Backblaze B2 buckets',      cat:'cloud',  q:'site:backblazeb2.com intitle:"index of"' },
+  { name:'Render.com services',       cat:'cloud',  q:'site:onrender.com inurl:admin' },
+  { name:'Railway app deployments',   cat:'cloud',  q:'site:railway.app inurl:admin OR inurl:login' },
+
+  // OSINT & RECON
+  { name:'Email lists exposed',       cat:'osint',  q:'filetype:txt intext:"@gmail.com" OR intext:"@yahoo.com"' },
+  { name:'Phone number lists',        cat:'osint',  q:'filetype:xls intext:"phone" intext:"email"' },
+  { name:'Customer CSV databases',    cat:'osint',  q:'filetype:csv intext:"email" intext:"password"' },
+  { name:'Staff directories',         cat:'osint',  q:'intitle:"staff directory" OR intitle:"employee directory"' },
+  { name:'Pastebin credential dumps', cat:'osint',  q:'site:pastebin.com intext:"password" intext:"username"' },
+  { name:'VPN config files (.ovpn)',  cat:'osint',  q:'filetype:ovpn OR filetype:conf intext:"remote"' },
+  { name:'Network config files',      cat:'osint',  q:'filetype:conf intext:"ip address" intext:"subnet"' },
+  { name:'Exposed contact lists',     cat:'osint',  q:'filetype:csv intext:"first name" intext:"last name" intext:"email"' },
+  { name:'User database exports',     cat:'osint',  q:'filetype:sql intext:"INSERT INTO" intext:"users"' },
+  { name:'Membership lists',          cat:'osint',  q:'filetype:xls OR filetype:csv intext:"member" intext:"email"' },
+  { name:'Internal org charts',       cat:'osint',  q:'filetype:pdf intitle:"org chart" OR intitle:"organization chart"' },
+  { name:'Vendor / supplier lists',   cat:'osint',  q:'filetype:xls intext:"vendor" OR intext:"supplier" intext:"contact"' },
 ];
 
-const COLOR = {
-  site:'t-site', inurl:'t-inurl', filetype:'t-filetype',
-  intitle:'t-intitle', intext:'t-intext', ext:'t-ext',
-  cache:'t-other', related:'t-other', minus:'t-other', or:'t-other', base:'t-base'
-};
+const CATS = ['all', ...new Set(PRESETS.map(p => p.cat))];
+let activeCat = 'all';
+let selected = null;
 
-let vals = {}, active = {};
-OPS.forEach(o => { vals[o.id] = ''; active[o.id] = false; });
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 
-/* Render operator rows */
-function renderOps() {
-  document.getElementById('opsList').innerHTML = OPS.map(op => `
-    <div class="op-row ${active[op.id] ? 'active' : ''}" id="row-${op.id}">
-      <div class="op-toggle" onclick="toggleOp('${op.id}')">
-        <div class="op-check">${active[op.id] ? '✓' : ''}</div>
-        <span class="op-keyword-label">${op.label}</span>
-      </div>
-      <div>
-        <div class="op-input-wrap">
-          <input type="text" placeholder="${op.ph}" value="${esc(vals[op.id])}"
-            onfocus="activateOp('${op.id}')"
-            oninput="opVal('${op.id}', this.value)"
-          >
-        </div>
-        <div class="op-hint">${op.hint}</div>
-      </div>
-    </div>
+function renderCats() {
+  document.getElementById('catTabs').innerHTML = CATS.map(c => `
+    <div class="cat-btn ${activeCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>
   `).join('');
 }
 
-/* Render presets */
-function renderPresets() {
-  document.getElementById('presetsList').innerHTML = PRESETS.map((p, i) => `
-    <div class="preset" onclick="applyPreset(${i})">${p.label}</div>
-  `).join('');
+function setCat(c) {
+  activeCat = c;
+  renderCats();
+  renderCards();
 }
 
-function toggleOp(id) {
-  active[id] = !active[id];
-  if (!active[id]) vals[id] = '';
-  renderOps();
-  build();
-}
-
-function activateOp(id) {
-  active[id] = true;
-  renderOps();
-  // re-focus the input after re-render
-  setTimeout(() => {
-    const row = document.getElementById('row-' + id);
-    if (row) row.querySelector('input')?.focus();
-  }, 10);
-  build();
-}
-
-function opVal(id, v) {
-  vals[id] = v;
-  active[id] = true;
-  build();
-}
-
-function build() {
-  const base = document.getElementById('baseQ').value.trim();
-  const tokens = [];
-
-  if (base) tokens.push({ cls: 'base', text: base });
-  OPS.forEach(op => {
-    if (!active[op.id] || !vals[op.id]) return;
-    let text;
-    if (op.id === 'minus') text = `-${vals[op.id]}`;
-    else if (op.id === 'or') text = `(${vals[op.id]})`;
-    else text = `${op.label}${vals[op.id]}`;
-    tokens.push({ cls: op.id, text });
+function renderCards() {
+  const filter = document.getElementById('filterInput').value.toLowerCase();
+  const list = PRESETS.filter(p => {
+    const catOk = activeCat === 'all' || p.cat === activeCat;
+    const textOk = !filter || p.name.toLowerCase().includes(filter) || p.q.toLowerCase().includes(filter) || p.cat.includes(filter);
+    return catOk && textOk;
   });
 
-  const box = document.getElementById('preview');
-  if (!tokens.length) {
-    box.innerHTML = '<span class="placeholder">your query will appear here...</span>';
-  } else {
-    box.innerHTML = tokens.map(t =>
-      `<span class="${COLOR[t.cls] || ''}">${escHtml(t.text)}</span>`
-    ).join(' ');
+  document.getElementById('countLabel').textContent = list.length + ' dorks';
+
+  const grid = document.getElementById('grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="no-results">no matching dorks.</div>';
+    return;
   }
+
+  grid.innerHTML = list.map(p => {
+    const idx = PRESETS.indexOf(p);
+    return `
+      <div class="preset-card ${selected===idx?'selected':''}" onclick="selectPreset(${idx})">
+        <div class="pc-name">${escHtml(p.name)}</div>
+        <div class="pc-query">${escHtml(p.q)}</div>
+        <div class="pc-cat">${p.cat}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectPreset(idx) {
+  selected = idx;
+  document.getElementById('preview').textContent = PRESETS[idx].q;
+  renderCards();
+}
+
+function clearSel() {
+  selected = null;
+  document.getElementById('preview').innerHTML = '<span class="ph">← pick a dork below to load its query</span>';
+  renderCards();
 }
 
 function getQ() {
-  const base = document.getElementById('baseQ').value.trim();
-  const parts = [];
-  if (base) parts.push(base);
-  OPS.forEach(op => {
-    if (!active[op.id] || !vals[op.id]) return;
-    if (op.id === 'minus') parts.push(`-${vals[op.id]}`);
-    else if (op.id === 'or') parts.push(`(${vals[op.id]})`);
-    else parts.push(`${op.label}${vals[op.id]}`);
-  });
-  return parts.join(' ');
+  return selected !== null ? PRESETS[selected].q : '';
 }
 
 function doSearch() {
   const q = getQ();
-  if (!q || q === '') return false;
-  window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, '_blank');
+  if (!q) return false;
+  window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
   return false;
 }
 
@@ -490,28 +545,8 @@ function copyQ() {
   });
 }
 
-function resetAll() {
-  OPS.forEach(o => { vals[o.id] = ''; active[o.id] = false; });
-  document.getElementById('baseQ').value = '';
-  renderOps();
-  build();
-}
-
-function applyPreset(i) {
-  const p = PRESETS[i];
-  resetAll();
-  if (p.base) document.getElementById('baseQ').value = p.base;
-  Object.entries(p.ops).forEach(([id, v]) => { active[id] = true; vals[id] = v; });
-  renderOps();
-  build();
-}
-
-function esc(s) { return (s||'').replace(/"/g,'&quot;'); }
-function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-renderOps();
-renderPresets();
-build();
+renderCats();
+renderCards();
 </script>
 </body>
 </html>
