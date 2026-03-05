@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dorkforge</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f5f4f0;
+  --fg: #111;
+  --muted: #888;
+  --border: #d4d2cc;
+  --accent: #111;
+  --tag: #e8e6e0;
+  --active-bg: #111;
+  --active-fg: #f5f4f0;
+  --red: #c0392b;
+}
+
+html { font-size: 14px; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'IBM Plex Sans', sans-serif;
+  min-height: 100vh;
+  padding: 48px 24px 80px;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Header */
+header {
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.wordmark span { color: var(--muted); font-weight: 400; }
+
+.header-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Query output */
+.query-box {
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 4px;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+  min-height: 56px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  word-break: break-all;
+  position: relative;
+}
+
+.query-box .placeholder { color: #555; font-style: italic; }
+
+.t-site    { color: #f39c12; }
+.t-inurl   { color: #1abc9c; }
+.t-filetype{ color: #9b59b6; }
+.t-intitle { color: #3498db; }
+.t-intext  { color: #e74c3c; }
+.t-ext     { color: #e67e22; }
+.t-other   { color: #95a5a6; }
+.t-base    { color: #f5f4f0; }
+
+/* Actions row */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+button, a.btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  text-decoration: none;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+button:hover, a.btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+button.danger { color: var(--red); border-color: #e8b4b0; }
+button.danger:hover { background: var(--red); color: white; border-color: var(--red); }
+
+/* Section */
+.section { margin-bottom: 28px; }
+
+.label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+/* Base input */
+input[type="text"] {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 9px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input[type="text"]:focus { border-color: var(--fg); }
+input[type="text"]::placeholder { color: var(--muted); }
+
+/* Operators */
+.ops-list { display: flex; flex-direction: column; gap: 1px; }
+
+.op-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  background: var(--bg);
+}
+
+.op-row:focus-within, .op-row.active { border-color: var(--fg); }
+
+.op-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  transition: background 0.1s;
+  user-select: none;
+  height: 100%;
+}
+
+.op-toggle:hover { background: var(--tag); }
+
+.op-row.active .op-toggle {
+  background: var(--fg);
+  border-right-color: var(--fg);
+}
+
+.op-check {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 9px;
+  transition: all 0.1s;
+}
+
+.op-row.active .op-check {
+  background: var(--bg);
+  border-color: var(--bg);
+  color: var(--fg);
+}
+
+.op-keyword-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.op-row.active .op-keyword-label { color: var(--bg); }
+
+.op-input-wrap { padding: 6px 10px; }
+
+.op-input-wrap input {
+  border: none;
+  padding: 4px 0;
+  font-size: 0.8rem;
+}
+
+.op-input-wrap input:focus { border-color: transparent; }
+
+.op-hint {
+  font-size: 0.68rem;
+  color: var(--muted);
+  padding: 0 10px 6px;
+  grid-column: 2;
+  font-family: 'IBM Plex Mono', monospace;
+  display: none;
+}
+
+.op-row:focus-within .op-hint { display: block; }
+.op-row.active .op-hint { display: block; }
+
+/* Presets */
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.preset {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--muted);
+  background: transparent;
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+
+.preset:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+  background: transparent;
+}
+
+/* Footer */
+footer {
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+footer a { color: var(--muted); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  padding: 8px 14px;
+  border-radius: 3px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.toast.show { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 520px) {
+  .op-row { grid-template-columns: 90px 1fr; }
+  header { flex-direction: column; gap: 4px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="wordmark">dorkforge<span>.io</span></div>
+    <div class="header-sub">google dork query builder</div>
+  </header>
+
+  <!-- Live preview -->
+  <div class="query-box" id="preview">
+    <span class="placeholder">your query will appear here...</span>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <a class="btn" href="#" onclick="return doSearch()">↗ search google</a>
+    <button onclick="copyQ()">⎘ copy</button>
+    <button onclick="resetAll()" class="danger">× reset</button>
+  </div>
+
+  <!-- Base term -->
+  <div class="section">
+    <div class="label">search term</div>
+    <input type="text" id="baseQ" placeholder='e.g. "index of" or leave blank' oninput="build()">
+  </div>
+
+  <!-- Operators -->
+  <div class="section">
+    <div class="label">operators</div>
+    <div class="ops-list" id="opsList"></div>
+  </div>
+
+  <!-- Presets -->
+  <div class="section">
+    <div class="label">presets</div>
+    <div class="presets" id="presetsList"></div>
+  </div>
+
+  <footer>
+    ⚠ for authorized testing & osint research only. unauthorized access is illegal.<br>
+    built by <a href="https://0xcgz.github.io">0xcgz</a>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast">copied!</div>
+
+<script>
+const OPS = [
+  { id:'site',     label:'site:',     hint:'restrict to a domain',            ph:'example.com'        },
+  { id:'inurl',    label:'inurl:',    hint:'word must appear in the URL',      ph:'admin'              },
+  { id:'intitle',  label:'intitle:',  hint:'word in the page title',           ph:'"index of"'         },
+  { id:'intext',   label:'intext:',   hint:'word in the page body',            ph:'password'           },
+  { id:'filetype', label:'filetype:', hint:'specific file type',               ph:'pdf'                },
+  { id:'ext',      label:'ext:',      hint:'file extension (alt to filetype)', ph:'sql'                },
+  { id:'cache',    label:'cache:',    hint:"google's cached version of URL",   ph:'example.com'        },
+  { id:'related',  label:'related:',  hint:'sites related to this domain',     ph:'example.com'        },
+  { id:'minus',    label:'-exclude',  hint:'exclude this word from results',   ph:'word'               },
+  { id:'or',       label:'OR',        hint:'match either term',                ph:'login | signin'     },
+];
+
+const PRESETS = [
+  { label:'open dirs',      ops:{ intitle:'"index of /"' } },
+  { label:'exposed .env',   ops:{ intitle:'"index of"', intext:'.env' } },
+  { label:'login panels',   ops:{ inurl:'login', intitle:'admin' } },
+  { label:'sql errors',     base:'SQL syntax', ops:{ intext:'mysql_fetch' } },
+  { label:'pdf files',      ops:{ filetype:'pdf' } },
+  { label:'backup files',   ops:{ ext:'bak', intitle:'"index of"' } },
+  { label:'exposed git',    ops:{ inurl:'.git/config' } },
+  { label:'phpmyadmin',     ops:{ intitle:'phpMyAdmin', inurl:'phpmyadmin' } },
+  { label:'webcams',        ops:{ intitle:'webcam', inurl:'view/index' } },
+  { label:'api keys',       base:'API_KEY', ops:{ filetype:'env' } },
+  { label:'wp config',      ops:{ inurl:'wp-config.php' } },
+  { label:'xls data',       ops:{ filetype:'xls', intitle:'"index of"' } },
+];
+
+const COLOR = {
+  site:'t-site', inurl:'t-inurl', filetype:'t-filetype',
+  intitle:'t-intitle', intext:'t-intext', ext:'t-ext',
+  cache:'t-other', related:'t-other', minus:'t-other', or:'t-other', base:'t-base'
+};
+
+let vals = {}, active = {};
+OPS.forEach(o => { vals[o.id] = ''; active[o.id] = false; });
+
+/* Render operator rows */
+function renderOps() {
+  document.getElementById('opsList').innerHTML = OPS.map(op => `
+    <div class="op-row ${active[op.id] ? 'active' : ''}" id="row-${op.id}">
+      <div class="op-toggle" onclick="toggleOp('${op.id}')">
+        <div class="op-check">${active[op.id] ? '✓' : ''}</div>
+        <span class="op-keyword-label">${op.label}</span>
+      </div>
+      <div>
+        <div class="op-input-wrap">
+          <input type="text" placeholder="${op.ph}" value="${esc(vals[op.id])}"
+            onfocus="activateOp('${op.id}')"
+            oninput="opVal('${op.id}', this.value)"
+          >
+        </div>
+        <div class="op-hint">${op.hint}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* Render presets */
+function renderPresets() {
+  document.getElementById('presetsList').innerHTML = PRESETS.map((p, i) => `
+    <div class="preset" onclick="applyPreset(${i})">${p.label}</div>
+  `).join('');
+}
+
+function toggleOp(id) {
+  active[id] = !active[id];
+  if (!active[id]) vals[id] = '';
+  renderOps();
+  build();
+}
+
+function activateOp(id) {
+  active[id] = true;
+  renderOps();
+  // re-focus the input after re-render
+  setTimeout(() => {
+    const row = document.getElementById('row-' + id);
+    if (row) row.querySelector('input')?.focus();
+  }, 10);
+  build();
+}
+
+function opVal(id, v) {
+  vals[id] = v;
+  active[id] = true;
+  build();
+}
+
+function build() {
+  const base = document.getElementById('baseQ').value.trim();
+  const tokens = [];
+
+  if (base) tokens.push({ cls: 'base', text: base });
+  OPS.forEach(op => {
+    if (!active[op.id] || !vals[op.id]) return;
+    let text;
+    if (op.id === 'minus') text = `-${vals[op.id]}`;
+    else if (op.id === 'or') text = `(${vals[op.id]})`;
+    else text = `${op.label}${vals[op.id]}`;
+    tokens.push({ cls: op.id, text });
+  });
+
+  const box = document.getElementById('preview');
+  if (!tokens.length) {
+    box.innerHTML = '<span class="placeholder">your query will appear here...</span>';
+  } else {
+    box.innerHTML = tokens.map(t =>
+      `<span class="${COLOR[t.cls] || ''}">${escHtml(t.text)}</span>`
+    ).join(' ');
+  }
+}
+
+function getQ() {
+  const base = document.getElementById('baseQ').value.trim();
+  const parts = [];
+  if (base) parts.push(base);
+  OPS.forEach(op => {
+    if (!active[op.id] || !vals[op.id]) return;
+    if (op.id === 'minus') parts.push(`-${vals[op.id]}`);
+    else if (op.id === 'or') parts.push(`(${vals[op.id]})`);
+    else parts.push(`${op.label}${vals[op.id]}`);
+  });
+  return parts.join(' ');
+}
+
+function doSearch() {
+  const q = getQ();
+  if (!q || q === '') return false;
+  window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, '_blank');
+  return false;
+}
+
+function copyQ() {
+  const q = getQ();
+  if (!q) return;
+  navigator.clipboard.writeText(q).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+  });
+}
+
+function resetAll() {
+  OPS.forEach(o => { vals[o.id] = ''; active[o.id] = false; });
+  document.getElementById('baseQ').value = '';
+  renderOps();
+  build();
+}
+
+function applyPreset(i) {
+  const p = PRESETS[i];
+  resetAll();
+  if (p.base) document.getElementById('baseQ').value = p.base;
+  Object.entries(p.ops).forEach(([id, v]) => { active[id] = true; vals[id] = v; });
+  renderOps();
+  build();
+}
+
+function esc(s) { return (s||'').replace(/"/g,'&quot;'); }
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderOps();
+renderPresets();
+build();
+</script>
+</body>
+</html>
