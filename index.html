@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DarkDork | 3-in-1 Recon Toolkit</title>
+<title>DarkDork | Find What Shouldn't Be Found</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* =========================================
@@ -104,14 +104,7 @@ header {
 .wordmark-dark { color: var(--fg); }
 .wordmark-light { color: var(--muted); font-weight: 400; }
 .wordmark::before {
-  content: '';
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  margin-right: 10px;
-  animation: pulse 2.5s infinite;
+  display: none;
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -371,7 +364,7 @@ header {
   margin-bottom: 10px;
   min-height: 46px;
   font-family: 'Space Mono', monospace;
-  font-size: 0.76rem;
+  font-size: 0.88rem;
   line-height: 1.8;
   word-break: break-all;
   color: var(--fg);
@@ -541,7 +534,7 @@ header {
 
 .pc-name, .tool-name {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 600;
   margin-bottom: 4px;
   white-space: nowrap;
@@ -550,7 +543,7 @@ header {
 }
 .pc-query, .tool-desc {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.72rem;
   color: var(--muted);
   margin-bottom: 6px;
   white-space: nowrap;
@@ -559,7 +552,7 @@ header {
 }
 .pc-cat, .tool-tag {
   font-family: 'Space Mono', monospace;
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -711,8 +704,8 @@ footer a:hover { color: var(--fg); }
   <!-- ===== DASHBOARD ===== -->
   <main id="view-dashboard" class="view active">
     <div class="dash-hero">
-      <h1>Recon &amp;<br><em>Dork</em> Toolkit</h1>
-      <div class="dash-sub">authorized security research only</div>
+      <h1>Find What<br>Shouldn't Be <em>Found.</em></h1>
+      <div class="dash-sub">for the ones who dig deeper.</div>
     </div>
 
     <div class="dash-grid">
@@ -805,8 +798,7 @@ footer a:hover { color: var(--fg); }
   </main>
 
   <footer>
-    <p>for authorized security research & osint only</p>
-    <p>built by <a href="https://0xcgz.github.io" target="_blank">0xcgz</a></p>
+    <p>for authorized security research & osint only · © 2026 <a href="https://0xcgz.github.io" target="_blank">0xcgz</a></p>
   </footer>
 </div>
 
@@ -935,26 +927,155 @@ var BUGBOUNTY_DATA = [
 ];
 
 var OSINT_TOOLS = [
-  {name:'Shodan',            url:'https://www.shodan.io',                       desc:'internet device search engine',        cat:'recon'},
-  {name:'Censys',            url:'https://censys.io',                           desc:'attack surface search engine',         cat:'recon'},
-  {name:'GreyNoise',         url:'https://www.greynoise.io',                    desc:'internet background noise intel',      cat:'recon'},
-  {name:'LeakIX',            url:'https://leakix.net',                          desc:'publicly indexed leaks & services',    cat:'recon'},
-  {name:'Wayback Machine',   url:'https://web.archive.org',                     desc:'historical web snapshots',             cat:'recon'},
-  {name:'VirusTotal',        url:'https://www.virustotal.com',                  desc:'malware & URL scanner',                cat:'recon'},
-  {name:'MXToolbox',         url:'https://mxtoolbox.com',                       desc:'DNS & mail server diagnostics',        cat:'ip & dns'},
-  {name:'DNSdumpster',       url:'https://dnsdumpster.com',                     desc:'DNS recon & research tool',            cat:'ip & dns'},
-  {name:'ViewDNS.info',      url:'https://viewdns.info',                        desc:'reverse IP, whois, DNS tools',         cat:'ip & dns'},
-  {name:'SecurityTrails',    url:'https://securitytrails.com',                  desc:'DNS history & attack surface',         cat:'ip & dns'},
-  {name:'Hunter.io',         url:'https://hunter.io',                           desc:'find email addresses by domain',       cat:'email'},
-  {name:'HaveIBeenPwned',    url:'https://haveibeenpwned.com',                  desc:'email breach check',                   cat:'email'},
-  {name:'WhatsMyName',       url:'https://whatsmyname.app',                     desc:'username enumeration tool',            cat:'username'},
-  {name:'DeHashed',          url:'https://dehashed.com',                        desc:'leaked database search',               cat:'breach'},
-  {name:'Exploit-DB',        url:'https://www.exploit-db.com',                  desc:'public exploit archive',               cat:'network'},
-  {name:'NIST NVD',          url:'https://nvd.nist.gov',                        desc:'national vulnerability database',      cat:'network'},
-  {name:'Google Maps',       url:'https://maps.google.com',                     desc:'satellite & street view imagery',      cat:'geo'},
-  {name:'ExifTool online',   url:'https://exif.tools',                          desc:'image metadata viewer',                cat:'metadata'},
-  {name:'TinEye',            url:'https://tineye.com',                          desc:'reverse image search',                 cat:'metadata'},
-  {name:'DarkSearch',        url:'https://darksearch.io',                       desc:'real-time darkweb search',             cat:'darkweb'}
+  // --- RECON & SEARCH ENGINES ---
+  {name:'Shodan',              url:'https://www.shodan.io',                        desc:'Internet device & IoT search engine',    cat:'recon'},
+  {name:'Censys',              url:'https://censys.io',                            desc:'Attack surface search engine',           cat:'recon'},
+  {name:'FOFA',                url:'https://fofa.info',                            desc:'Cyberspace mapping & search (CN)',        cat:'recon'},
+  {name:'ZoomEye',             url:'https://www.zoomeye.org',                      desc:'Global cyberspace search engine',        cat:'recon'},
+  {name:'GreyNoise',           url:'https://www.greynoise.io',                     desc:'Internet background noise & scan intel', cat:'recon'},
+  {name:'BinaryEdge',          url:'https://app.binaryedge.io',                    desc:'Real-time threat intelligence',          cat:'recon'},
+  {name:'Onyphe',              url:'https://www.onyphe.io',                        desc:'Cyber defense search engine',            cat:'recon'},
+  {name:'PublicWWW',           url:'https://publicwww.com',                        desc:'Source code search engine',              cat:'recon'},
+  {name:'Netlas',              url:'https://app.netlas.io',                        desc:'Internet intelligence platform',         cat:'recon'},
+  {name:'LeakIX',              url:'https://leakix.net',                           desc:'Publicly indexed leaks & services',      cat:'recon'},
+  {name:'Wayback Machine',     url:'https://web.archive.org',                      desc:'Historical web snapshots & archives',    cat:'recon'},
+  {name:'Archive.today',       url:'https://archive.ph',                           desc:'Webpage capture & archiving tool',       cat:'recon'},
+  {name:'URLScan.io',          url:'https://urlscan.io',                           desc:'Website scanner & visual analyzer',      cat:'recon'},
+  {name:'VirusTotal',          url:'https://www.virustotal.com',                   desc:'Malware, IP, and URL scanner',           cat:'recon'},
+  {name:'crt.sh',              url:'https://crt.sh',                               desc:'Certificate transparency logs',          cat:'recon'},
+  {name:'FullHunt',            url:'https://fullhunt.io',                          desc:'Attack surface management DB',           cat:'recon'},
+  {name:'IntelligenceX',       url:'https://intelx.io',                            desc:'Search engine for leaked & historic data',cat:'recon'},
+  {name:'Recon.dev',           url:'https://recon.dev',                            desc:'Passive subdomain discovery',            cat:'recon'},
+  {name:'Hunter.how',          url:'https://hunter.how',                           desc:'Network asset search engine',            cat:'recon'},
+  {name:'grep.app',            url:'https://grep.app',                             desc:'Search across public GitHub repos',      cat:'recon'},
+  {name:'OSINT Framework',     url:'https://osintframe.work',                      desc:'Visual OSINT tool directory & map',      cat:'recon'},
+  {name:'CIRCL Lookyloo',      url:'https://lookyloo.circl.lu',                    desc:'Web forensics & page capture tool',      cat:'recon'},
+  {name:'OATHnet',             url:'https://oathnet.org',                          desc:'Open source threat hunting network',     cat:'recon'},
+
+  // --- IP & DNS ---
+  {name:'MXToolbox',           url:'https://mxtoolbox.com',                        desc:'DNS, SMTP & mail server diagnostics',    cat:'ip & dns'},
+  {name:'DNSdumpster',         url:'https://dnsdumpster.com',                      desc:'DNS recon & mapping tool',               cat:'ip & dns'},
+  {name:'ViewDNS.info',        url:'https://viewdns.info',                         desc:'Reverse IP, WHOIS, & DNS toolkit',       cat:'ip & dns'},
+  {name:'SecurityTrails',      url:'https://securitytrails.com',                   desc:'DNS history & subdomains',               cat:'ip & dns'},
+  {name:'IPinfo.io',           url:'https://ipinfo.io',                            desc:'IP geolocation, ASN & ownership',        cat:'ip & dns'},
+  {name:'AbuseIPDB',           url:'https://www.abuseipdb.com',                    desc:'IP abuse & blacklist reports',           cat:'ip & dns'},
+  {name:'Criminal IP',         url:'https://www.criminalip.io',                    desc:'Cyber threat intelligence & IP search',  cat:'ip & dns'},
+  {name:'Robtex',              url:'https://www.robtex.com',                       desc:'IP, DNS, and routing research',          cat:'ip & dns'},
+  {name:'HackerTarget',        url:'https://hackertarget.com',                     desc:'DNS, ping, and network recon tools',     cat:'ip & dns'},
+  {name:'DNSlytics',           url:'https://dnslytics.com',                        desc:'Reverse DNS & IP analytics',             cat:'ip & dns'},
+  {name:'BGP.he.net',          url:'https://bgp.he.net',                           desc:'Hurricane Electric BGP/ASN toolkit',     cat:'ip & dns'},
+  {name:'Whois DomainTools',   url:'https://whois.domaintools.com',                desc:'Premium WHOIS lookup & history',         cat:'ip & dns'},
+  {name:'Pulsedive',           url:'https://pulsedive.com',                        desc:'Community threat intelligence IOCs',     cat:'ip & dns'},
+  {name:'PassiveDNS',          url:'https://passivedns.mnemonic.no',               desc:'Mnemonic passive DNS database',          cat:'ip & dns'},
+  {name:'RiskIQ',              url:'https://community.riskiq.com',                 desc:'PassiveTotal threat hunting platform',   cat:'ip & dns'},
+  {name:'IP2Location',         url:'https://www.ip2location.com',                  desc:'Advanced IP geolocation lookup',         cat:'ip & dns'},
+  {name:'ARIN Whois',          url:'https://search.arin.net',                      desc:'American Registry for Internet Numbers', cat:'ip & dns'},
+  {name:'IPLocation.net',      url:'https://iplocation.net/ip-lookup',             desc:'Fast IP location & ISP lookup',          cat:'ip & dns'},
+  {name:'CentralOps',          url:'https://centralops.net/co',                    desc:'Network recon & diagnostic tools',       cat:'ip & dns'},
+  {name:'SubdomainFinder',     url:'https://subdomainfinder.c99.nl',               desc:'Fast passive subdomain finder',          cat:'ip & dns'},
+
+  // --- EMAIL ---
+  {name:'Hunter.io',           url:'https://hunter.io',                            desc:'Find email addresses by domain',         cat:'email'},
+  {name:'Epieos',              url:'https://epieos.com',                           desc:'Reverse email lookup (Google/Skype)',    cat:'email'},
+  {name:'Phonebook.cz',        url:'https://phonebook.cz',                         desc:'Email, domain, URL intelligence',        cat:'email'},
+  {name:'EmailRep.io',         url:'https://emailrep.io',                          desc:'Email address reputation check',         cat:'email'},
+  {name:'Snov.io',             url:'https://snov.io/email-finder',                 desc:'Email finder & verifier',                cat:'email'},
+  {name:'VoilaNorbert',        url:'https://www.voilanorbert.com',                 desc:'Corporate email lookup tool',            cat:'email'},
+  {name:'Email-format.com',    url:'https://www.email-format.com',                 desc:'Company email format structures',        cat:'email'},
+  {name:'Skymem',              url:'https://www.skymem.info',                      desc:'Email search from the web',              cat:'email'},
+  {name:'MailTester',          url:'https://mailtester.com',                       desc:'Check if an email address exists',       cat:'email'},
+  {name:'Clearbit Connect',    url:'https://connect.clearbit.com',                 desc:'B2B email lookup extension/web',         cat:'email'},
+  {name:'RocketReach',         url:'https://rocketreach.co',                       desc:'Professional email & contact search',    cat:'email'},
+  {name:'Lusha',               url:'https://www.lusha.com',                        desc:'B2B contact information finder',         cat:'email'},
+  {name:'Thatsthem',           url:'https://thatsthem.com',                        desc:'Reverse email & phone lookup',           cat:'email'},
+
+  // --- USERNAME & PEOPLE ---
+  {name:'WhatsMyName',         url:'https://whatsmyname.app',                      desc:'Username enumeration across 500+ sites', cat:'username'},
+  {name:'Namechk',             url:'https://namechk.com',                          desc:'Check username & domain availability',   cat:'username'},
+  {name:'KnowEm',              url:'https://knowem.com',                           desc:'Username search on social networks',     cat:'username'},
+  {name:'CheckUsernames',      url:'https://checkusernames.com',                   desc:'Social media username search',           cat:'username'},
+  {name:'InstantUsername',     url:'https://instantusername.com',                  desc:'Fast username availability check',       cat:'username'},
+  {name:'Usersearch.org',      url:'https://usersearch.org',                       desc:'Find social profiles by username',       cat:'username'},
+  {name:'IDCrawl',             url:'https://www.idcrawl.com',                      desc:'Free people search engine',              cat:'username'},
+  {name:'Spokeo',              url:'https://www.spokeo.com',                       desc:'People & social profile lookup',         cat:'username'},
+  {name:'Social-Searcher',     url:'https://www.social-searcher.com',              desc:'Social media real-time search',          cat:'username'},
+  {name:'Pipl',                url:'https://pipl.com',                             desc:'Deep web people search engine',          cat:'username'},
+  {name:'PeekYou',             url:'https://www.peekyou.com',                      desc:'People search & public records',         cat:'username'},
+  {name:'TruePeopleSearch',    url:'https://www.truepeoplesearch.com',             desc:'US-based public record search',          cat:'username'},
+  {name:'FastPeopleSearch',    url:'https://www.fastpeoplesearch.com',             desc:'Free US people directory',               cat:'username'},
+  {name:'WebMii',              url:'https://webmii.com',                           desc:'Public information people search',       cat:'username'},
+
+  // --- BREACH & LEAKS ---
+  {name:'HaveIBeenPwned',      url:'https://haveibeenpwned.com',                   desc:'Global email & phone breach check',      cat:'breach'},
+  {name:'DeHashed',            url:'https://dehashed.com',                         desc:'Advanced leaked database search',        cat:'breach'},
+  {name:'LeakCheck',           url:'https://leakcheck.io',                         desc:'Data breach search engine',              cat:'breach'},
+  {name:'Snusbase',            url:'https://snusbase.com',                         desc:'Data breach & leak lookup',              cat:'breach'},
+  {name:'BreachDirectory',     url:'https://breachdirectory.org',                  desc:'Free breach & credential lookup',        cat:'breach'},
+  {name:'Leak-Lookup',         url:'https://leak-lookup.com',                      desc:'Data breach lookup service',             cat:'breach'},
+  {name:'PSBDMP',              url:'https://psbdmp.ws',                            desc:'Pastebin dump search & alerts',          cat:'breach'},
+  {name:'GhostProject',        url:'https://ghostproject.fr',                      desc:'Email & password plaintext search',      cat:'breach'},
+  {name:'Spycloud',            url:'https://spycloud.com',                         desc:'Employee credential exposure check',     cat:'breach'},
+  {name:'Vigilante.pw',        url:'https://vigilante.pw',                         desc:'Breached database directory',            cat:'breach'},
+
+  // --- NETWORK & THREAT INTEL ---
+  {name:'Exploit-DB',          url:'https://www.exploit-db.com',                   desc:'Public exploit & payload archive',       cat:'network'},
+  {name:'NIST NVD',            url:'https://nvd.nist.gov',                         desc:'National vulnerability database',        cat:'network'},
+  {name:'CVE Mitre',           url:'https://cve.mitre.org/cve',                    desc:'Official CVE list by MITRE',             cat:'network'},
+  {name:'CVEdetails',          url:'https://www.cvedetails.com',                   desc:'CVE security vulnerability data',        cat:'network'},
+  {name:'Vulners',             url:'https://vulners.com',                          desc:'Security database & vuln scanner',       cat:'network'},
+  {name:'Sploitus',            url:'https://sploitus.com',                         desc:'Exploit & hacking tool search',          cat:'network'},
+  {name:'AttackerKB',          url:'https://attackerkb.com',                       desc:'Crowdsourced vulnerability assessments', cat:'network'},
+  {name:'ThreatCrowd',         url:'https://www.threatcrowd.org',                  desc:'Search engine for threats',              cat:'network'},
+  {name:'OTX AlienVault',      url:'https://otx.alienvault.com',                   desc:'Open threat exchange platform',          cat:'network'},
+  {name:'MalwareBazaar',       url:'https://bazaar.abuse.ch',                      desc:'Malware sample database by abuse.ch',    cat:'network'},
+  {name:'Hybrid Analysis',     url:'https://www.hybrid-analysis.com',              desc:'Free malware analysis sandbox',          cat:'network'},
+  {name:'SSL Labs',            url:'https://www.ssllabs.com/ssltest',              desc:'Deep SSL/TLS configuration test',        cat:'network'},
+  {name:'Packet Storm',        url:'https://packetstormsecurity.com',              desc:'Security tools, exploits, advisories',   cat:'network'},
+  {name:'IBM X-Force',         url:'https://exchange.xforce.ibmcloud.com',         desc:'Threat intelligence sharing platform',   cat:'network'},
+  {name:'ThreatMiner',         url:'https://www.threatminer.org',                  desc:'Data mining for threat intel',           cat:'network'},
+  {name:'ThreatYeti',          url:'https://www.threatyeti.com',                   desc:'DNS & threat intelligence lookup',       cat:'network'},
+  {name:'Threat Intel Platform',url:'https://threatintelligenceplatform.com',      desc:'Domain & IP threat intelligence',        cat:'network'},
+
+  // --- GEO & TRACKING ---
+  {name:'Google Maps',         url:'https://maps.google.com',                      desc:'Satellite & street view imagery',        cat:'geo'},
+  {name:'Bing Maps',           url:'https://www.bing.com/maps',                    desc:'High-res bird\'s eye aerial view',       cat:'geo'},
+  {name:'Yandex Maps',         url:'https://yandex.com/maps',                      desc:'Street-level imagery (Russia/EU)',        cat:'geo'},
+  {name:'Wikimapia',           url:'https://wikimapia.org',                        desc:'Crowdsourced mapping project',           cat:'geo'},
+  {name:'SunCalc',             url:'https://www.suncalc.org',                      desc:'Sun position & shadow analysis',         cat:'geo'},
+  {name:'Sentinel Hub',        url:'https://www.sentinel-hub.com/explore/eobrowser',desc:'Current satellite imagery platform',    cat:'geo'},
+  {name:'OpenStreetMap',       url:'https://www.openstreetmap.org',                desc:'Open source world map data',             cat:'geo'},
+  {name:'Overpass Turbo',      url:'https://overpass-turbo.eu',                    desc:'OSM data query & export tool',           cat:'geo'},
+  {name:'FlightAware',         url:'https://flightaware.com',                      desc:'Live flight & aircraft tracking',        cat:'geo'},
+  {name:'Flightradar24',       url:'https://www.flightradar24.com',                desc:'Global real-time flight tracker',        cat:'geo'},
+  {name:'MarineTraffic',       url:'https://www.marinetraffic.com',                desc:'Live ship & vessel tracking',            cat:'geo'},
+  {name:'VesselFinder',        url:'https://www.vesselfinder.com',                 desc:'AIS vessel tracking network',            cat:'geo'},
+  {name:'RadarBox',            url:'https://www.radarbox.com',                     desc:'Aircraft tracking & ADS-B data',         cat:'geo'},
+  {name:'Mapillary',           url:'https://www.mapillary.com',                    desc:'Crowdsourced street-level photos',       cat:'geo'},
+  {name:'EarthCam',            url:'https://www.earthcam.com',                     desc:'Network of live public webcams',         cat:'geo'},
+  {name:'Zoom.Earth',          url:'https://zoom.earth',                           desc:'Live weather & satellite tracking',      cat:'geo'},
+  {name:'WiGLE',               url:'https://wigle.net',                            desc:'Wireless network mapping database',      cat:'geo'},
+
+  // --- METADATA & FORENSICS ---
+  {name:'ExifTool online',     url:'https://exif.tools',                           desc:'Image & document metadata viewer',       cat:'metadata'},
+  {name:'Jeffrey\'s Exif',     url:'https://exif.regex.info/exif.cgi',             desc:'Comprehensive EXIF data viewer',         cat:'metadata'},
+  {name:'Metadata2go',         url:'https://www.metadata2go.com',                  desc:'Hidden file metadata extractor',         cat:'metadata'},
+  {name:'Forensically',        url:'https://29a.ch/photo-forensics',               desc:'Image forensics & clone detection',      cat:'metadata'},
+  {name:'FotoForensics',       url:'https://fotoforensics.com',                    desc:'ELA (Error Level Analysis) images',      cat:'metadata'},
+  {name:'TinEye',              url:'https://tineye.com',                           desc:'Reverse image search engine',            cat:'metadata'},
+  {name:'Google Images',       url:'https://images.google.com',                    desc:'Reverse image & visual search',          cat:'metadata'},
+  {name:'Yandex Images',       url:'https://yandex.com/images',                    desc:'Powerful facial/reverse image search',   cat:'metadata'},
+  {name:'PimEyes',             url:'https://pimeyes.com',                          desc:'Face recognition search engine',         cat:'metadata'},
+  {name:'FaceCheck.ID',        url:'https://facecheck.id',                         desc:'Find people by face search',             cat:'metadata'},
+
+  // --- DARKWEB & ARCHIVES ---
+  {name:'Ahmia',               url:'https://ahmia.fi',                             desc:'.onion search engine (Clearweb)',        cat:'darkweb'},
+  {name:'DarkSearch',          url:'https://darksearch.io',                        desc:'Real-time darkweb search',               cat:'darkweb'},
+  {name:'OnionSearch',         url:'https://onionsearchengine.com',                desc:'Tor search aggregator',                  cat:'darkweb'},
+  {name:'OnionLand Search',    url:'https://onionlandsearchengine.com',            desc:'Dark web search engine',                 cat:'darkweb'},
+  {name:'IntelligenceX TOR',   url:'https://intelx.io/?did=7',                     desc:'Tor & i2p content search',               cat:'darkweb'},
+  {name:'Dark.fail',           url:'https://dark.fail',                            desc:'Verified .onion link directory',         cat:'darkweb'},
+  {name:'Tor66',               url:'https://tor66.org',                            desc:'Fresh Tor network search',               cat:'darkweb'},
+  {name:'I2P Search',          url:'https://i2psearch.com',                        desc:'Invisible Internet Project search',      cat:'darkweb'}
 ];
 
 // --- UTILS ---
