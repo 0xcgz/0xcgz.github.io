@@ -1,448 +1,825 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DarkDork | OSINT Toolkit</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<title>DarkDork | 3-in-1 Recon Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* =========================================
-   1. BASE & VARIABLES
+   BASE & VARIABLES
 ========================================= */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #f5f4f0;
-  --fg: #111111;
-  --muted: #888888;
-  --border: #d4d2cc;
-  --gold: #b8860b;
-  --panel-bg: rgba(245, 244, 240, 0.95); /* For sticky panel */
+  --bg: #f2f0eb;
+  --bg2: #e8e5de;
+  --fg: #131210;
+  --fg2: #2a2925;
+  --muted: #9a9690;
+  --border: #ccc9c0;
+  --border2: #b8b4aa;
+  --gold: #c8922a;
+  --accent: #d44f2e;
+  --accent2: #4a7c9e;
+  --green: #3d8c5a;
+  --panel-bg: rgba(242, 240, 235, 0.97);
+  --card-bg: #eceae4;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
 }
 
 [data-theme="dark"] {
-  --bg: #0d0d0d;
-  --fg: #e8e6e0;
-  --muted: #555555;
-  --border: #222222;
-  --gold: #c9a227;
-  --panel-bg: rgba(13, 13, 13, 0.95);
+  --bg: #0e0d0b;
+  --bg2: #161512;
+  --fg: #e8e5dc;
+  --fg2: #c8c4b8;
+  --muted: #5a5750;
+  --border: #252320;
+  --border2: #332f2a;
+  --gold: #d4a032;
+  --accent: #e05535;
+  --accent2: #5a9cbf;
+  --green: #4aaa6a;
+  --panel-bg: rgba(14, 13, 11, 0.98);
+  --card-bg: #141310;
+  --shadow: 0 2px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
 }
 
-html { 
-  font-size: 14px; 
-  scroll-behavior: smooth; 
-}
+html { font-size: 14px; scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
-  padding: 0 24px 80px; /* Top padding removed for sticky header */
-  transition: background 0.2s, color 0.2s;
+  padding: 0 20px 80px;
+  transition: background 0.3s, color 0.3s;
+  line-height: 1.5;
+  position: relative;
 }
 
-.wrap { 
-  max-width: 820px; 
-  margin: 0 auto; 
+#bg-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;
+  transition: opacity 0.3s;
 }
+[data-theme="light"] #bg-canvas { opacity: 1; }
+
+.wrap { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
 
 /* =========================================
-   2. LAYOUT & SECTIONS
+   HEADER
 ========================================= */
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 32px 0 18px;
+  padding: 28px 0 20px;
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   gap: 12px;
+  position: relative;
 }
 
-/* Sticky Control Panel - Keeps builder visible when scrolling */
-.control-panel {
-  position: sticky;
-  top: 0;
-  background: var(--panel-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 100;
-  padding: 24px 0 16px;
-  margin-bottom: 32px;
-  border-bottom: 1px solid var(--border);
-}
+.header-left { display: flex; align-items: center; gap: 16px; }
 
-section { margin-bottom: 40px; }
-
-.sec-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.grid-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 8px;
-}
-
-.divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
-
-/* =========================================
-   3. TYPOGRAPHY & BRANDING
-========================================= */
 .wordmark {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.wordmark span { color: var(--muted); font-weight: 400; }
-.header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.header-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--muted); }
-
-/* =========================================
-   4. COMPONENTS (Inputs, Buttons, Cards)
-========================================= */
-/* Buttons */
-.btn-base {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 6px 13px;
-  border-radius: 3px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--fg);
+  font-family: 'Space Mono', monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 5px;
-  white-space: nowrap;
-  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--fg);
 }
-.btn-base:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-.btn-muted { color: var(--muted); }
-.btn-muted:hover { color: var(--bg); }
+.wordmark-dark { color: var(--fg); }
+.wordmark-light { color: var(--muted); font-weight: 400; }
+.wordmark::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-right: 10px;
+  animation: pulse 2.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+.btn-back {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  padding: 5px 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: none;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+.btn-back.show { display: inline-flex; align-items: center; gap: 6px; }
+.btn-back:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+.header-right { display: flex; align-items: center; gap: 10px; }
 
 .theme-btn {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.68rem;
-  padding: 4px 10px;
-  border-radius: 3px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  padding: 5px 12px;
+  border-radius: 2px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
   transition: all 0.15s;
+  letter-spacing: 0.05em;
 }
 .theme-btn:hover { color: var(--fg); border-color: var(--fg); }
 
-/* Site Input Row */
-.site-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.site-prefix { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+/* =========================================
+   VIEWS
+========================================= */
+.view { display: none; }
+.view.active { display: block; animation: fadeUp 0.25s ease-out; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   DASHBOARD
+========================================= */
+.dash-hero {
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dash-hero h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 16px;
+  color: var(--fg);
+}
+.dash-hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+.dash-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.dash-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 32px 24px 24px;
+  background: var(--card-bg);
+  color: var(--fg);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.dash-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.dash-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.dash-card:hover::after { transform: scaleX(1); }
+
+.dash-card-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+  opacity: 0.6;
+}
+
+.dash-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+.dash-desc {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.65;
+  font-weight: 400;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.dash-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.dash-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.dash-arrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  transition: transform 0.2s, color 0.2s;
+}
+.dash-card:hover .dash-arrow { transform: translate(3px, -3px); color: var(--accent); }
+
+.dash-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 40px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  justify-content: center;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--fg);
+  display: block;
+}
+.stat-lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+/* =========================================
+   CONTROL PANEL
+========================================= */
+.control-panel {
+  position: sticky;
+  top: 0;
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100;
+  padding: 20px 0 16px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.site-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.site-prefix {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--gold);
+  white-space: nowrap;
+  min-width: 36px;
+}
 .site-input {
   flex: 1;
-  background: var(--bg);
+  background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 3px;
-  padding: 9px 12px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.82rem;
-  color: var(--fg);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.site-input:focus { border-color: var(--fg); }
-.site-input::placeholder { color: var(--muted); }
-.site-clear { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--muted); cursor: pointer; padding: 4px 6px; border: none; background: transparent; transition: color 0.1s; }
-.site-clear:hover { color: var(--fg); }
-
-/* Query Box */
-.query-box {
-  background: var(--fg);
-  color: var(--bg);
-  border-radius: 4px;
-  padding: 14px 18px;
-  margin-bottom: 14px;
-  min-height: 52px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.83rem;
-  line-height: 1.9;
-  word-break: break-all;
-  user-select: all;
-  cursor: text;
-}
-.query-box .ph { color: #666; font-style: italic; }
-.q-site    { color: #f39c12; }
-.q-op      { color: #74d7c4; }
-.q-val     { color: #e8e6e0; }
-.q-keyword { color: #a29bfe; }
-
-.actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-/* Filter & Tabs */
-.filter-row { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
-.search-box {
-  flex: 1; min-width: 180px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 8px 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  padding: 9px 14px;
+  font-family: 'Space Mono', monospace;
   font-size: 0.78rem;
   color: var(--fg);
   outline: none;
   transition: border-color 0.15s;
 }
-.search-box:focus { border-color: var(--fg); }
-.search-box::placeholder { color: var(--muted); }
-.count { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--muted); white-space: nowrap; }
+.site-input:focus { border-color: var(--accent2); }
+.site-input::placeholder { color: var(--muted); }
 
-/* Scrollable Tabs Wrapper */
-.tabs-wrapper {
-  overflow-x: auto;
-  padding-bottom: 4px;
-  margin-bottom: 18px;
-}
-.tabs-wrapper::-webkit-scrollbar { height: 4px; }
-.tabs-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-.tabs { display: flex; gap: 6px; width: max-content; }
-.tab {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.67rem;
-  padding: 5px 12px;
+.btn-clear {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  width: 32px;
+  height: 32px;
   border-radius: 3px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  transition: all 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.btn-clear:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.query-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  min-height: 46px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.76rem;
+  line-height: 1.8;
+  word-break: break-all;
+  color: var(--fg);
+  transition: background 0.2s;
+}
+[data-theme="dark"] .query-box { background: #161512; }
+.query-box .ph { color: var(--muted); font-style: italic; }
+.q-site { color: var(--gold); }
+.q-op { color: var(--accent2); }
+.q-val { color: var(--fg); }
+
+.action-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 3px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+.btn-primary:hover { background: var(--fg); }
+
+.btn-secondary {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  padding: 8px 16px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+/* =========================================
+   SECTION LABEL
+========================================= */
+.sec-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sec-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* =========================================
+   FILTER & TABS
+========================================= */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.search-box {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 8px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.74rem;
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-box:focus { border-color: var(--accent2); }
+.search-box::placeholder { color: var(--muted); }
+
+.tabs-wrapper {
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+}
+.tabs-wrapper::-webkit-scrollbar { display: none; }
+.tabs { display: flex; gap: 4px; width: max-content; }
+.tab {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  padding: 5px 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
   white-space: nowrap;
+  text-transform: uppercase;
 }
 .tab:hover { color: var(--fg); border-color: var(--fg); }
-.tab.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.tab.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
 
-/* Generic Card Styles */
+/* =========================================
+   CARD GRID
+========================================= */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+
 .card-base {
   border: 1px solid var(--border);
   border-radius: 3px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   cursor: pointer;
-  transition: all 0.1s;
-  background: var(--bg);
+  background: var(--card-bg);
   position: relative;
   text-decoration: none;
   color: var(--fg);
+  text-align: left;
   display: block;
+  transition: all 0.15s;
+  overflow: hidden;
 }
-.card-base:hover, .card-base.sel {
-  border-color: var(--fg);
-  background: var(--fg);
-  color: var(--bg);
-}
-.card-base:hover .pc-query, .card-base.sel .pc-query,
-.card-base:hover .pc-cat,   .card-base.sel .pc-cat,
-.card-base:hover .tool-desc, .card-base:hover .tool-tag { color: rgba(128,128,128,0.85); }
-
-.top-badge {
+.card-base::before {
+  content: '';
   position: absolute;
-  top: 8px; right: 10px;
-  font-size: 0.58rem;
-  color: var(--gold);
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background 0.15s;
+}
+.card-base:hover::before, .card-base.sel::before { background: var(--accent); }
+.card-base:hover {
+  border-color: var(--border2);
+  background: var(--bg2);
+  transform: translateX(2px);
+}
+.card-base.sel {
+  border-color: var(--accent);
+  background: var(--bg2);
+}
+
+.pc-name, .tool-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pc-query, .tool-desc {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pc-cat, .tool-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.56rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   opacity: 0.8;
 }
 
-/* Card Typography */
-.pc-name, .tool-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.73rem; font-weight: 600; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pc-query, .tool-desc { font-family: 'IBM Plex Mono', monospace; font-size: 0.61rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
-.pc-cat, .tool-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; opacity: 0.7; }
+.badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  padding: 1px 5px;
+  margin-left: 5px;
+  vertical-align: middle;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.badge-ext { border-color: var(--accent2); color: var(--accent2); }
+.badge-dom { border-color: var(--gold); color: var(--gold); }
 
-.no-results { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--muted); padding: 20px 0; grid-column: 1/-1; text-align: center; }
+/* OSINT tool cards */
+.tool-card {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 12px 14px 10px;
+  background: var(--card-bg);
+  text-decoration: none;
+  color: var(--fg);
+  display: block;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.tool-card::after {
+  content: '↗';
+  position: absolute;
+  top: 10px; right: 12px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.tool-card:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-2px); box-shadow: var(--shadow); }
+.tool-card:hover .tool-desc { color: rgba(128,128,128,0.9); }
+.tool-card:hover::after { color: var(--bg); transform: translate(2px, -2px); }
+.tool-card:hover .tool-tag { color: rgba(128,128,128,0.7); }
 
 /* =========================================
-   5. UTILITIES & FOOTER
+   FOOTER
 ========================================= */
 footer {
-  padding-top: 24px;
+  padding-top: 28px;
   border-top: 1px solid var(--border);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.65rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
   color: var(--muted);
-  line-height: 1.9;
   text-align: center;
+  margin-top: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
 }
-footer a { color: var(--muted); }
+footer a { color: var(--muted); text-decoration: none; transition: color 0.15s; }
+footer a:hover { color: var(--fg); }
 
+/* =========================================
+   TOAST
+========================================= */
 .toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px);
-  background: var(--fg); color: var(--bg);
-  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
-  padding: 10px 20px; border-radius: 4px;
-  opacity: 0; transition: all 0.2s ease; pointer-events: none; z-index: 999;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--fg);
+  color: var(--bg);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  padding: 10px 20px;
+  border-radius: 3px;
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 999;
+  letter-spacing: 0.05em;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.badge {
-  font-size: 0.55rem; color: var(--muted);
-  border: 1px solid var(--border); border-radius: 2px;
-  padding: 1px 4px; margin-left: 6px;
-  vertical-align: middle; font-family: 'IBM Plex Mono', monospace;
+/* =========================================
+   NO RESULTS
+========================================= */
+.no-results {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  padding: 40px 0;
+  grid-column: 1 / -1;
 }
 
-@media (max-width: 520px) {
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 700px) {
+  body { padding: 0 14px 60px; }
+  .dash-grid { grid-template-columns: 1fr; }
   .grid-layout { grid-template-columns: 1fr 1fr; }
-  header { flex-direction: column; align-items: flex-start; }
+  .dash-stats { gap: 16px; flex-wrap: wrap; }
+  .action-row { flex-direction: column; }
+  .btn-primary, .btn-secondary { justify-content: center; }
+  .dash-hero h1 { font-size: 2rem; }
 }
+
+@media (max-width: 500px) {
+  .grid-layout { grid-template-columns: 1fr; }
+}
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* =========================================
+   SELECTION
+========================================= */
+::selection { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>
+<canvas id="bg-canvas"></canvas>
 <div class="wrap">
 
   <header>
-    <div class="wordmark">Dark<span>Dork</span></div>
+    <div class="header-left">
+      <div class="wordmark" onclick="switchView('dashboard')">
+        <span class="wordmark-dark">Dark</span><span class="wordmark-light">Dork</span>
+      </div>
+      <button class="btn-back" id="backBtn" onclick="switchView('dashboard')">← back</button>
+    </div>
     <div class="header-right">
-      <div class="header-sub">google dork builder & osint toolkit</div>
-      <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode" onclick="toggleTheme()">◕ dark</button>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">◐ light</button>
     </div>
   </header>
 
-  <div class="control-panel">
+  <!-- ===== DASHBOARD ===== -->
+  <main id="view-dashboard" class="view active">
+    <div class="dash-hero">
+      <h1>Recon &amp;<br><em>Dork</em> Toolkit</h1>
+      <div class="dash-sub">authorized security research only</div>
+    </div>
+
+    <div class="dash-grid">
+      <button class="dash-card" onclick="switchView('dorking')">
+        <div class="dash-card-num">01</div>
+        <div class="dash-title">Google Dorking</div>
+        <div class="dash-desc">Query builder for exposed files, credentials, admin panels, and vulnerabilities.</div>
+        <div class="dash-card-foot">
+          <span class="dash-tag">dorks</span>
+          <span class="dash-arrow">↗</span>
+        </div>
+      </button>
+
+      <button class="dash-card" onclick="switchView('bugbounty')">
+        <div class="dash-card-num">02</div>
+        <div class="dash-title">Bug Bounty Search</div>
+        <div class="dash-desc">Automated recon queries for Wayback, crt.sh, GitHub, subdomains & more.</div>
+        <div class="dash-card-foot">
+          <span class="dash-tag">recon</span>
+          <span class="dash-arrow">↗</span>
+        </div>
+      </button>
+
+      <button class="dash-card" onclick="switchView('osint')">
+        <div class="dash-card-num">03</div>
+        <div class="dash-title">OSINT Toolkit</div>
+        <div class="dash-desc">Curated library of 20+ external intelligence platforms by use case.</div>
+        <div class="dash-card-foot">
+          <span class="dash-tag">intel</span>
+          <span class="dash-arrow">↗</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="dash-stats">
+      <div class="stat-item">
+        <span class="stat-num" id="stat-dorks">0</span>
+        <span class="stat-lbl">Dork Presets</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-bb">0</span>
+        <span class="stat-lbl">BB Queries</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-osint">0</span>
+        <span class="stat-lbl">OSINT Tools</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== SHARED CONTROL PANEL ===== -->
+  <div class="control-panel view" id="shared-panel">
     <div class="site-row">
       <span class="site-prefix">site:</span>
-      <input class="site-input" id="siteInput" type="text"
-        placeholder="target domain (optional) -- e.g. example.com"
-        aria-label="Target domain"
-        oninput="buildPreview()">
-      <button class="site-clear" aria-label="Clear domain" onclick="document.getElementById('siteInput').value='';buildPreview();" title="clear">×</button>
+      <input class="site-input" id="siteInput" type="text" placeholder="target domain — e.g. example.com" oninput="buildPreview()">
+      <button class="btn-clear" onclick="document.getElementById('siteInput').value='';buildPreview();" title="Clear">×</button>
     </div>
-
-    <div class="query-box" id="preview" aria-live="polite">
-      <span class="ph">← pick a dork below — optionally enter a target domain above</span>
-    </div>
-
-    <div class="actions">
-      <button class="btn-base" id="searchBtn" onclick="return doSearch()">↗ search google</button>
-      <button class="btn-base" onclick="copyQ()">⎈ copy query</button>
-      <button class="btn-base btn-muted" onclick="clearAll()">× clear</button>
+    <div class="query-box" id="preview"><span class="ph">← select a preset below to build query</span></div>
+    <div class="action-row">
+      <button class="btn-primary" id="searchBtn" onclick="return doSearch()">↗ Search Google</button>
+      <button class="btn-secondary" onclick="copyQ()">⎈ Copy Query</button>
     </div>
   </div>
 
-  <main>
-    <section id="top-dorks-section">
-      <div class="sec-label">
-        <span>★ top dorks — most used</span>
-      </div>
-      <div class="grid-layout" id="topGrid"></div>
-    </section>
+  <!-- ===== DORKING VIEW ===== -->
+  <main id="view-dorking" class="view">
+    <div class="sec-label">Google Dorks</div>
+    <div class="filter-row">
+      <input class="search-box" type="search" id="dorkFilter" placeholder="Filter dorks..." oninput="renderDorks('dorking')">
+    </div>
+    <nav class="tabs-wrapper"><div class="tabs" id="dorkingTabs"></div></nav>
+    <div class="grid-layout" id="dorkingGrid"></div>
+  </main>
 
-    <section id="all-dorks-section">
-      <div class="sec-label">
-        <span>all dorks</span>
-        <span class="count" id="countLabel"></span>
-      </div>
-      
-      <div class="filter-row">
-        <input class="search-box" type="search" id="filterInput"
-          placeholder="search dorks by name or query..."
-          aria-label="Search dorks"
-          oninput="renderDorks()">
-      </div>
-      
-      <nav class="tabs-wrapper" aria-label="Dork Categories">
-        <div class="tabs" id="dorkTabs"></div>
-      </nav>
+  <!-- ===== BUG BOUNTY VIEW ===== -->
+  <main id="view-bugbounty" class="view">
+    <div class="sec-label">Bug Bounty & Recon</div>
+    <div class="filter-row">
+      <input class="search-box" type="search" id="bbFilter" placeholder="Filter recon queries..." oninput="renderDorks('bugbounty')">
+    </div>
+    <nav class="tabs-wrapper"><div class="tabs" id="bbTabs"></div></nav>
+    <div class="grid-layout" id="bbGrid"></div>
+  </main>
 
-      <div class="grid-layout" id="dorksGrid"></div>
-    </section>
-
-    <hr class="divider">
-
-    <section id="osint-tools-section">
-      <div class="sec-label">
-        <span>⬢ osint tools — external resources</span>
-      </div>
-      
-      <nav class="tabs-wrapper" aria-label="Tool Categories">
-        <div class="tabs" id="toolTabs"></div>
-      </nav>
-      
-      <div class="grid-layout" id="toolsGrid"></div>
-    </section>
+  <!-- ===== OSINT VIEW ===== -->
+  <main id="view-osint" class="view">
+    <div class="sec-label">OSINT Resources</div>
+    <nav class="tabs-wrapper"><div class="tabs" id="toolTabs"></div></nav>
+    <div class="grid-layout" id="toolsGrid"></div>
   </main>
 
   <footer>
-    <p>⚠ for authorized security research & osint only. unauthorized access is illegal.</p>
-    <p>built by <a href="https://0xcgz.github.io" target="_blank" rel="noopener">0xcgz</a></p>
+    <p>for authorized security research & osint only</p>
+    <p>built by <a href="https://0xcgz.github.io" target="_blank">0xcgz</a></p>
   </footer>
-
 </div>
 
-<div class="toast" id="toast" role="alert">copied to clipboard!</div>
+<div class="toast" id="toast">copied!</div>
 
 <script>
-// --- HELPERS ---------------------------------------------------
-function esc(s) {
-  return String(s||'')
-    .replace(/&/g,'&')
-    .replace(/</g,'<')
-    .replace(/>/g,'>')
-    .replace(/"/g,'"');
-}
+// --- STATE ---
+var currentView = 'dashboard';
+var activeTab = { dorking: 'all', bugbounty: 'all', osint: 'all' };
+var selected = null;
 
-function toast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2000);
-}
-
-// --- DARK MODE -------------------------------------------------
-function toggleTheme() {
-  var html = document.documentElement;
-  var dark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', dark ? 'light' : 'dark');
-  document.getElementById('themeBtn').textContent = dark ? '\u25d1 dark' : '\u25d1 light';
-  try { localStorage.setItem('dd-theme', dark ? 'light' : 'dark'); } catch(e){}
-}
-(function(){
-  try {
-    var s = localStorage.getItem('dd-theme') || 'light';
-    document.documentElement.setAttribute('data-theme', s);
-    var b = document.getElementById('themeBtn');
-    if (b) b.textContent = s === 'dark' ? '\u25d1 light' : '\u25d1 dark';
-  } catch(e){}
-})();
-
-// --- DATA ---------------------------------------------
-var TOP = [
-  { name:'Open directories',      q:'intitle:"index of /"',                                     cat:'files'  },
-  { name:'Exposed .env files',    q:'intitle:"index of" ".env"',                                cat:'files'  },
-  { name:'Admin login panels',    q:'inurl:admin intitle:login',                                cat:'login'  },
-  { name:'phpMyAdmin',            q:'intitle:"phpMyAdmin" inurl:phpmyadmin',                    cat:'login'  },
-  { name:'WordPress admin',       q:'inurl:wp-login.php',                                       cat:'login'  },
-  { name:'SQL dumps exposed',     q:'intitle:"index of" ext:sql',                               cat:'files'  },
-  { name:'AWS access keys',       q:'intext:"AKIA" ext:env OR ext:cfg OR ext:yml',              cat:'creds'  },
-  { name:'phpinfo() exposed',     q:'intitle:"phpinfo()" intext:"PHP Version"',                 cat:'vulns'  },
-  { name:'Live webcams',          q:'inurl:view/index.shtml intitle:webcam',                    cat:'iot'    },
-  { name:'Exposed Swagger UI',    q:'intitle:"Swagger UI" inurl:api-docs OR inurl:swagger',     cat:'cloud'  },
-  { name:'MySQL errors',          q:'intext:"mysql_fetch_array()" intext:"SQL syntax"',         cat:'vulns'  },
-  { name:'Private SSH keys',      q:'intitle:"index of" "id_rsa"',                              cat:'files'  },
-];
-
-var DORKS = [
-  // FILES
+// --- DATA ---
+var DORKING_DATA = [
   { name:'Open directories',             cat:'files', q:'intitle:"index of /"' },
   { name:'Exposed .env files',           cat:'files', q:'intitle:"index of" ".env"' },
   { name:'Exposed .git config',          cat:'files', q:'inurl:".git/config" intitle:"index of"' },
@@ -455,25 +832,9 @@ var DORKS = [
   { name:'Backup files (.bak)',          cat:'files', q:'intitle:"index of" ext:bak' },
   { name:'SQL dumps',                    cat:'files', q:'intitle:"index of" ext:sql' },
   { name:'ZIP archives',                 cat:'files', q:'intitle:"index of" ext:zip' },
-  { name:'Log files',                    cat:'files', q:'intitle:"index of" ext:log' },
-  { name:'Database dumps',               cat:'files', q:'intitle:"index of" (ext:sql OR ext:db OR ext:sqlite)' },
   { name:'Docker compose files',         cat:'files', q:'intitle:"index of" "docker-compose.yml"' },
   { name:'Kubernetes configs',           cat:'files', q:'intitle:"index of" "kubeconfig"' },
   { name:'Terraform state files',        cat:'files', q:'intitle:"index of" "terraform.tfstate"' },
-  { name:'Private keys (.pem)',          cat:'files', q:'intitle:"index of" ext:pem' },
-  { name:'Redis dump files',             cat:'files', q:'intitle:"index of" "dump.rdb"' },
-  { name:'web.config exposed',           cat:'files', q:'intitle:"index of" "web.config"' },
-  { name:'application.properties',       cat:'files', q:'intitle:"index of" "application.properties"' },
-  { name:'settings.py exposed',          cat:'files', q:'intitle:"index of" "settings.py"' },
-  { name:'wp-config.php exposed',        cat:'files', q:'intitle:"index of" "wp-config.php"' },
-  { name:'secrets.json exposed',         cat:'files', q:'intitle:"index of" "secrets.json"' },
-  { name:'credentials.json exposed',     cat:'files', q:'intitle:"index of" "credentials.json"' },
-  { name:'Dockerfile exposed',           cat:'files', q:'intitle:"index of" "Dockerfile"' },
-  { name:'.npmrc with auth tokens',      cat:'files', q:'intitle:"index of" ".npmrc"' },
-  { name:'XML config with passwords',    cat:'files', q:'intitle:"index of" ext:xml intext:"password"' },
-  { name:'YAML secrets',                 cat:'files', q:'intitle:"index of" ext:yml intext:"secret"' },
-  { name:'Ansible vault files',          cat:'files', q:'intitle:"index of" "vault.yml"' },
-  // CREDS
   { name:'Passwords in .txt',            cat:'creds', q:'inurl:password ext:txt' },
   { name:'Credentials in logs',          cat:'creds', q:'intext:"password" ext:log' },
   { name:'DB credentials (.env)',        cat:'creds', q:'intext:"DB_PASSWORD" filetype:env' },
@@ -482,545 +843,499 @@ var DORKS = [
   { name:'API keys in .env',             cat:'creds', q:'intext:"API_KEY" filetype:env' },
   { name:'Slack bot tokens',             cat:'creds', q:'intext:"xoxb-" OR intext:"xoxp-" ext:env' },
   { name:'GitHub personal tokens',       cat:'creds', q:'intext:"ghp_" ext:env OR ext:cfg' },
-  { name:'Stripe secret keys',           cat:'creds', q:'intext:"sk_live_" ext:env' },
-  { name:'Stripe publishable keys',      cat:'creds', q:'intext:"pk_live_" ext:js OR ext:env' },
-  { name:'Twilio credentials',           cat:'creds', q:'intext:"TWILIO_AUTH_TOKEN" ext:env' },
-  { name:'Mailgun API keys',             cat:'creds', q:'intext:"MAILGUN_API_KEY" ext:env' },
-  { name:'SendGrid keys',                cat:'creds', q:'intext:"SENDGRID_API_KEY" ext:env' },
-  { name:'Firebase config',              cat:'creds', q:'intext:"firebase" intext:"apiKey" ext:js' },
   { name:'JWT secrets',                  cat:'creds', q:'intext:"JWT_SECRET" ext:env OR ext:cfg' },
-  { name:'OAuth secrets in JSON',        cat:'creds', q:'intext:"client_secret" ext:json OR ext:yml' },
   { name:'Private RSA keys',             cat:'creds', q:'intext:"BEGIN RSA PRIVATE KEY" ext:txt OR ext:pem' },
-  { name:'Heroku API keys',              cat:'creds', q:'intext:"HEROKU_API_KEY" ext:env' },
-  { name:'npm auth tokens',              cat:'creds', q:'intext:"NPM_TOKEN" ext:env' },
-  { name:'Telegram bot tokens',          cat:'creds', q:'intext:"bot" intext:"token" filetype:env' },
-  { name:'PayPal secrets',               cat:'creds', q:'intext:"PAYPAL_SECRET" ext:env' },
-  { name:'Shopify API secrets',          cat:'creds', q:'intext:"SHOPIFY_API_SECRET" ext:env' },
-  { name:'Google OAuth secrets',         cat:'creds', q:'intext:"GOOGLE_CLIENT_SECRET" ext:env' },
-  { name:'Algolia API keys',             cat:'creds', q:'intext:"ALGOLIA_API_KEY" ext:env' },
-  { name:'Cloudinary secrets',           cat:'creds', q:'intext:"CLOUDINARY_URL" ext:env' },
-  { name:'Sentry DSN exposed',           cat:'creds', q:'intext:"SENTRY_DSN" ext:env OR ext:js' },
-  { name:'Azure client secrets',         cat:'creds', q:'intext:"AZURE_CLIENT_SECRET" ext:env' },
-  { name:'GCP service account JSON',     cat:'creds', q:'intext:"private_key_id" intext:"client_email" ext:json' },
-  { name:'Okta API tokens',              cat:'creds', q:'intext:"OKTA_API_TOKEN" ext:env' },
-  { name:'Auth0 secrets',               cat:'creds', q:'intext:"AUTH0_CLIENT_SECRET" ext:env' },
-  { name:'Datadog API keys',             cat:'creds', q:'intext:"DATADOG_API_KEY" ext:env' },
-  { name:'New Relic keys',               cat:'creds', q:'intext:"NEW_RELIC_LICENSE_KEY" ext:env' },
-  // LOGIN
   { name:'Generic admin login',          cat:'login', q:'inurl:admin intitle:login' },
   { name:'phpMyAdmin',                   cat:'login', q:'intitle:"phpMyAdmin" inurl:phpmyadmin' },
   { name:'WordPress admin',              cat:'login', q:'inurl:wp-login.php' },
-  { name:'WordPress dashboard',          cat:'login', q:'inurl:wp-admin intitle:"Dashboard"' },
-  { name:'Joomla admin',                 cat:'login', q:'inurl:administrator/index.php intitle:joomla' },
-  { name:'Drupal admin',                 cat:'login', q:'inurl:user/login intitle:drupal' },
   { name:'cPanel login',                 cat:'login', q:'intitle:"cPanel" inurl:2082 OR inurl:2083' },
-  { name:'Webmin panel',                 cat:'login', q:'intitle:"Webmin" inurl:10000' },
-  { name:'Plesk panel',                  cat:'login', q:'intitle:"Plesk" inurl:8443' },
-  { name:'Django admin',                 cat:'login', q:'inurl:"/admin/" intitle:"Django site admin"' },
+  { name:'Jenkins CI',                   cat:'login', q:'intitle:"Dashboard [Jenkins]"' },
   { name:'Kibana dashboard',             cat:'login', q:'intitle:"Kibana" inurl:5601' },
   { name:'Grafana login',                cat:'login', q:'intitle:"Grafana" inurl:3000' },
-  { name:'Jenkins CI',                   cat:'login', q:'intitle:"Dashboard [Jenkins]"' },
-  { name:'Portainer Docker UI',          cat:'login', q:'intitle:"Portainer" inurl:9000' },
-  { name:'RabbitMQ management',          cat:'login', q:'intitle:"RabbitMQ Management" inurl:15672' },
   { name:'Elasticsearch open',           cat:'login', q:'intitle:"Elasticsearch" inurl:9200' },
-  { name:'Nagios core',                  cat:'login', q:'intitle:"Nagios Core"' },
-  { name:'Zabbix monitoring',            cat:'login', q:'intitle:"Zabbix" inurl:zabbix' },
-  { name:'GitLab login',                 cat:'login', q:'intitle:"GitLab" inurl:users/sign_in' },
-  { name:'Jupyter notebook',             cat:'login', q:'intitle:"Jupyter Notebook" inurl:8888' },
-  { name:'Superset BI',                  cat:'login', q:'intitle:"Superset" inurl:login' },
-  { name:'Metabase BI',                  cat:'login', q:'intitle:"Metabase" inurl:login' },
-  { name:'Airflow dashboard',            cat:'login', q:'intitle:"Airflow" inurl:login' },
-  { name:'Proxmox VE',                   cat:'login', q:'intitle:"Proxmox Virtual Environment" inurl:8006' },
-  { name:'VMware vSphere',               cat:'login', q:'intitle:"VMware vSphere" inurl:login' },
-  { name:'Atlassian Confluence',         cat:'login', q:'inurl:confluence/login intitle:"Log in"' },
-  { name:'Atlassian Jira',              cat:'login', q:'inurl:jira/login intitle:"Log in"' },
-  { name:'Roundcube webmail',            cat:'login', q:'intitle:"Roundcube Webmail" inurl:login' },
-  { name:'Magento admin',                cat:'login', q:'inurl:admin/index.php intitle:"Magento"' },
-  { name:'WHMCS billing',               cat:'login', q:'intitle:"WHMCS" inurl:login' },
-  { name:'Moodle LMS',                   cat:'login', q:'intitle:"Moodle" inurl:login/index.php' },
-  // VULNS
   { name:'MySQL errors',                 cat:'vulns', q:'intext:"mysql_fetch_array()" intext:"SQL syntax"' },
   { name:'PHP fatal errors',             cat:'vulns', q:'intext:"Fatal error:" intext:"on line" ext:php' },
   { name:'Stack traces exposed',         cat:'vulns', q:'intext:"Stack trace:" intext:"Exception"' },
   { name:'Django debug mode',            cat:'vulns', q:'intext:"DEBUG = True" ext:py OR intitle:"Django Debug"' },
   { name:'Laravel whoops page',          cat:'vulns', q:'intitle:"Whoops!" intext:"Laravel"' },
-  { name:'ASP.NET errors',              cat:'vulns', q:'intitle:"ASP.NET" intext:"Exception Details"' },
-  { name:'Directory listing enabled',    cat:'vulns', q:'intitle:"Index of" intext:"Parent Directory"' },
-  { name:'WordPress XML-RPC',            cat:'vulns', q:'inurl:xmlrpc.php intitle:"XML-RPC"' },
   { name:'phpinfo() exposed',            cat:'vulns', q:'intitle:"phpinfo()" intext:"PHP Version"' },
-  { name:'Git HEAD exposed',             cat:'vulns', q:'inurl:"/.git/HEAD"' },
-  { name:'Test / dev API endpoints',     cat:'vulns', q:'inurl:test OR inurl:dev inurl:api -site:github.com' },
   { name:'/etc/passwd exposed',          cat:'vulns', q:'intext:"root:x:0:0:" filetype:txt' },
   { name:'Spring Boot actuator',         cat:'vulns', q:'inurl:actuator/env OR inurl:actuator/dump' },
-  { name:'Apache server-status',         cat:'vulns', q:'intitle:"Apache Status" inurl:server-status' },
-  { name:'Nginx status page',            cat:'vulns', q:'intitle:"Nginx Status" inurl:nginx_status' },
-  { name:'IIS default page',             cat:'vulns', q:'intitle:"IIS Windows Server" OR intitle:"Welcome to IIS"' },
-  { name:'Tomcat manager exposed',       cat:'vulns', q:'intitle:"Apache Tomcat" inurl:manager/html' },
-  { name:'Symfony profiler',             cat:'vulns', q:'inurl:/_profiler/ intitle:"Symfony Profiler"' },
-  { name:'FastAPI /docs exposed',        cat:'vulns', q:'inurl:/docs intitle:"FastAPI"' },
-  { name:'GraphQL playground',           cat:'vulns', q:'inurl:graphql intitle:"GraphQL Playground"' },
-  // IOT
-  { name:'Live webcams',                 cat:'iot',   q:'inurl:view/index.shtml intitle:webcam' },
-  { name:'IP camera live feeds',         cat:'iot',   q:'inurl:"/view.shtml" intitle:"Live View"' },
-  { name:'Axis IP cameras',              cat:'iot',   q:'intitle:"AXIS" inurl:view/view.shtml' },
-  { name:'Hikvision cameras',            cat:'iot',   q:'inurl:"/doc/page/login.asp" intitle:login' },
-  { name:'Dahua camera panels',          cat:'iot',   q:'intitle:"Web Service" inurl:"/RPC2_Login"' },
-  { name:'Netcam live stream',           cat:'iot',   q:'intitle:"NetCam Live Image"' },
-  { name:'DVR / NVR panels',             cat:'iot',   q:'intitle:"DVR login" OR intitle:"NVR login"' },
-  { name:'Printer admin pages',          cat:'iot',   q:'intitle:"HP LaserJet" OR intitle:"Xerox" inurl:admin' },
-  { name:'Cisco router config',          cat:'iot',   q:'intitle:"Cisco" inurl:"/exec/show/config"' },
-  { name:'Mikrotik RouterOS',            cat:'iot',   q:'intitle:"RouterOS" inurl:8291' },
-  { name:'SCADA systems',                cat:'iot',   q:'intitle:"SCADA" inurl:login' },
-  { name:'Industrial HMI panels',        cat:'iot',   q:'intitle:"HMI" inurl:login OR intitle:"ICS"' },
-  { name:'VoIP / FreePBX panels',        cat:'iot',   q:'intitle:"FreePBX" inurl:admin OR intitle:"Asterisk"' },
-  { name:'Network attached storage',     cat:'iot',   q:'intitle:"QNAP" OR intitle:"Synology" inurl:login' },
-  { name:'Ubiquiti network devices',     cat:'iot',   q:'intitle:"UniFi" inurl:login OR intitle:"airOS"' },
-  { name:'Home Assistant',               cat:'iot',   q:'intitle:"Home Assistant" inurl:login' },
-  { name:'Plex media server',            cat:'iot',   q:'intitle:"Plex" inurl:32400/web' },
-  // DOCS
-  { name:'Exposed Excel sheets',         cat:'docs',  q:'filetype:xls intext:"confidential"' },
-  { name:'HR payroll data',              cat:'docs',  q:'filetype:xls intext:"salary" OR intext:"payroll"' },
-  { name:'Internal Word docs',           cat:'docs',  q:'filetype:docx intext:"internal use only"' },
-  { name:'Sensitive PDFs',               cat:'docs',  q:'filetype:pdf intext:"confidential" OR intext:"not for distribution"' },
-  { name:'Employee directories',         cat:'docs',  q:'filetype:xls intext:"employee" intext:"email"' },
-  { name:'Financial reports',            cat:'docs',  q:'filetype:pdf intitle:"financial report" OR intitle:"annual report"' },
-  { name:'Pentest reports',              cat:'docs',  q:'filetype:pdf intext:"penetration test" intext:"findings"' },
-  { name:'NDA contracts',                cat:'docs',  q:'filetype:pdf intext:"non-disclosure" OR intext:"NDA"' },
-  { name:'Medical records',              cat:'docs',  q:'filetype:pdf intext:"patient" intext:"diagnosis"' },
-  { name:'Investor pitch decks',         cat:'docs',  q:'filetype:pdf intitle:"pitch deck" OR intitle:"investor presentation"' },
-  { name:'Budget spreadsheets',          cat:'docs',  q:'filetype:xls intext:"budget" intext:"Q1" OR intext:"Q2"' },
-  { name:'Source code archives',         cat:'docs',  q:'filetype:zip OR filetype:tar intext:"src" intitle:"index of"' },
-  // CLOUD
   { name:'S3 bucket listing',            cat:'cloud', q:'site:s3.amazonaws.com intitle:"index of"' },
   { name:'Azure blob public',            cat:'cloud', q:'site:blob.core.windows.net intitle:"index of"' },
-  { name:'GCP storage public',           cat:'cloud', q:'site:storage.googleapis.com intitle:"index of"' },
-  { name:'Heroku exposed apps',          cat:'cloud', q:'site:herokuapp.com inurl:admin OR inurl:login' },
-  { name:'Vercel deployments',           cat:'cloud', q:'site:vercel.app inurl:admin' },
-  { name:'Netlify exposed sites',        cat:'cloud', q:'site:netlify.app inurl:admin OR inurl:login' },
-  { name:'Firebase rules exposed',       cat:'cloud', q:'site:firebaseio.com intext:"rules"' },
-  { name:'Exposed Swagger UI',           cat:'cloud', q:'intitle:"Swagger UI" inurl:api-docs OR inurl:swagger' },
-  { name:'GitHub RSA private keys',      cat:'cloud', q:'site:github.com intext:"BEGIN RSA PRIVATE KEY"' },
-  { name:'DigitalOcean spaces',          cat:'cloud', q:'site:digitaloceanspaces.com intitle:"index of"' },
-  { name:'Cloudflare Workers',           cat:'cloud', q:'site:workers.dev inurl:api' },
-  // OSINT
+  { name:'Live webcams',                 cat:'iot',   q:'inurl:view/index.shtml intitle:webcam' },
+  { name:'Hikvision cameras',            cat:'iot',   q:'inurl:"/doc/page/login.asp" intitle:login' },
   { name:'Email lists in .txt',          cat:'osint', q:'filetype:txt intext:"@gmail.com" OR intext:"@yahoo.com"' },
-  { name:'Phone number lists',           cat:'osint', q:'filetype:xls intext:"phone" intext:"email"' },
   { name:'Customer CSV databases',       cat:'osint', q:'filetype:csv intext:"email" intext:"password"' },
-  { name:'Staff directories',            cat:'osint', q:'intitle:"staff directory" OR intitle:"employee directory"' },
-  { name:'Pastebin credential dumps',    cat:'osint', q:'site:pastebin.com intext:"password" intext:"username"' },
   { name:'VPN config files',             cat:'osint', q:'filetype:ovpn OR filetype:conf intext:"remote"' },
-  { name:'Exposed contact lists',        cat:'osint', q:'filetype:csv intext:"first name" intext:"last name" intext:"email"' },
-  { name:'User DB SQL exports',          cat:'osint', q:'filetype:sql intext:"INSERT INTO" intext:"users"' },
-  { name:'Exposed Trello boards',        cat:'osint', q:'site:trello.com intext:"password" OR intext:"credentials"' },
-  { name:'Google Docs leaks',            cat:'osint', q:'site:docs.google.com intext:"password" OR intext:"confidential"' },
-  { name:'Notion pages exposed',         cat:'osint', q:'site:notion.so intext:"password" OR intext:"internal"' },
-  { name:'Confluence spaces exposed',    cat:'osint', q:'site:atlassian.net intext:"password" OR intext:"credentials"' },
-  // RECON (google)
-  { name:'Directory listing vulns',      cat:'recon', q:'intitle:index.of' },
-  { name:'Config files exposed',         cat:'recon', q:'ext:xml | ext:conf | ext:cnf | ext:reg | ext:cfg | ext:txt | ext:ini' },
-  { name:'Database file extensions',     cat:'recon', q:'ext:sql | ext:dbf | ext:mdb' },
-  { name:'Log files exposed',            cat:'recon', q:'ext:log' },
-  { name:'Backup & old files',           cat:'recon', q:'ext:bkf | ext:bkp | ext:bak | ext:old | ext:backup' },
-  { name:'Login pages',                  cat:'recon', q:'inurl:login' },
-  { name:'SQL error messages',           cat:'recon', q:'intext:"sql syntax near" | intext:"syntax error has occurred" | intext:"Warning: mysql_connect()"' },
-  { name:'Exposed documents',            cat:'recon', q:'ext:doc | ext:docx | ext:odt | ext:pdf | ext:rtf | ext:ppt | ext:pptx | ext:csv' },
-  { name:'phpinfo pages',                cat:'recon', q:'ext:php intitle:phpinfo "published by the PHP Group"' },
-  { name:'WordPress paths',              cat:'recon', q:'inurl:wp- | inurl:wp-content | inurl:plugins | inurl:uploads | inurl:themes' },
-  { name:'Backdoors & shells',           cat:'recon', q:'inurl:shell | inurl:backdoor | inurl:wso | inurl:cmd | passwd | boot.ini' },
-  { name:'Install / setup files',        cat:'recon', q:'inurl:readme | inurl:license | inurl:install | inurl:setup | inurl:config' },
-  { name:'Open redirects',               cat:'recon', q:'inurl:redir | inurl:url | inurl:redirect | inurl:return | inurl:src=http | inurl:r=http' },
-  { name:'Apache Struts RCE',            cat:'recon', q:'ext:action | ext:struts | ext:do' },
-  { name:'GeoServer WFS endpoint',       cat:'recon', q:'inurl:"/geoserver/ows?service=wfs"' },
-  { name:'ArcGIS REST services',         cat:'recon', q:'intext:"ArcGIS REST Services Directory" intitle:"Folder: /"' },
-  { name:'Admin portal (.aspx)',         cat:'recon', q:'inurl:/admin.aspx' },
-  { name:'File upload page',             cat:'recon', q:'inurl:uploadimage.php' },
-  { name:'Drupal login page',            cat:'recon', q:'inurl:user intitle:"Drupal" intext:"Log in" -"powered by"' },
-  { name:'SQL injection in URL',         cat:'recon', q:'inurl:"php?sql=select" ext:php' },
-  { name:'Docker-Compose yml file',      cat:'recon', q:'intitle:"index of" "docker-compose.yml"' },
-  { name:'/etc directory exposed',       cat:'recon', q:'intext:"Index of" intext:"/etc"' },
-  { name:'JWKS RSA keys',                cat:'recon', q:'intext:"index of" inurl:jwks-rsa' },
-  { name:'Spring Boot env dump',         cat:'recon', q:'inurl:actuator/env OR inurl:actuator/dump' },
-  // RECON (external -- need domain)
-  { name:'Pastebin entries',             cat:'recon', q:'site:pastebin.com {domain}',            ext:true, engine:'google',       needsDomain:true },
-  { name:'LinkedIn employees',           cat:'recon', q:'site:linkedin.com employees {domain}',  ext:true, engine:'google',       needsDomain:true },
-  { name:'Find subdomains',              cat:'recon', q:'site:*.{domain}',                       ext:true, engine:'google',       needsDomain:true },
-  { name:'Find sub-subdomains',          cat:'recon', q:'site:*.*.{domain}',                     ext:true, engine:'google',       needsDomain:true },
-  { name:'SWF files (Google)',           cat:'recon', q:'+inurl:{domain} +ext:swf',              ext:true, engine:'google',       needsDomain:true },
-  { name:'Search in GitHub',             cat:'recon', ext:true, engine:'github',                            needsDomain:true },
-  { name:'Test CrossDomain.xml',         cat:'recon', ext:true, engine:'crossdomain',                       needsDomain:true },
-  { name:'Check ThreatCrowd',            cat:'recon', ext:true, engine:'threatcrowd',                       needsDomain:true },
-  { name:'Wayback Machine #1',           cat:'recon', ext:true, engine:'wayback1',                          needsDomain:true },
-  { name:'Wayback Machine #2',           cat:'recon', ext:true, engine:'wayback2',                          needsDomain:true },
-  { name:'Certificate Transparency',     cat:'recon', ext:true, engine:'crtsh',                             needsDomain:true },
-  { name:'OpenBugBounty search',         cat:'recon', ext:true, engine:'openbugbounty',                     needsDomain:true },
-  { name:'Search Reddit',                cat:'recon', ext:true, engine:'reddit',                            needsDomain:true },
-  { name:'Censys IPv4',                  cat:'recon', ext:true, engine:'censys_ip',                         needsDomain:true },
-  { name:'Censys Domain',                cat:'recon', ext:true, engine:'censys_domain',                     needsDomain:true },
-  { name:'Censys Certificates',          cat:'recon', ext:true, engine:'censys_cert',                       needsDomain:true },
-  { name:'Search in Shodan',             cat:'recon', ext:true, engine:'shodan',                            needsDomain:true },
+  { name:'Google Docs leaks',            cat:'osint', q:'site:docs.google.com intext:"password" OR intext:"confidential"' }
 ];
 
-var TOOL_CATS = ['all','recon','ip & dns','email','username','breach','network','geo','metadata','darkweb'];
+var BUGBOUNTY_DATA = [
+  { name:'Directory listing vulns', cat:'recon', q:'intitle:index.of' },
+  { name:'Exposed Configuration files', cat:'files', q:'ext:xml | ext:conf | ext:cnf | ext:reg | ext:inf | ext:rdp | ext:cfg | ext:txt | ext:ora | ext:ini' },
+  { name:'Exposed Database files', cat:'files', q:'ext:sql | ext:dbf | ext:mdb' },
+  { name:'Exposed log files', cat:'files', q:'ext:log' },
+  { name:'Backup and old files', cat:'files', q:'ext:bkf | ext:bkp | ext:bak | ext:old | ext:backup' },
+  { name:'Login pages', cat:'recon', q:'inurl:login' },
+  { name:'SQL errors', cat:'vulns', q:'intext:"sql syntax near" | intext:"syntax error has occurred" | intext:"incorrect syntax near" | intext:"unexpected end of SQL command" | intext:"Warning: mysql_connect()" | intext:"Warning: mysql_query()" | intext:"Warning: pg_connect()"' },
+  { name:'Publicly exposed documents', cat:'docs', q:'ext:doc | ext:docx | ext:odt | ext:pdf | ext:rtf | ext:sxw | ext:psw | ext:ppt | ext:pptx | ext:pps | ext:csv' },
+  { name:'phpinfo()', cat:'vulns', q:'ext:php intitle:phpinfo "published by the PHP Group"' },
+  { name:'Find WordPress', cat:'recon', q:'inurl:wp- | inurl:wp-content | inurl:plugins | inurl:uploads | inurl:themes | inurl:download' },
+  { name:'Finding Backdoors', cat:'vulns', q:'inurl:shell | inurl:backdoor | inurl:wso | inurl:cmd | shadow | passwd | boot.ini | inurl:backdoor' },
+  { name:'Install / Setup files', cat:'files', q:'inurl:readme | inurl:license | inurl:install | inurl:setup | inurl:config' },
+  { name:'Open Redirects', cat:'vulns', q:'inurl:redir | inurl:url | inurl:redirect | inurl:return | inurl:src=http | inurl:r=http' },
+  { name:'Apache STRUTS RCE', cat:'vulns', q:'ext:action | ext:struts | ext:do' },
+  { name:'Find Pastebin entries', cat:'recon', q:'site:pastebin.com {domain}', needsDomain:true },
+  { name:'Employees on LINKEDIN', cat:'recon', q:'site:linkedin.com employees {domain}', needsDomain:true },
+  { name:'.htaccess sensitive files', cat:'files', q:'inurl:"/phpinfo.php" | inurl:".htaccess" | inurl:"/.git" {domain} -github', needsDomain:true },
+  { name:'Find Subdomains', cat:'recon', q:'site:*.{domain}', needsDomain:true },
+  { name:'Find Sub-Subdomains', cat:'recon', q:'site:*.*.{domain}', needsDomain:true },
+  { name:'Find WordPress #2', cat:'recon', q:'inurl:wp-content | inurl:wp-includes {domain}', needsDomain:true },
+  { name:'Search in GITHUB', cat:'external', ext:true, engine:'github', needsDomain:true },
+  { name:'Test CrossDomain', cat:'external', ext:true, engine:'crossdomain', needsDomain:true },
+  { name:'Check in ThreatCrowd', cat:'external', ext:true, engine:'threatcrowd', needsDomain:true },
+  { name:'Find SWF', cat:'recon', q:'+inurl:{domain} +ext:swf', needsDomain:true },
+  { name:'Find MIME-SWF', cat:'external', ext:true, engine:'yandex_swf', needsDomain:true },
+  { name:'Find SWF links in the past', cat:'external', ext:true, engine:'wayback_swf1', needsDomain:true },
+  { name:'Find MIME-SWF links in the past', cat:'external', ext:true, engine:'wayback_swf2', needsDomain:true },
+  { name:'Search in Web Archive #1', cat:'external', ext:true, engine:'wayback1', needsDomain:true },
+  { name:'Search in Web Archive #2', cat:'external', ext:true, engine:'wayback2', needsDomain:true },
+  { name:'Certificate Transparency', cat:'external', ext:true, engine:'crtsh', needsDomain:true },
+  { name:'Search OpenBugBounty', cat:'external', ext:true, engine:'openbugbounty', needsDomain:true },
+  { name:'Search in Reddit', cat:'external', ext:true, engine:'reddit', needsDomain:true },
+  { name:'Search WP Config Backup', cat:'external', ext:true, engine:'wayback_wp', needsDomain:true },
+  { name:'Search in Censys (IPv4)', cat:'external', ext:true, engine:'censys_ip', needsDomain:true },
+  { name:'Search in Censys (Domain)', cat:'external', ext:true, engine:'censys_domain', needsDomain:true },
+  { name:'Search in Censys (Certificates)', cat:'external', ext:true, engine:'censys_cert', needsDomain:true },
+  { name:'Search in SHODAN', cat:'external', ext:true, engine:'shodan', needsDomain:true },
+  { name:'Vulnerable Servers (GeoServer)', cat:'vulns', q:'inurl:"/geoserver/ows?service=wfs"' },
+  { name:'ArcGIS REST Services Directory', cat:'recon', q:'intext:"ArcGIS REST Services Directory" intitle:"Folder: /"' },
+  { name:'wp-content Juicy Info', cat:'files', q:'inurl:/wp-content/uploads/wpo_wcpdf' },
+  { name:'main.yml file', cat:'files', q:'intitle:"index of "main.yml"' },
+  { name:'Admin Portal', cat:'login', q:'inurl:/admin.aspx' },
+  { name:'File Upload', cat:'recon', q:'inurl:uploadimage.php' },
+  { name:'Vulnerable Wordpress Plugin', cat:'vulns', q:'inurl:*/wp-content/plugins/contact-form-7/' },
+  { name:'Sensitive File (conf.php)', cat:'files', q:'intitle:index.of conf.php' },
+  { name:'Sharing API Info', cat:'files', q:'intitle:"Sharing API Info"' },
+  { name:'Sensitive Admin Backup', cat:'files', q:'intitle:"Index of" inurl:/backup/ "admin.zip"' },
+  { name:'Github API', cat:'files', q:'intitle:"index of" github-api' },
+  { name:'Drupal Login', cat:'login', q:'inurl:user intitle:"Drupal" intext:"Log in" -"powered by"' },
+  { name:'Joomla Database/', cat:'files', q:'inurl: /libraries/joomla/database/' },
+  { name:'Sql File Injection', cat:'vulns', q:'inurl:"php?sql=select" ext:php' },
+  { name:'Remote procedure call protocol', cat:'recon', q:'intext:"index of" inurl:json-rpc' },
+  { name:'Sensitive File Download', cat:'files', q:'intitle:"index of" "download.php?file="' },
+  { name:'Wordpress Backup', cat:'files', q:'inurl:"wp-content" intitle:"index.of" intext:backup' },
+  { name:'Mysql file', cat:'files', q:'intitle:index.of conf.mysql' },
+  { name:'Sensitive File (users/admin)', cat:'files', q:'intitle:"index of" "users.yml" | "admin.yml" | "config.yml"' },
+  { name:'Docker-Compose yml file', cat:'files', q:'intitle:"index of" "docker-compose.yml"' },
+  { name:'Sensitive File (pom.xml)', cat:'files', q:'intext:pom.xml intitle:"index of /"' },
+  { name:'Sensitive File (/etc)', cat:'files', q:'intext:"Index of" intext:"/etc"' },
+  { name:'SQL Installs/Databases', cat:'files', q:'"sql" "parent" intitle:index.of -injection' }
+];
 
-var TOOLS = [
+var OSINT_TOOLS = [
   {name:'Shodan',            url:'https://www.shodan.io',                       desc:'internet device search engine',        cat:'recon'},
   {name:'Censys',            url:'https://censys.io',                           desc:'attack surface search engine',         cat:'recon'},
   {name:'GreyNoise',         url:'https://www.greynoise.io',                    desc:'internet background noise intel',      cat:'recon'},
-  {name:'FOFA',              url:'https://fofa.info',                           desc:'cyberspace search engine (CN)',        cat:'recon'},
-  {name:'ZoomEye',           url:'https://www.zoomeye.org',                     desc:'cyberspace search engine',             cat:'recon'},
-  {name:'BinaryEdge',        url:'https://app.binaryedge.io',                  desc:'real-time threat intelligence',        cat:'recon'},
-  {name:'Onyphe',            url:'https://www.onyphe.io',                       desc:'cyber defense search engine',          cat:'recon'},
-  {name:'PublicWWW',         url:'https://publicwww.com',                       desc:'source code search engine',            cat:'recon'},
-  {name:'Netlas',            url:'https://app.netlas.io',                       desc:'internet intelligence platform',       cat:'recon'},
   {name:'LeakIX',            url:'https://leakix.net',                          desc:'publicly indexed leaks & services',    cat:'recon'},
   {name:'Wayback Machine',   url:'https://web.archive.org',                     desc:'historical web snapshots',             cat:'recon'},
-  {name:'URLScan.io',        url:'https://urlscan.io',                          desc:'website scanner & analyser',           cat:'recon'},
   {name:'VirusTotal',        url:'https://www.virustotal.com',                  desc:'malware & URL scanner',                cat:'recon'},
-  {name:'crt.sh',            url:'https://crt.sh',                              desc:'certificate transparency logs',        cat:'recon'},
-  {name:'FullHunt',          url:'https://fullhunt.io',                         desc:'attack surface management',            cat:'recon'},
-  {name:'IntelligenceX',     url:'https://intelx.io',                           desc:'search engine for leaked data',        cat:'recon'},
-  {name:'Recon.dev',         url:'https://recon.dev',                           desc:'passive subdomain discovery',          cat:'recon'},
-  {name:'Hunter.how',        url:'https://hunter.how',                          desc:'network asset search',                 cat:'recon'},
   {name:'MXToolbox',         url:'https://mxtoolbox.com',                       desc:'DNS & mail server diagnostics',        cat:'ip & dns'},
   {name:'DNSdumpster',       url:'https://dnsdumpster.com',                     desc:'DNS recon & research tool',            cat:'ip & dns'},
   {name:'ViewDNS.info',      url:'https://viewdns.info',                        desc:'reverse IP, whois, DNS tools',         cat:'ip & dns'},
   {name:'SecurityTrails',    url:'https://securitytrails.com',                  desc:'DNS history & attack surface',         cat:'ip & dns'},
-  {name:'IPinfo.io',         url:'https://ipinfo.io',                           desc:'IP geolocation & ownership',           cat:'ip & dns'},
-  {name:'AbuseIPDB',         url:'https://www.abuseipdb.com',                   desc:'IP abuse reports database',            cat:'ip & dns'},
-  {name:'Robtex',            url:'https://www.robtex.com',                      desc:'IP & DNS routing research',            cat:'ip & dns'},
-  {name:'HackerTarget',      url:'https://hackertarget.com',                    desc:'DNS & network recon tools',            cat:'ip & dns'},
-  {name:'DNSlytics',         url:'https://dnslytics.com',                       desc:'reverse DNS & IP analytics',           cat:'ip & dns'},
-  {name:'BGP.he.net',        url:'https://bgp.he.net',                          desc:'BGP / ASN / routing data',             cat:'ip & dns'},
-  {name:'Whois DomainTools', url:'https://whois.domaintools.com',               desc:'whois lookup & history',               cat:'ip & dns'},
-  {name:'Pulsedive',         url:'https://pulsedive.com',                       desc:'threat intelligence feeds',            cat:'ip & dns'},
-  {name:'PassiveDNS',        url:'https://passivedns.mnemonic.no',              desc:'passive DNS lookup database',          cat:'ip & dns'},
-  {name:'RiskIQ Community',  url:'https://community.riskiq.com',                desc:'passivetotal DNS/whois research',      cat:'ip & dns'},
   {name:'Hunter.io',         url:'https://hunter.io',                           desc:'find email addresses by domain',       cat:'email'},
-  {name:'Phonebook.cz',      url:'https://phonebook.cz',                        desc:'email, domain, URL intelligence',      cat:'email'},
-  {name:'VoilaNorbert',      url:'https://www.voilanorbert.com',                desc:"find anyone's email address",          cat:'email'},
-  {name:'EmailRep.io',       url:'https://emailrep.io',                         desc:'email address reputation check',       cat:'email'},
   {name:'HaveIBeenPwned',    url:'https://haveibeenpwned.com',                  desc:'email breach check',                   cat:'email'},
-  {name:'Snov.io',           url:'https://snov.io/email-finder',                desc:'email finder & verifier',              cat:'email'},
-  {name:'Email-format.com',  url:'https://www.email-format.com',                desc:'company email format lookup',          cat:'email'},
-  {name:'Skymem',            url:'https://www.skymem.info',                     desc:'email search from the web',            cat:'email'},
   {name:'WhatsMyName',       url:'https://whatsmyname.app',                     desc:'username enumeration tool',            cat:'username'},
-  {name:'Sherlock (GitHub)', url:'https://github.com/sherlock-project/sherlock',desc:'username across social networks',      cat:'username'},
-  {name:'Namechk',           url:'https://namechk.com',                         desc:'check username availability',          cat:'username'},
-  {name:'KnowEm',            url:'https://knowem.com',                           desc:'username on 500+ networks',            cat:'username'},
-  {name:'Usersearch.org',    url:'https://usersearch.org',                      desc:'find profiles by username',            cat:'username'},
-  {name:'IDCrawl',           url:'https://www.idcrawl.com',                     desc:'free people search engine',            cat:'username'},
-  {name:'Spokeo',            url:'https://www.spokeo.com',                       desc:'people & social profile lookup',       cat:'username'},
-  {name:'Social-searcher',   url:'https://www.social-searcher.com',             desc:'social media search engine',           cat:'username'},
-  {name:'Pipl',              url:'https://pipl.com',                             desc:'deep people search engine',            cat:'username'},
-  {name:'HaveIBeenPwned',    url:'https://haveibeenpwned.com',                  desc:'email & password breach check',        cat:'breach'},
-  {name:'DeHashed',          url:'https://dehashed.com',                         desc:'leaked database search',               cat:'breach'},
-  {name:'LeakCheck',         url:'https://leakcheck.io',                         desc:'data breach search engine',            cat:'breach'},
-  {name:'Snusbase',          url:'https://snusbase.com',                         desc:'data breach & leak lookup',            cat:'breach'},
-  {name:'BreachDirectory',   url:'https://breachdirectory.org',                 desc:'free breach & credential lookup',      cat:'breach'},
-  {name:'Leak-Lookup',       url:'https://leak-lookup.com',                     desc:'data breach lookup service',           cat:'breach'},
-  {name:'PSBDMP',            url:'https://psbdmp.ws',                            desc:'pastebin dump search',                 cat:'breach'},
-  {name:'GhostProject',      url:'https://ghostproject.fr',                     desc:'email & password search',              cat:'breach'},
-  {name:'Spycloud',          url:'https://spycloud.com',                         desc:'employee credential exposure',         cat:'breach'},
+  {name:'DeHashed',          url:'https://dehashed.com',                        desc:'leaked database search',               cat:'breach'},
   {name:'Exploit-DB',        url:'https://www.exploit-db.com',                  desc:'public exploit archive',               cat:'network'},
-  {name:'NIST NVD',          url:'https://nvd.nist.gov',                         desc:'national vulnerability database',      cat:'network'},
-  {name:'CVEdetails',        url:'https://www.cvedetails.com',                  desc:'CVE security vulnerability data',      cat:'network'},
-  {name:'Vulners',           url:'https://vulners.com',                          desc:'security database & scanner',          cat:'network'},
-  {name:'Sploitus',          url:'https://sploitus.com',                         desc:'exploit & tool search',                cat:'network'},
-  {name:'AttackerKB',        url:'https://attackerkb.com',                       desc:'vulnerability assessments',            cat:'network'},
-  {name:'ThreatCrowd',       url:'https://www.threatcrowd.org',                 desc:'threat intelligence search',           cat:'network'},
-  {name:'OTX AlienVault',    url:'https://otx.alienvault.com',                  desc:'open threat exchange platform',        cat:'network'},
-  {name:'MalwareBazaar',     url:'https://bazaar.abuse.ch',                     desc:'malware sample database',              cat:'network'},
-  {name:'Shodan Exploits',   url:'https://exploits.shodan.io',                  desc:'search known exploits',                cat:'network'},
-  {name:'Packet Storm',      url:'https://packetstormsecurity.com',             desc:'security tools & exploits',            cat:'network'},
-  {name:'OpenBugBounty',     url:'https://www.openbugbounty.org',               desc:'coordinated vuln disclosure',          cat:'network'},
-  {name:'HackerOne',         url:'https://hackerone.com/hacktivity',            desc:'public bug bounty disclosures',        cat:'network'},
+  {name:'NIST NVD',          url:'https://nvd.nist.gov',                        desc:'national vulnerability database',      cat:'network'},
   {name:'Google Maps',       url:'https://maps.google.com',                     desc:'satellite & street view imagery',      cat:'geo'},
-  {name:'Bing Maps',         url:'https://www.bing.com/maps',                   desc:'satellite imagery & aerial view',      cat:'geo'},
-  {name:'Yandex Maps',       url:'https://yandex.com/maps',                     desc:'street-level imagery (Russia/EU)',     cat:'geo'},
-  {name:'Wikimapia',         url:'https://wikimapia.org',                        desc:'crowdsourced mapping project',         cat:'geo'},
-  {name:'SunCalc',           url:'https://www.suncalc.org',                     desc:'sun position & shadow analysis',       cat:'geo'},
-  {name:'Sentinel Hub',      url:'https://www.sentinel-hub.com',                desc:'satellite imagery platform',           cat:'geo'},
-  {name:'OpenStreetMap',     url:'https://www.openstreetmap.org',               desc:'open source world map',                cat:'geo'},
-  {name:'Overpass Turbo',    url:'https://overpass-turbo.eu',                   desc:'OSM data query & export',              cat:'geo'},
-  {name:'FlightAware',       url:'https://flightaware.com',                     desc:'live flight tracking',                 cat:'geo'},
-  {name:'MarineTraffic',     url:'https://www.marinetraffic.com',               desc:'live ship tracking',                   cat:'geo'},
-  {name:'RadarBox',          url:'https://www.radarbox.com',                    desc:'aircraft tracking & ADS-B',            cat:'geo'},
-  {name:'Mapillary',         url:'https://www.mapillary.com',                   desc:'crowdsourced street-level photos',     cat:'geo'},
-  {name:'ExifTool online',   url:'https://exif.tools',                           desc:'image metadata viewer',                cat:'metadata'},
-  {name:"Jeffrey's Exif",    url:'https://exif.regex.info/exif.cgi',            desc:'online EXIF data viewer',              cat:'metadata'},
-  {name:'Metadata2go',       url:'https://www.metadata2go.com',                 desc:'file metadata extractor',              cat:'metadata'},
-  {name:'Forensically',      url:'https://29a.ch/photo-forensics',              desc:'image forensics & analysis',           cat:'metadata'},
-  {name:'FotoForensics',     url:'https://fotoforensics.com',                   desc:'ELA & image analysis',                 cat:'metadata'},
-  {name:'TinEye',            url:'https://tineye.com',                           desc:'reverse image search',                 cat:'metadata'},
-  {name:'Google Images',     url:'https://images.google.com',                   desc:'reverse image & visual search',        cat:'metadata'},
-  {name:'Yandex Images',     url:'https://yandex.com/images',                   desc:'powerful reverse image search',        cat:'metadata'},
-  {name:'PimEyes',           url:'https://pimeyes.com',                          desc:'face recognition search engine',       cat:'metadata'},
-  {name:'Ghiro',             url:'https://www.getghiro.org',                    desc:'automated image forensics',            cat:'metadata'},
-  {name:'Ahmia',             url:'https://ahmia.fi',                             desc:'.onion search engine (clearweb)',      cat:'darkweb'},
-  {name:'DarkSearch',        url:'https://darksearch.io',                        desc:'real-time darkweb search',             cat:'darkweb'},
-  {name:'OnionSearch',       url:'https://onionsearchengine.com',               desc:'tor search aggregator',                cat:'darkweb'},
-  {name:'OnionLand Search',  url:'https://onionlandsearchengine.com',           desc:'dark web search engine',               cat:'darkweb'},
-  {name:'IntelligenceX TOR', url:'https://intelx.io/?did=7',                    desc:'tor & i2p content search',             cat:'darkweb'},
-  {name:'Dark.fail',         url:'https://dark.fail',                            desc:'verified .onion link directory',       cat:'darkweb'},
-  {name:'Maltego',           url:'https://www.maltego.com',                     desc:'visual link analysis platform',        cat:'darkweb'},
-  {name:'Hunchly',           url:'https://www.hunch.ly',                        desc:'web capture & investigation tool',     cat:'darkweb'},
+  {name:'ExifTool online',   url:'https://exif.tools',                          desc:'image metadata viewer',                cat:'metadata'},
+  {name:'TinEye',            url:'https://tineye.com',                          desc:'reverse image search',                 cat:'metadata'},
+  {name:'DarkSearch',        url:'https://darksearch.io',                       desc:'real-time darkweb search',             cat:'darkweb'}
 ];
 
-// --- STATE -----------------------------------------------------
-var selected     = null; // {pool:'top'|'dork', idx:N}
-var activeDorkCat = 'all';
-var activeToolCat = 'all';
-
-// --- EXTERNAL URL RESOLVER -------------------------------------
-function resolveExt(dork, domain) {
-  var d = domain || '';
-  var e = dork.engine || '';
-  if (e === 'github')        return 'https://github.com/search?q=' + encodeURIComponent('"*.' + d + '"') + '&type=host';
-  if (e === 'crossdomain')   return 'http://' + d + '/crossdomain.xml';
-  if (e === 'threatcrowd')   return 'http://threatcrowd.org/domain.php?domain=' + d;
-  if (e === 'wayback1')      return 'https://web.archive.org/web/*/(' + encodeURIComponent('.' + d) + ')';
-  if (e === 'wayback2')      return 'https://web.archive.org/web/*/' + encodeURIComponent(d) + '/*';
-  if (e === 'crtsh')         return 'https://crt.sh/?q=%25.' + d;
-  if (e === 'openbugbounty') return 'https://www.openbugbounty.org/search/?search=' + encodeURIComponent(d) + '&type=host';
-  if (e === 'reddit')        return 'https://www.reddit.com/search/?q=' + encodeURIComponent(d) + '&source=recent';
-  if (e === 'censys_ip')     return 'https://censys.io/ipv4?q=' + d;
-  if (e === 'censys_domain') return 'https://censys.io/domain?q=' + d;
-  if (e === 'censys_cert')   return 'https://censys.io/certificates?q=' + d;
-  if (e === 'shodan')        return 'https://www.shodan.io/search?query=' + d;
-  return null;
+// --- UTILS ---
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g, function(m){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+  });
 }
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2000);
+}
+
+function getActiveData() { return currentView === 'dorking' ? DORKING_DATA : BUGBOUNTY_DATA; }
+function getSelectedDork() { if(selected === null) return null; return getActiveData()[selected]; }
 
 function engineLabel(e) {
   var m = {
     github:'github.com', crossdomain:'crossdomain.xml', threatcrowd:'threatcrowd.org',
+    yandex_swf:'yandex.com', wayback_swf1:'web.archive.org', wayback_swf2:'web.archive.org',
     wayback1:'web.archive.org', wayback2:'web.archive.org', crtsh:'crt.sh',
-    openbugbounty:'openbugbounty.org', reddit:'reddit.com', censys_ip:'censys.io',
-    censys_domain:'censys.io', censys_cert:'censys.io', shodan:'shodan.io'
+    openbugbounty:'openbugbounty.org', reddit:'reddit.com', wayback_wp:'archive.org',
+    censys_ip:'censys.io', censys_domain:'censys.io', censys_cert:'censys.io', shodan:'shodan.io'
   };
   return m[e] || e;
 }
 
-function isExt(dork) { return !!(dork && dork.ext && dork.engine && dork.engine !== 'google'); }
-
-// --- GET DORK FROM SELECTION -----------------------------------
-function getSelectedDork() {
-  if (!selected) return null;
-  return selected.pool === 'top' ? TOP[selected.idx] : DORKS[selected.idx];
+function resolveExt(dork, d) {
+  var e = dork.engine;
+  if(e==='github') return 'https://github.com/search?q=' + encodeURIComponent('"*.'+d+'"') + '&type=host';
+  if(e==='crossdomain') return 'http://' + d + '/crossdomain.xml';
+  if(e==='threatcrowd') return 'http://threatcrowd.org/domain.php?domain=' + d;
+  if(e==='yandex_swf') return 'https://yandex.com/search/?text=' + encodeURIComponent('site:' + d + ' mime:swf');
+  if(e==='wayback_swf1') return 'https://web.archive.org/cdx/search?url=' + encodeURIComponent(d) + '/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=urlkey:.*swf&limit=100000';
+  if(e==='wayback_swf2') return 'https://web.archive.org/cdx/search?url=' + encodeURIComponent(d) + '/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=mimetype:application/x-shockwave-flash&limit=100000';
+  if(e==='wayback1') return 'https://web.archive.org/web/*/(' + encodeURIComponent('.' + d) + ')';
+  if(e==='wayback2') return 'https://web.archive.org/web/*/' + encodeURIComponent(d) + '/*';
+  if(e==='crtsh') return 'https://crt.sh/?q=%25.' + d;
+  if(e==='openbugbounty') return 'https://www.openbugbounty.org/search/?search=' + encodeURIComponent(d) + '&type=host';
+  if(e==='reddit') return 'https://www.reddit.com/search/?q=' + encodeURIComponent(d) + '&source=recent';
+  if(e==='wayback_wp') return 'http://wwwb-dedup.us.archive.org:8083/cdx/search?url=' + encodeURIComponent('+inurl:'+d+' +ext:wp- | +inurl:'+d+' +ext:wp-content') + '/&matchType=domain&collapse=digest&output=text&fl=original,timestamp&filter=urlkey:.*wp[-].*&limit=1000000';
+  if(e==='censys_ip') return 'https://censys.io/ipv4?q=' + d;
+  if(e==='censys_domain') return 'https://censys.io/domain?q=' + d;
+  if(e==='censys_cert') return 'https://censys.io/certificates?q=' + d;
+  if(e==='shodan') return 'https://www.shodan.io/search?query=' + d;
+  return 'https://google.com/search?q=' + d;
 }
 
-// --- BUILD QUERY STRING ----------------------------------------
-function buildQueryStr() {
-  var dork = getSelectedDork();
-  if (!dork) return '';
-  var domain = document.getElementById('siteInput').value.trim();
-  if (isExt(dork)) return '';
-  var q = dork.q || '';
-  if (dork.needsDomain) return q.replace(/{domain}/g, domain);
-  return domain ? 'site:' + domain + ' ' + q : q;
+// --- ROUTING ---
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+
+  var backBtn = document.getElementById('backBtn');
+  view === 'dashboard' ? backBtn.classList.remove('show') : backBtn.classList.add('show');
+
+  var panel = document.getElementById('shared-panel');
+  if(view === 'dorking' || view === 'bugbounty') {
+    panel.classList.add('active');
+    selected = null; buildPreview();
+    renderDorks(view);
+  } else {
+    panel.classList.remove('active');
+    if(view === 'osint') renderOSINT();
+  }
+
+  window.scrollTo(0, 0);
 }
 
-// --- BUILD PREVIEW ---------------------------------------------
+// --- PREVIEW BUILDER ---
 function buildPreview() {
   var box = document.getElementById('preview');
   var dork = getSelectedDork();
-  if (!dork) {
-    box.innerHTML = '<span class="ph">← pick a dork below — optionally enter a target domain above</span>';
-    return;
-  }
+  if (!dork) { box.innerHTML = '<span class="ph">← select a preset below to build query</span>'; return; }
+
   var domain = document.getElementById('siteInput').value.trim();
 
-  if (isExt(dork)) {
+  if (dork.ext && dork.engine !== 'google') {
     var url = domain ? resolveExt(dork, domain) : null;
-    var domPart = domain
-      ? '<span class="q-site">' + esc(domain) + '</span> → '
-      : '<span class="ph">set a domain above → </span>';
-    var urlPart = url
-      ? '<span class="q-val">' + esc(url) + '</span>'
-      : '<span class="ph">opens ' + esc(engineLabel(dork.engine)) + '</span>';
-    box.innerHTML = domPart + urlPart;
+    box.innerHTML = domain
+      ? `<span class="q-site">${esc(domain)}</span> → <span class="q-val">${esc(url)}</span>`
+      : '<span class="ph">set a target domain above ↑</span>';
+    document.getElementById('searchBtn').textContent = '↗ Open ' + engineLabel(dork.engine);
     return;
   }
 
   var raw = dork.q || '';
   if (dork.needsDomain && domain) raw = raw.replace(/{domain}/g, domain);
-  var siteToken = (!dork.needsDomain && domain)
-    ? '<span class="q-site">site:' + esc(domain) + '</span> '
-    : '';
-  var highlighted = raw
-    .replace(/(site:|inurl:|intitle:|intext:|filetype:|ext:|cache:|related:)(\S+)/g, function(m, op, val) {
-      return '<span class="q-op">' + esc(op) + '</span><span class="q-val">' + esc(val) + '</span>';
-    })
-    .replace(/\b(OR|AND|NOT)\b/g, '<span class="q-keyword">$1</span>');
-  box.innerHTML = siteToken + highlighted;
+  var siteToken = (!dork.needsDomain && domain) ? `<span class="q-site">site:${esc(domain)}</span> ` : '';
+  box.innerHTML = siteToken + raw.replace(/(site:|inurl:|intitle:|intext:|filetype:|ext:)(\S+)/g,
+    '<span class="q-op">$1</span><span class="q-val">$2</span>');
+
+  document.getElementById('searchBtn').textContent = '↗ Search Google';
 }
 
-// --- SEARCH / COPY ---------------------------------------------
+function selectDork(idx) { selected = idx; buildPreview(); }
+
 function doSearch() {
   var dork = getSelectedDork();
   if (!dork) return false;
   var domain = document.getElementById('siteInput').value.trim();
-  if (isExt(dork)) {
-    if (!domain) { alert('This dork needs a target domain -- enter one above.'); return false; }
-    var url = resolveExt(dork, domain);
-    if (url) window.open(url, '_blank');
-    return false;
+  if (dork.ext && dork.engine !== 'google') {
+    if (!domain) return alert('Enter a target domain first.');
+    window.open(resolveExt(dork, domain), '_blank');
+  } else {
+    var q = dork.q || '';
+    if (dork.needsDomain && !domain) return alert('Enter a target domain first.');
+    if (dork.needsDomain) q = q.replace(/{domain}/g, domain);
+    var finalQ = (!dork.needsDomain && domain) ? 'site:' + domain + ' ' + q : q;
+    window.open('https://www.google.com/search?q=' + encodeURIComponent(finalQ), '_blank');
   }
-  var q = buildQueryStr();
-  if (!q) return false;
-  window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
-  return false;
 }
 
 function copyQ() {
-  var dork = getSelectedDork();
-  if (!dork) return;
+  var dork = getSelectedDork(); if(!dork) return;
   var domain = document.getElementById('siteInput').value.trim();
-  var text = isExt(dork)
-    ? (domain ? resolveExt(dork, domain) || '' : engineLabel(dork.engine))
-    : buildQueryStr();
-  if (!text) return;
-  navigator.clipboard.writeText(text).then(function(){ toast('copied to clipboard!'); });
-}
-
-function clearAll() {
-  selected = null;
-  document.getElementById('siteInput').value = '';
-  document.getElementById('filterInput').value = '';
-  buildPreview();
-  updateSearchBtn();
-  renderTopGrid();
-  renderDorks();
-}
-
-// --- SEARCH BUTTON LABEL ---------------------------------------
-function updateSearchBtn() {
-  var btn = document.getElementById('searchBtn');
-  if (!btn) return;
-  var dork = getSelectedDork();
-  if (dork && isExt(dork)) {
-    btn.textContent = '\u2197 open ' + engineLabel(dork.engine);
+  var txt = '';
+  if(dork.ext && dork.engine !== 'google') {
+    if (!domain) return alert('Enter a target domain first.');
+    txt = resolveExt(dork, domain);
   } else {
-    btn.textContent = '\u2197 search google';
+    txt = dork.q || '';
+    if (dork.needsDomain && !domain) return alert('Enter a target domain first.');
+    if (dork.needsDomain) txt = txt.replace(/{domain}/g, domain);
+    txt = (!dork.needsDomain && domain) ? 'site:' + domain + ' ' + txt : txt;
   }
+  if(txt) navigator.clipboard.writeText(txt).then(()=>toast('copied to clipboard!')).catch(()=>toast('copy failed'));
 }
 
-// --- SELECT DORK ----------------------------------------------
-function selectDork(pool, idx) {
-  selected = { pool: pool, idx: idx };
-  buildPreview();
-  updateSearchBtn();
-  renderTopGrid();
-  renderDorks();
+// --- RENDER ---
+function renderTabs(view, data) {
+  var cats = ['all', ...new Set(data.map(d => d.cat))];
+  var tabsId = view === 'dorking' ? 'dorkingTabs' : 'bbTabs';
+  document.getElementById(tabsId).innerHTML = cats.map(c =>
+    `<button class="tab ${activeTab[view]===c?'active':''}" onclick="activeTab['${view}']='${c}'; renderDorks('${view}')">${esc(c)}</button>`
+  ).join('');
 }
 
-// --- RENDER TOP GRID ------------------------------------------
-function renderTopGrid() {
+function renderDorks(view) {
+  var data = view === 'dorking' ? DORKING_DATA : BUGBOUNTY_DATA;
+  var filterId = view === 'dorking' ? 'dorkFilter' : 'bbFilter';
+  var gridId = view === 'dorking' ? 'dorkingGrid' : 'bbGrid';
+  var tabsId = view === 'dorking' ? 'dorkingTabs' : 'bbTabs';
+  var filter = document.getElementById(filterId).value.toLowerCase();
+
+  if(!document.getElementById(tabsId).innerHTML) renderTabs(view, data);
+
   var html = '';
-  for (var i = 0; i < TOP.length; i++) {
-    var p = TOP[i];
-    var isSel = selected && selected.pool === 'top' && selected.idx === i;
-    html += '<button class="card-base' + (isSel ? ' sel' : '') + '" onclick="selectDork(\'top\',' + i + ')">';
-    html += '<div class="top-badge">*</div>';
-    html += '<div class="pc-name">' + esc(p.name) + '</div>';
-    html += '<div class="pc-query">' + esc(p.q) + '</div>';
-    html += '<div class="pc-cat">' + esc(p.cat) + '</div>';
-    html += '</button>';
-  }
-  document.getElementById('topGrid').innerHTML = html;
+  data.forEach((d, i) => {
+    if (activeTab[view] !== 'all' && d.cat !== activeTab[view]) return;
+    if (filter && !d.name.toLowerCase().includes(filter) && !(d.q||'').toLowerCase().includes(filter)) return;
+
+    var isSel = selected === i ? ' sel' : '';
+    var badge = d.ext ? '<span class="badge badge-ext">ext</span>' : '';
+    var dom = d.needsDomain ? '<span class="badge badge-dom">domain</span>' : '';
+
+    html += `<button class="card-base${isSel}" onclick="selectDork(${i})">
+      <div class="pc-name">${esc(d.name)}${badge}${dom}</div>
+      <div class="pc-query">${esc(d.q || engineLabel(d.engine))}</div>
+      <div class="pc-cat">${esc(d.cat)}</div>
+    </button>`;
+  });
+  document.getElementById(gridId).innerHTML = html || '<div class="no-results">no matches found</div>';
 }
 
-// --- RENDER DORK TABS -----------------------------------------
-function renderDorkTabs() {
-  var cats = ['all'];
-  var seen = {};
-  for (var i = 0; i < DORKS.length; i++) {
-    if (!seen[DORKS[i].cat]) { cats.push(DORKS[i].cat); seen[DORKS[i].cat] = true; }
-  }
-  var html = '';
-  for (var j = 0; j < cats.length; j++) {
-    var c = cats[j];
-    html += '<button class="tab' + (activeDorkCat === c ? ' active' : '') + '" onclick="setDorkCat(\'' + c + '\')">' + esc(c) + '</button>';
-  }
-  document.getElementById('dorkTabs').innerHTML = html;
-}
+function renderOSINT() {
+  var cats = ['all', ...new Set(OSINT_TOOLS.map(t => t.cat))];
+  document.getElementById('toolTabs').innerHTML = cats.map(c =>
+    `<button class="tab ${activeTab.osint===c?'active':''}" onclick="activeTab.osint='${c}'; renderOSINT()">${esc(c)}</button>`
+  ).join('');
 
-function setDorkCat(c) {
-  activeDorkCat = c;
-  renderDorkTabs();
-  renderDorks();
-}
-
-// --- RENDER DORKS GRID ----------------------------------------
-function renderDorks() {
-  var filter = document.getElementById('filterInput').value.toLowerCase();
-  var list = [];
-  for (var i = 0; i < DORKS.length; i++) {
-    var p = DORKS[i];
-    var catOk = activeDorkCat === 'all' || p.cat === activeDorkCat;
-    var q = p.q || '';
-    var textOk = !filter || p.name.toLowerCase().indexOf(filter) > -1 || q.toLowerCase().indexOf(filter) > -1 || p.cat.indexOf(filter) > -1;
-    if (catOk && textOk) list.push({ dork: p, idx: i });
-  }
-  document.getElementById('countLabel').textContent = list.length + ' dorks';
-  if (!list.length) {
-    document.getElementById('dorksGrid').innerHTML = '<div class="no-results">no matching dorks.</div>';
-    return;
-  }
-  var html = '';
-  for (var j = 0; j < list.length; j++) {
-    var item = list[j];
-    var d = item.dork;
-    var isSel = selected && selected.pool === 'dork' && selected.idx === item.idx;
-    var badge = d.ext ? '<span class="badge">ext</span>' : '';
-    var domBadge = d.needsDomain ? '<span class="badge">domain</span>' : '';
-    html += '<button class="card-base' + (isSel ? ' sel' : '') + '" onclick="selectDork(\'dork\',' + item.idx + ')">';
-    html += '<div class="pc-name">' + esc(d.name) + badge + domBadge + '</div>';
-    html += '<div class="pc-query">' + esc(d.q || engineLabel(d.engine || '')) + '</div>';
-    html += '<div class="pc-cat">' + esc(d.cat) + '</div>';
-    html += '</button>';
-  }
-  document.getElementById('dorksGrid').innerHTML = html;
-}
-
-// --- RENDER TOOL TABS -----------------------------------------
-function renderToolTabs() {
-  var html = '';
-  for (var i = 0; i < TOOL_CATS.length; i++) {
-    var c = TOOL_CATS[i];
-    html += '<button class="tab' + (activeToolCat === c ? ' active' : '') + '" onclick="setToolCat(\'' + c + '\')">' + esc(c) + '</button>';
-  }
-  document.getElementById('toolTabs').innerHTML = html;
-}
-
-function setToolCat(c) {
-  activeToolCat = c;
-  renderToolTabs();
-  renderTools();
-}
-
-// --- RENDER TOOLS GRID ----------------------------------------
-function renderTools() {
-  var list = activeToolCat === 'all' ? TOOLS : TOOLS.filter(function(t){ return t.cat === activeToolCat; });
-  var html = '';
-  for (var i = 0; i < list.length; i++) {
-    var t = list[i];
-    html += '<a class="card-base" href="' + esc(t.url) + '" target="_blank" rel="noopener">';
-    html += '<div class="tool-name">' + esc(t.name) + '</div>';
-    html += '<div class="tool-desc">' + esc(t.desc) + '</div>';
-    html += '<div class="tool-tag">' + esc(t.cat) + ' \u2197</div>';
-    html += '</a>';
-  }
+  var html = OSINT_TOOLS.filter(t => activeTab.osint === 'all' || t.cat === activeTab.osint)
+    .map(t => `<a class="tool-card" href="${esc(t.url)}" target="_blank" rel="noopener">
+      <div class="tool-name">${esc(t.name)}</div>
+      <div class="tool-desc">${esc(t.desc)}</div>
+      <div class="tool-tag">${esc(t.cat)}</div>
+    </a>`).join('');
   document.getElementById('toolsGrid').innerHTML = html;
 }
 
-// --- INIT -----------------------------------------------------
-renderTopGrid();
-renderDorkTabs();
-renderDorks();
-renderToolTabs();
-renderTools();
-buildPreview();
-updateSearchBtn();
+// --- THEME ---
+function toggleTheme() {
+  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var next = dark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '◐ light' : '◐ dark';
+  try { localStorage.setItem('dd-theme', next); } catch(e){}
+}
+
+(function(){
+  try {
+    var s = localStorage.getItem('dd-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', s);
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = s === 'dark' ? '◐ light' : '◐ dark';
+  } catch(e){}
+})();
+
+// --- INIT ---
+document.getElementById('stat-dorks').textContent = DORKING_DATA.length;
+document.getElementById('stat-bb').textContent = BUGBOUNTY_DATA.length;
+document.getElementById('stat-osint').textContent = OSINT_TOOLS.length;
+renderOSINT();
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  3D INTERACTIVE RECON NETWORK  —  pure Canvas 2D, no deps
+// ═══════════════════════════════════════════════════════════════
+(function () {
+  var canvas = document.getElementById('bg-canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H;
+
+  var nodes = [];
+  var numNodes = 250;
+  var focal = 1000;
+  var mouseX = 0, mouseY = 0;
+  var rx = 0, ry = 0;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resize);
+  window.addEventListener('mousemove', function(e) {
+    mouseX = (e.clientX / W - 0.5) * 2;
+    mouseY = (e.clientY / H - 0.5) * 2;
+  });
+
+  function init() {
+    nodes = [];
+    for (var i = 0; i < numNodes; i++) {
+      // Fibonacci sphere distribution for a global recon radar look
+      var phi   = Math.acos(-1 + (2 * i) / numNodes);
+      var theta = Math.sqrt(numNodes * Math.PI) * phi;
+      // Randomize radius slightly to create a data cloud depth
+      var r = 380 + Math.random() * 120 * (Math.random() > 0.5 ? 1 : -1);
+      nodes.push({
+        ox: r * Math.cos(theta) * Math.sin(phi),
+        oy: r * Math.sin(theta) * Math.sin(phi),
+        oz: r * Math.cos(phi),
+        // 10% of nodes act as "High Value Targets" (red/orange accent)
+        isTarget: Math.random() > 0.9,
+        pulseOffset: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    var time = Date.now() * 0.001;
+
+    // Auto-rotation + Mouse Influence
+    rx += (mouseY * 0.3 - rx) * 0.05;
+    ry += (mouseX * 0.3 + 0.0015 - ry) * 0.05; // 0.0015 forces constant slow spin
+
+    var cx = Math.cos(rx), sx = Math.sin(rx);
+    var cy = Math.cos(ry), sy = Math.sin(ry);
+
+    var projected = [];
+
+    // Rotate and project points
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+
+      // Gentle floating effect per node
+      var fx = n.ox + Math.sin(time + n.pulseOffset) * 12;
+      var fy = n.oy + Math.cos(time + n.pulseOffset) * 12;
+      var fz = n.oz;
+
+      // Y-axis rotation
+      var x1 = fx * cy - fz * sy;
+      var z1 = fz * cy + fx * sy;
+
+      // X-axis rotation
+      var y2 = fy * cx - z1 * sx;
+      var z2 = z1 * cx + fy * sx;
+
+      var z3 = z2 + 900; // Move globe back from the camera
+
+      if (z3 > 100) {
+        var scale = focal / z3;
+        projected.push({
+          idx: i,
+          x: W / 2 + x1 * scale,
+          y: H / 2 + y2 * scale,
+          z: z3,
+          scale: scale,
+          target: n.isTarget,
+          po: n.pulseOffset,
+          ox: x1, oy: y2, oz: z2
+        });
+      }
+    }
+
+    // Draw network connections (Plexus)
+    ctx.lineWidth = 1;
+    for (var i = 0; i < projected.length; i++) {
+      var p1 = projected[i];
+      for (var j = i + 1; j < projected.length; j++) {
+        var p2 = projected[j];
+
+        var dx = p1.ox - p2.ox;
+        var dy = p1.oy - p2.oy;
+        var dz = p1.oz - p2.oz;
+        var distSq = dx*dx + dy*dy + dz*dz;
+
+        var maxDist = 25000;
+        if (distSq < maxDist) {
+          var alpha = (1 - distSq / maxDist) * 0.35;
+          var isSpecial = p1.target || p2.target;
+
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+
+          if (isSpecial) {
+            // Pulse the opacity of lines connected to target nodes
+            var p = (Math.sin(time * 3 + p1.po) + 1) / 2;
+            ctx.strokeStyle = 'rgba(212, 79, 46, ' + (alpha * 1.5 * (0.5 + p * 0.5)) + ')';
+            ctx.lineWidth = 1.2 * Math.min(p1.scale, p2.scale);
+          } else {
+            ctx.strokeStyle = 'rgba(154, 150, 144, ' + alpha + ')';
+            ctx.lineWidth = 0.8 * Math.min(p1.scale, p2.scale);
+          }
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw nodes
+    for (var i = 0; i < projected.length; i++) {
+      var p = projected[i];
+      var depthAlpha = Math.min(1, 1000 / p.z);
+
+      ctx.beginPath();
+      if (p.target) {
+        // High Value Target nodes
+        var pulse = (Math.sin(time * 4 + p.po) + 1) / 2;
+        var rad = (2 + pulse * 2) * p.scale;
+
+        ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(212, 79, 46, ' + (depthAlpha * (0.6 + pulse * 0.4)) + ')';
+        ctx.fill();
+
+        // Target Radar Ring
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, rad * 2.5, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(212, 79, 46, ' + (depthAlpha * 0.3 * (1 - pulse)) + ')';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      } else {
+        // Standard nodes
+        ctx.arc(p.x, p.y, 1.2 * p.scale, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(154, 150, 144, ' + (depthAlpha * 0.8) + ')';
+        ctx.fill();
+      }
+    }
+
+    // Smooth vignette overlay blending into the background color
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var bgColor = isDark ? '14, 13, 11' : '242, 240, 235';
+    var grad = ctx.createRadialGradient(W/2, H/2, Math.min(W,H)*0.2, W/2, H/2, Math.max(W,H)*0.75);
+    grad.addColorStop(0, 'rgba(' + bgColor + ', 0)');
+    grad.addColorStop(1, 'rgba(' + bgColor + ', 1)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  init();
+  draw();
+})();
 </script>
 </body>
 </html>
