@@ -3,692 +3,602 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DarkDork | Find What Shouldn't Be Found</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>DarkDork | Search Beyond the Surface</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* =========================================
-   BASE & VARIABLES
-========================================= */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 
 :root {
-  --bg: #f2f0eb;
-  --bg2: #e8e5de;
-  --fg: #131210;
-  --fg2: #2a2925;
-  --muted: #9a9690;
-  --border: #ccc9c0;
-  --border2: #b8b4aa;
-  --gold: #c8922a;
-  --accent: #d44f2e;
-  --accent2: #4a7c9e;
-  --green: #3d8c5a;
-  --panel-bg: rgba(242, 240, 235, 0.97);
-  --card-bg: #eceae4;
-  --shadow: 0 2px 12px rgba(0,0,0,0.07);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --bg:#f2f0eb;--bg2:#e8e5de;--fg:#131210;--fg2:#2a2925;
+  --muted:#9a9690;--border:#ccc9c0;--border2:#b8b4aa;
+  --gold:#c8922a;--accent:#d44f2e;--accent2:#4a7c9e;--green:#3d8c5a;
+  --panel-bg:rgba(242,240,235,0.97);--card-bg:#eceae4;
+  --shadow:0 2px 12px rgba(0,0,0,0.07);--shadow-lg:0 8px 32px rgba(0,0,0,0.12);
 }
-
 [data-theme="dark"] {
-  --bg: #0e0d0b;
-  --bg2: #161512;
-  --fg: #e8e5dc;
-  --fg2: #c8c4b8;
-  --muted: #5a5750;
-  --border: #252320;
-  --border2: #332f2a;
-  --gold: #d4a032;
-  --accent: #e05535;
-  --accent2: #5a9cbf;
-  --green: #4aaa6a;
-  --panel-bg: rgba(14, 13, 11, 0.98);
-  --card-bg: #141310;
-  --shadow: 0 2px 16px rgba(0,0,0,0.4);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
+  --bg:#0e0d0b;--bg2:#1a1916;--fg:#f0ede4;--fg2:#d8d4c8;
+  --muted:#8a8680;--border:#2e2b27;--border2:#3d3930;
+  --gold:#e0ac3a;--accent:#e85535;--accent2:#6aaccc;--green:#4aaa6a;
+  --panel-bg:rgba(14,13,11,0.98);--card-bg:#181613;
+  --shadow:0 2px 16px rgba(0,0,0,0.4);--shadow-lg:0 8px 40px rgba(0,0,0,0.6);
 }
 
-html { font-size: 14px; scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-  padding: 0 20px 80px;
-  transition: background 0.3s, color 0.3s;
-  line-height: 1.5;
-  position: relative;
+html{font-size:14px;scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;
+  min-height:100vh;padding:0 20px 80px;
+  transition:background 0.3s,color 0.3s;line-height:1.5;position:relative;
 }
 
-#bg-canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 1;
-  transition: opacity 0.3s;
-}
-[data-theme="light"] #bg-canvas { opacity: 1; }
-
-.wrap { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
-
-/* =========================================
-   HEADER
-========================================= */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 28px 0 20px;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-  gap: 12px;
-  position: relative;
+#bg-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:1;transition:opacity 0.3s;
 }
 
-.header-left { display: flex; align-items: center; gap: 16px; }
+.wrap{max-width:900px;margin:0 auto;position:relative;z-index:1;}
 
-.wordmark {
-  font-family: 'Space Mono', monospace;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  text-decoration: none;
-  color: var(--fg);
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:28px 0 20px;border-bottom:1px solid var(--border);
+  flex-wrap:wrap;gap:12px;position:relative;
 }
-.wordmark-dark { color: var(--fg); }
-.wordmark-light { color: var(--muted); font-weight: 400; }
-.wordmark::before {
-  display: none;
+.header-left{display:flex;align-items:center;gap:16px;}
+.wordmark{
+  font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;
+  letter-spacing:-0.03em;cursor:pointer;display:flex;align-items:center;gap:2px;
+  text-decoration:none;color:var(--fg);
 }
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.7); }
+.wordmark-dark{color:var(--fg);}
+.wordmark-light{color:var(--muted);font-weight:400;}
+.btn-back{
+  font-family:'Space Mono',monospace;font-size:0.65rem;padding:5px 12px;
+  border-radius:2px;border:1px solid var(--border2);background:transparent;
+  color:var(--muted);cursor:pointer;display:none;transition:all 0.15s;letter-spacing:0.05em;
 }
+.btn-back.show{display:inline-flex;align-items:center;gap:6px;}
+.btn-back:hover{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.theme-btn{
+  font-family:'Space Mono',monospace;font-size:0.62rem;padding:5px 12px;
+  border-radius:2px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.05em;
+}
+.theme-btn:hover{color:var(--fg);border-color:var(--fg);}
 
-.btn-back {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  padding: 5px 12px;
-  border-radius: 2px;
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  display: none;
-  transition: all 0.15s;
-  letter-spacing: 0.05em;
-}
-.btn-back.show { display: inline-flex; align-items: center; gap: 6px; }
-.btn-back:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-
-.header-right { display: flex; align-items: center; gap: 10px; }
-
-.theme-btn {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  padding: 5px 12px;
-  border-radius: 2px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.05em;
-}
-.theme-btn:hover { color: var(--fg); border-color: var(--fg); }
-
-/* =========================================
-   VIEWS
-========================================= */
-.view { display: none; }
-.view.active { display: block; animation: fadeUp 0.25s ease-out; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.view{display:none;}
+.view.active{display:block;animation:fadeUp 0.25s ease-out;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
-/* =========================================
-   DASHBOARD
-========================================= */
-.dash-hero {
-  padding: 56px 0 40px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 40px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.dash-hero{
+  padding:56px 0 40px;border-bottom:1px solid var(--border);
+  margin-bottom:40px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;
 }
-.dash-hero h1 {
-  font-family: 'DM Sans', sans-serif;
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  margin-bottom: 16px;
-  color: var(--fg);
+.dash-hero h1{
+  font-family:'DM Sans',sans-serif;font-size:clamp(2rem,6vw,3.5rem);
+  font-weight:800;line-height:1.05;letter-spacing:-0.04em;margin-bottom:16px;color:var(--fg);
 }
-.dash-hero h1 em {
-  font-style: normal;
-  color: var(--accent);
+.dash-hero h1 em{font-style:normal;color:var(--accent);}
+.dash-sub{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;max-width:520px;line-height:1.7;margin-top:4px;}
+.dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.dash-card{
+  border:1px solid var(--border);border-radius:4px;padding:32px 24px 24px;
+  background:var(--card-bg);color:var(--fg);cursor:pointer;text-align:center;
+  transition:all 0.2s cubic-bezier(0.16,1,0.3,1);
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;overflow:hidden;box-shadow:var(--shadow);
 }
-.dash-sub {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.dash-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 0.25s ease;
+}
+.dash-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.dash-card:hover::after{transform:scaleX(1);}
+.dash-card-num{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:20px;opacity:0.8;}
+.dash-title{font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;margin-bottom:10px;letter-spacing:-0.02em;color:var(--fg);}
+.dash-desc{font-size:0.78rem;color:var(--fg2);line-height:1.65;font-weight:400;flex:1;margin-bottom:20px;}
+.dash-card-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;margin-top:auto;padding-top:16px;border-top:1px solid var(--border);
+}
+.dash-tag{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.dash-arrow{font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--muted);transition:transform 0.2s,color 0.2s;}
+.dash-card:hover .dash-arrow{transform:translate(3px,-3px);color:var(--accent);}
+.dash-stats{
+  display:flex;gap:40px;margin-top:40px;padding:24px 0;
+  border-top:1px solid var(--border);justify-content:center;
+}
+.stat-item{text-align:center;}
+.stat-num{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--fg);display:block;}
+.stat-lbl{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;}
+
+.control-panel{
+  position:sticky;top:0;background:var(--panel-bg);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  z-index:100;padding:20px 0 16px;margin-bottom:28px;border-bottom:1px solid var(--border);
+}
+.site-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.site-prefix{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--gold);white-space:nowrap;min-width:36px;}
+.site-input{
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:3px;
+  padding:9px 14px;font-family:'Space Mono',monospace;font-size:0.78rem;
+  color:var(--fg);outline:none;transition:border-color 0.15s;
+}
+.site-input:focus{border-color:var(--accent2);}
+.site-input::placeholder{color:var(--muted);}
+.btn-clear{
+  font-family:'Space Mono',monospace;font-size:0.8rem;width:32px;height:32px;
+  border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;
+}
+.btn-clear:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.query-box{
+  background:var(--bg2);border:1px solid var(--border);border-radius:3px;
+  padding:12px 16px;margin-bottom:10px;min-height:46px;
+  font-family:'Space Mono',monospace;font-size:0.88rem;line-height:1.8;
+  word-break:break-all;color:var(--fg);transition:background 0.2s;
+}
+[data-theme="dark"] .query-box{background:#1a1916;}
+.query-box .ph{color:var(--muted);font-style:italic;}
+.q-site{color:var(--gold);}
+.q-op{color:var(--accent2);}
+.q-val{color:var(--fg);}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-primary{
+  font-family:'Space Mono',monospace;font-size:0.68rem;font-weight:700;
+  padding:8px 16px;border-radius:3px;border:none;background:var(--accent);color:#fff;
+  cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.15s;letter-spacing:0.03em;
+}
+.btn-primary:hover{background:var(--fg);}
+.btn-secondary{
+  font-family:'Space Mono',monospace;font-size:0.68rem;padding:8px 16px;border-radius:3px;
+  border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:all 0.15s;
+}
+.btn-secondary:hover{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+
+.sec-label{
+  font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;margin-top:32px;
+  display:flex;align-items:center;gap:12px;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.filter-row{display:flex;gap:8px;margin-bottom:12px;}
+.search-box{
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:3px;
+  padding:8px 14px;font-family:'Space Mono',monospace;font-size:0.74rem;
+  color:var(--fg);outline:none;transition:border-color 0.15s;
+}
+.search-box:focus{border-color:var(--accent2);}
+.search-box::placeholder{color:var(--muted);}
+.tabs-wrapper{overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none;}
+.tabs-wrapper::-webkit-scrollbar{display:none;}
+.tabs{display:flex;gap:4px;width:max-content;}
+.tab{
+  font-family:'Space Mono',monospace;font-size:0.62rem;padding:5px 12px;
+  border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;white-space:nowrap;text-transform:uppercase;
+}
+.tab:hover{color:var(--fg);border-color:var(--fg);}
+.tab.active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+
+.grid-layout{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+.card-base{
+  border:1px solid var(--border);border-radius:3px;padding:12px 14px;cursor:pointer;
+  background:var(--card-bg);position:relative;text-decoration:none;color:var(--fg);
+  text-align:left;display:block;transition:all 0.15s;overflow:hidden;
+}
+.card-base::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:background 0.15s;}
+.card-base:hover::before,.card-base.sel::before{background:var(--accent);}
+.card-base:hover{border-color:var(--border2);background:var(--bg2);transform:translateX(2px);}
+.card-base.sel{border-color:var(--accent);background:var(--bg2);}
+.pc-name{font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg);}
+.pc-query{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--fg2);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pc-cat{font-family:'Space Mono',monospace;font-size:0.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;}
+.badge{font-family:'Space Mono',monospace;font-size:0.5rem;border:1px solid var(--border2);border-radius:2px;padding:1px 5px;margin-left:5px;vertical-align:middle;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;}
+.badge-ext{border-color:var(--accent2);color:var(--accent2);}
+.badge-dom{border-color:var(--gold);color:var(--gold);}
+.no-results{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);text-align:center;padding:40px 0;grid-column:1/-1;}
+
+footer{
+  padding-top:28px;border-top:1px solid var(--border);font-family:'Space Mono',monospace;
+  font-size:0.62rem;color:var(--muted);text-align:center;margin-top:48px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;
+}
+footer a{color:var(--muted);text-decoration:none;transition:color 0.15s;}
+footer a:hover{color:var(--fg);}
+
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);
+  background:var(--fg);color:var(--bg);font-family:'Space Mono',monospace;font-size:0.68rem;
+  padding:10px 20px;border-radius:3px;opacity:0;transition:all 0.2s ease;
+  pointer-events:none;z-index:999;letter-spacing:0.05em;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:var(--muted);}
+::selection{background:var(--accent);color:#fff;}
+
+#view-osint{
+  
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  z-index:50;
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+}
+#view-osint.active{display:flex;}
+
+#osint-header{
+  position:relative;z-index:60;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;background:var(--panel-bg);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);gap:12px;flex-wrap:wrap;
+}
+.osint-wordmark{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;letter-spacing:-0.03em;color:var(--fg);display:flex;gap:2px;}
+.osint-wordmark span:last-child{color:var(--muted);font-weight:400;}
+#osint-search-wrap{display:flex;align-items:center;gap:8px;flex:1;max-width:340px;margin:0 auto;}
+#osintSearchInput{
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:3px;
+  padding:7px 12px;font-family:'Space Mono',monospace;font-size:0.72rem;
+  color:var(--fg);outline:none;transition:border-color 0.15s;
+}
+#osintSearchInput:focus{border-color:var(--accent2);}
+#osintSearchInput::placeholder{color:var(--muted);}
+.osint-hbtns{display:flex;gap:8px;align-items:center;}
+.ohbtn{
+  font-family:'Space Mono',monospace;font-size:0.62rem;padding:5px 11px;
+  border-radius:2px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all 0.15s;white-space:nowrap;
+}
+.ohbtn:hover{color:var(--fg);border-color:var(--fg);}
+
+#osint-map-area{position:relative;flex:1;overflow:hidden;user-select:none;}
+#osint-bg-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+#osint-tree-svg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;cursor:grab;overflow:visible;}
+#osint-tree-svg.dragging{cursor:grabbing;}
+
+#osint-tooltip{
+  position:fixed;z-index:300;background:var(--card-bg);border:1px solid var(--border2);
+  border-radius:4px;padding:14px 16px;min-width:200px;max-width:300px;
+  pointer-events:none;opacity:0;transition:opacity 0.15s;box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+#osint-tooltip.show{opacity:1;}
+#osint-tooltip .tt-name{font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;color:var(--fg);}
+#osint-tooltip .tt-cat{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+#osint-tooltip .tt-url{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--accent2);word-break:break-all;}
+#osint-tooltip .tt-hint{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);margin-top:8px;border-top:1px solid var(--border);padding-top:7px;}
+
+#osint-sidebar{
+  position:absolute;right:0;top:0;bottom:0;width:290px;z-index:150;
+  background:var(--panel-bg);border-left:1px solid var(--border);
+  transform:translateX(100%);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+#osint-sidebar.open{transform:translateX(0);}
+#osint-sb-header{padding:16px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative;}
+#osint-sb-title{font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:700;color:var(--fg);margin-bottom:3px;}
+#osint-sb-path{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);}
+#osint-sb-close{position:absolute;top:12px;right:12px;background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--muted);font-size:0.8rem;width:24px;height:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+#osint-sb-close:hover{background:var(--fg);color:var(--bg);}
+#osint-sb-body{flex:1;overflow-y:auto;padding:10px;}
+#osint-sb-body::-webkit-scrollbar{width:3px;}
+#osint-sb-body::-webkit-scrollbar-thumb{background:var(--border2);}
+.sb-item{
+  display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border:1px solid var(--border);
+  border-radius:3px;margin-bottom:5px;background:var(--card-bg);text-decoration:none;
+  color:var(--fg);transition:all 0.15s;position:relative;overflow:hidden;
+}
+.sb-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:background 0.15s;}
+.sb-item:hover::before{background:var(--accent);}
+.sb-item:hover{background:var(--bg2);border-color:var(--border2);transform:translateX(2px);}
+.sb-icon{font-size:0.75rem;margin-top:1px;flex-shrink:0;}
+.sb-info{flex:1;min-width:0;}
+.sb-name{font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-url{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.sb-badge{font-family:'Space Mono',monospace;font-size:0.48rem;border-radius:2px;padding:1px 4px;border:1px solid;margin-left:4px;vertical-align:middle;}
+
+#osint-legend{
+  position:absolute;left:14px;bottom:14px;z-index:150;
+  background:var(--panel-bg);border:1px solid var(--border);border-radius:4px;
+  padding:9px 13px;font-family:'Space Mono',monospace;font-size:0.58rem;
+}
+.leg-title{color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px;}
+.leg-item{display:flex;align-items:center;gap:7px;margin-bottom:4px;color:var(--fg2);}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+#osint-controls{position:absolute;right:14px;bottom:14px;z-index:150;display:flex;flex-direction:column;gap:5px;}
+.map-ctrl{
+  width:30px;height:30px;background:var(--card-bg);border:1px solid var(--border);
+  border-radius:3px;color:var(--muted);font-family:'Space Mono',monospace;font-size:0.9rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.map-ctrl:hover{background:var(--fg);color:var(--bg);}
+
+#osint-stats{
+  position:absolute;left:14px;top:12px;z-index:150;
+  font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:3px;
+}
+.ostat{display:flex;align-items:center;gap:5px;}
+.ostat-dot{width:5px;height:5px;border-radius:50%;}
+
+#osint-search-results{
+  position:absolute;top:52px;left:50%;transform:translateX(-50%);
+  width:330px;z-index:250;background:var(--card-bg);
+  border:1px solid var(--border2);border-top:none;border-radius:0 0 4px 4px;
+  max-height:260px;overflow-y:auto;display:none;
+}
+#osint-search-results::-webkit-scrollbar{width:3px;}
+#osint-search-results::-webkit-scrollbar-thumb{background:var(--border2);}
+.sr-item{
+  padding:8px 13px;font-family:'Space Mono',monospace;font-size:0.66rem;
+  color:var(--fg2);cursor:pointer;border-bottom:1px solid var(--border);
+  transition:background 0.1s;display:flex;align-items:center;gap:8px;
+}
+.sr-item:hover{background:var(--bg2);color:var(--fg);}
+.sr-path{font-size:0.54rem;color:var(--muted);margin-left:auto;text-align:right;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+@media(max-width:700px){
+  body{padding:0 14px 60px;}
+  .dash-grid{grid-template-columns:1fr;}
+  .grid-layout{grid-template-columns:1fr 1fr;}
+  .dash-stats{gap:16px;flex-wrap:wrap;}
+  .action-row{flex-direction:column;}
+  .dash-hero h1{font-size:2rem;}
+}
+@media(max-width:500px){.grid-layout{grid-template-columns:1fr;}}
+
+#breadcrumb {
+  display:none;align-items:center;gap:6px;
+  font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+  padding:8px 0 0;letter-spacing:0.04em;
+}
+#breadcrumb.show{display:flex;}
+.bc-sep{opacity:0.4;}
+.bc-item{cursor:pointer;transition:color 0.15s;}
+.bc-item:hover{color:var(--fg);}
+.bc-item.current{color:var(--fg2);cursor:default;}
+
+#kbd-hints {
+  position:fixed;bottom:20px;right:16px;z-index:90;
+  font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px;align-items:flex-end;
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+#kbd-hints.show{opacity:1;}
+.kbd-row{display:flex;align-items:center;gap:5px;}
+kbd{
+  background:var(--card-bg);border:1px solid var(--border2);border-radius:2px;
+  padding:1px 5px;font-family:'Space Mono',monospace;font-size:0.54rem;
+  color:var(--fg2);line-height:1.6;
 }
 
-.dash-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+#recent-section {
+  display:none;margin-bottom:20px;
 }
+#recent-section.show{display:block;}
+.recent-label{
+  font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;
+}
+.recent-label::after{content:'';flex:1;height:1px;background:var(--border);}
+#recent-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.recent-chip{
+  font-family:'Space Mono',monospace;font-size:0.64rem;padding:4px 10px;
+  border-radius:2px;border:1px solid var(--border2);background:var(--card-bg);
+  color:var(--fg2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;
+  max-width:200px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.recent-chip:hover{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.recent-chip-x{opacity:0.5;font-size:0.7rem;flex-shrink:0;margin-left:2px;}
+.recent-chip:hover .recent-chip-x{opacity:1;}
 
-.dash-card {
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 32px 24px 24px;
-  background: var(--card-bg);
-  color: var(--fg);
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow);
+.card-copy-btn {
+  position:absolute;top:8px;right:8px;
+  width:22px;height:22px;border-radius:2px;
+  border:1px solid var(--border);background:var(--bg2);
+  color:var(--muted);font-size:0.6rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:all 0.15s;z-index:2;
 }
-.dash-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.25s ease;
-}
-.dash-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-.dash-card:hover::after { transform: scaleX(1); }
+.card-base:hover .card-copy-btn{opacity:1;}
+.card-copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-.dash-card-num {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-  margin-bottom: 20px;
-  opacity: 0.6;
+#history-btn {
+  font-family:'Space Mono',monospace;font-size:0.62rem;padding:5px 11px;
+  border-radius:2px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;
+  display:inline-flex;align-items:center;gap:5px;
 }
+#history-btn:hover{color:var(--fg);border-color:var(--fg);}
+#history-btn .hist-count{
+  background:var(--accent);color:#fff;border-radius:2px;
+  padding:0 4px;font-size:0.5rem;min-width:14px;text-align:center;
+  display:none;
+}
+#history-btn .hist-count.show{display:inline-block;}
 
-.dash-title {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  letter-spacing: -0.02em;
+#history-panel {
+  position:fixed;right:0;top:0;bottom:0;width:310px;z-index:400;
+  background:var(--panel-bg);border-left:1px solid var(--border);
+  transform:translateX(100%);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);
+  display:flex;flex-direction:column;overflow:hidden;
+  backdrop-filter:blur(12px);
 }
-.dash-desc {
-  font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.65;
-  font-weight: 400;
-  flex: 1;
-  margin-bottom: 20px;
+#history-panel.open{transform:translateX(0);}
+#history-panel-header{
+  padding:18px 18px 12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
 }
+#history-panel-title{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.hist-panel-close{background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--muted);font-size:0.8rem;width:24px;height:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.hist-panel-close:hover{background:var(--fg);color:var(--bg);}
+#history-list{flex:1;overflow-y:auto;padding:10px;}
+#history-list::-webkit-scrollbar{width:3px;}
+#history-list::-webkit-scrollbar-thumb{background:var(--border2);}
+.hist-item{
+  display:flex;align-items:flex-start;gap:8px;padding:9px 12px;
+  border:1px solid var(--border);border-radius:3px;margin-bottom:5px;
+  background:var(--card-bg);cursor:pointer;transition:all 0.15s;
+}
+.hist-item:hover{background:var(--bg2);border-color:var(--border2);}
+.hist-item-body{flex:1;min-width:0;}
+.hist-name{font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hist-query{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--fg2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hist-time{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);margin-top:3px;}
+.hist-actions{display:flex;gap:4px;flex-shrink:0;margin-top:1px;}
+.hist-act-btn{background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--muted);font-size:0.6rem;width:22px;height:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.hist-act-btn:hover{background:var(--fg);color:var(--bg);}
+#history-empty{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);text-align:center;padding:40px 20px;line-height:1.8;}
+#hist-clear-row{padding:10px 10px 6px;border-top:1px solid var(--border);flex-shrink:0;}
+.hist-clear-btn{font-family:'Space Mono',monospace;font-size:0.6rem;padding:5px 10px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;width:100%;transition:all 0.15s;}
+.hist-clear-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-.dash-card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
+#builder-toggle {
+  font-family:'Space Mono',monospace;font-size:0.62rem;padding:5px 11px;
+  border-radius:2px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;
 }
-.dash-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-.dash-arrow {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--muted);
-  transition: transform 0.2s, color 0.2s;
-}
-.dash-card:hover .dash-arrow { transform: translate(3px, -3px); color: var(--accent); }
+#builder-toggle:hover{color:var(--fg);border-color:var(--fg);}
+#builder-toggle.active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
 
-.dash-stats {
-  display: flex;
-  gap: 40px;
-  margin-top: 40px;
-  padding: 24px 0;
-  border-top: 1px solid var(--border);
-  justify-content: center;
+#custom-builder {
+  display:none;background:var(--card-bg);border:1px solid var(--border);
+  border-radius:3px;padding:14px 16px;margin-bottom:12px;
+  animation:fadeUp 0.2s ease-out;
 }
-.stat-item { text-align: center; }
-.stat-num {
-  font-family: 'Space Mono', monospace;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--fg);
-  display: block;
+#custom-builder.show{display:block;}
+.builder-title{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;}
+.builder-ops{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.op-btn{
+  font-family:'Space Mono',monospace;font-size:0.62rem;padding:4px 10px;
+  border-radius:2px;border:1px solid var(--border2);background:transparent;
+  color:var(--accent2);cursor:pointer;transition:all 0.12s;
 }
-.stat-lbl {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 2px;
+.op-btn:hover{background:var(--accent2);color:#fff;border-color:var(--accent2);}
+.builder-input-row{display:flex;gap:6px;margin-bottom:8px;}
+#builder-op-select{
+  background:var(--bg2);border:1px solid var(--border);border-radius:3px;
+  padding:7px 10px;font-family:'Space Mono',monospace;font-size:0.72rem;
+  color:var(--accent2);outline:none;flex-shrink:0;cursor:pointer;
 }
+#builder-val-input{
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:3px;
+  padding:7px 12px;font-family:'Space Mono',monospace;font-size:0.74rem;
+  color:var(--fg);outline:none;transition:border-color 0.15s;
+}
+#builder-val-input:focus{border-color:var(--accent2);}
+#builder-val-input::placeholder{color:var(--muted);}
+.builder-add-btn{
+  font-family:'Space Mono',monospace;font-size:0.68rem;padding:7px 12px;
+  border-radius:3px;border:none;background:var(--accent2);color:#fff;
+  cursor:pointer;transition:all 0.15s;flex-shrink:0;
+}
+.builder-add-btn:hover{background:var(--fg);}
+#builder-tokens{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;min-height:26px;}
+.builder-token{
+  font-family:'Space Mono',monospace;font-size:0.64rem;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:2px;
+  padding:2px 8px;color:var(--fg2);display:flex;align-items:center;gap:5px;
+}
+.builder-token .tok-op{color:var(--accent2);}
+.builder-token .tok-rm{cursor:pointer;color:var(--muted);transition:color 0.12s;}
+.builder-token .tok-rm:hover{color:var(--accent);}
+.builder-actions{display:flex;gap:6px;flex-wrap:wrap;}
 
-/* =========================================
-   CONTROL PANEL
-========================================= */
-.control-panel {
-  position: sticky;
-  top: 0;
-  background: var(--panel-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 100;
-  padding: 20px 0 16px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid var(--border);
+.export-btn {
+  font-family:'Space Mono',monospace;font-size:0.62rem;padding:5px 11px;
+  border-radius:2px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;
+  display:inline-flex;align-items:center;gap:5px;
 }
+.export-btn:hover{color:var(--fg);border-color:var(--fg);}
 
-.site-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+#osint-tag-filters {
+  display:flex;gap:5px;flex-wrap:wrap;padding:0 14px 10px;
+  border-bottom:1px solid var(--border);background:var(--panel-bg);
+  flex-shrink:0;
 }
-.site-prefix {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--gold);
-  white-space: nowrap;
-  min-width: 36px;
+.tag-filter-btn {
+  font-family:'Space Mono',monospace;font-size:0.58rem;padding:3px 9px;
+  border-radius:2px;border:1px solid var(--border);background:transparent;
+  cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;text-transform:uppercase;
 }
-.site-input {
-  flex: 1;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 9px 14px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.78rem;
-  color: var(--fg);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.site-input:focus { border-color: var(--accent2); }
-.site-input::placeholder { color: var(--muted); }
+.tag-filter-btn:hover{border-color:var(--fg2);color:var(--fg);}
+.tag-filter-btn.tf-all{color:var(--muted);}
+.tag-filter-btn.tf-all.active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.tag-filter-btn.tf-free{color:#4aaa6a;border-color:#4aaa6a44;}
+.tag-filter-btn.tf-free.active{background:#4aaa6a;color:#fff;border-color:#4aaa6a;}
+.tag-filter-btn.tf-r{color:#e85535;border-color:#e8553544;}
+.tag-filter-btn.tf-r.active{background:#e85535;color:#fff;border-color:#e85535;}
+.tag-filter-btn.tf-t{color:#e0ac3a;border-color:#e0ac3a44;}
+.tag-filter-btn.tf-t.active{background:#e0ac3a;color:#fff;border-color:#e0ac3a;}
+.tag-filter-btn.tf-d{color:#6aaccc;border-color:#6aaccc44;}
+.tag-filter-btn.tf-d.active{background:#6aaccc;color:#fff;border-color:#6aaccc;}
 
-.btn-clear {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.8rem;
-  width: 32px;
-  height: 32px;
-  border-radius: 3px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-.btn-clear:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+#cmd-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding-top:15vh;}
+#cmd-overlay.open{display:flex;}
+#cmd-palette{width:min(560px,90vw);background:var(--panel-bg);border:1px solid var(--border2);border-radius:6px;overflow:hidden;box-shadow:var(--shadow-lg);animation:fadeUp 0.15s ease-out;}
+#cmd-input-wrap{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);}
+#cmd-input-icon{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted);}
+#cmd-input{flex:1;background:transparent;border:none;outline:none;font-family:'Space Mono',monospace;font-size:0.9rem;color:var(--fg);}
+#cmd-input::placeholder{color:var(--muted);}
+#cmd-hint{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);white-space:nowrap;}
+#cmd-results{max-height:340px;overflow-y:auto;}
+#cmd-results::-webkit-scrollbar{width:3px;}
+#cmd-results::-webkit-scrollbar-thumb{background:var(--border2);}
+.cmd-section-label{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;padding:10px 16px 5px;}
+.cmd-item{display:flex;align-items:center;gap:12px;padding:9px 16px;cursor:pointer;transition:background 0.1s;border-left:2px solid transparent;}
+.cmd-item:hover,.cmd-item.active{background:var(--bg2);border-left-color:var(--accent);}
+.cmd-item-icon{font-size:0.75rem;width:16px;text-align:center;flex-shrink:0;color:var(--muted);}
+.cmd-item-label{font-family:'DM Sans',sans-serif;font-size:0.86rem;font-weight:600;color:var(--fg);flex:1;}
+.cmd-item-sub{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);}
+.cmd-item-kbd{font-family:'Space Mono',monospace;font-size:0.58rem;background:var(--card-bg);border:1px solid var(--border2);border-radius:2px;padding:1px 5px;color:var(--fg2);}
+#cmd-empty{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center;padding:28px 16px;}
 
-.query-box {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 12px 16px;
-  margin-bottom: 10px;
-  min-height: 46px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.88rem;
-  line-height: 1.8;
-  word-break: break-all;
-  color: var(--fg);
-  transition: background 0.2s;
-}
-[data-theme="dark"] .query-box { background: #161512; }
-.query-box .ph { color: var(--muted); font-style: italic; }
-.q-site { color: var(--gold); }
-.q-op { color: var(--accent2); }
-.q-val { color: var(--fg); }
-
-.action-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.btn-primary {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 3px;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s;
-  letter-spacing: 0.03em;
-}
-.btn-primary:hover { background: var(--fg); }
-
-.btn-secondary {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
-  padding: 8px 16px;
-  border-radius: 3px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s;
-}
-.btn-secondary:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-
-/* =========================================
-   SECTION LABEL
-========================================= */
-.sec-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 16px;
-  margin-top: 32px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.sec-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-/* =========================================
-   FILTER & TABS
-========================================= */
-.filter-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.search-box {
-  flex: 1;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 8px 14px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.74rem;
-  color: var(--fg);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.search-box:focus { border-color: var(--accent2); }
-.search-box::placeholder { color: var(--muted); }
-
-.tabs-wrapper {
-  overflow-x: auto;
-  padding-bottom: 4px;
-  margin-bottom: 16px;
-  scrollbar-width: none;
-}
-.tabs-wrapper::-webkit-scrollbar { display: none; }
-.tabs { display: flex; gap: 4px; width: max-content; }
-.tab {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  padding: 5px 12px;
-  border-radius: 2px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-.tab:hover { color: var(--fg); border-color: var(--fg); }
-.tab.active {
-  background: var(--fg);
-  color: var(--bg);
-  border-color: var(--fg);
-}
-
-/* =========================================
-   CARD GRID
-========================================= */
-.grid-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 8px;
-}
-
-.card-base {
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 12px 14px;
-  cursor: pointer;
-  background: var(--card-bg);
-  position: relative;
-  text-decoration: none;
-  color: var(--fg);
-  text-align: left;
-  display: block;
-  transition: all 0.15s;
-  overflow: hidden;
-}
-.card-base::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 2px;
-  background: transparent;
-  transition: background 0.15s;
-}
-.card-base:hover::before, .card-base.sel::before { background: var(--accent); }
-.card-base:hover {
-  border-color: var(--border2);
-  background: var(--bg2);
-  transform: translateX(2px);
-}
-.card-base.sel {
-  border-color: var(--accent);
-  background: var(--bg2);
-}
-
-.pc-name, .tool-name {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.92rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pc-query, .tool-desc {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--muted);
-  margin-bottom: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pc-cat, .tool-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.64rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  opacity: 0.8;
-}
-
-.badge {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.5rem;
-  border: 1px solid var(--border2);
-  border-radius: 2px;
-  padding: 1px 5px;
-  margin-left: 5px;
-  vertical-align: middle;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.badge-ext { border-color: var(--accent2); color: var(--accent2); }
-.badge-dom { border-color: var(--gold); color: var(--gold); }
-
-/* OSINT tool cards */
-.tool-card {
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 12px 14px 10px;
-  background: var(--card-bg);
-  text-decoration: none;
-  color: var(--fg);
-  display: block;
-  transition: all 0.15s;
-  position: relative;
-  overflow: hidden;
-}
-.tool-card::after {
-  content: '↗';
-  position: absolute;
-  top: 10px; right: 12px;
-  font-size: 0.7rem;
-  color: var(--muted);
-  transition: all 0.15s;
-}
-.tool-card:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-2px); box-shadow: var(--shadow); }
-.tool-card:hover .tool-desc { color: rgba(128,128,128,0.9); }
-.tool-card:hover::after { color: var(--bg); transform: translate(2px, -2px); }
-.tool-card:hover .tool-tag { color: rgba(128,128,128,0.7); }
-
-/* =========================================
-   FOOTER
-========================================= */
-footer {
-  padding-top: 28px;
-  border-top: 1px solid var(--border);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  color: var(--muted);
-  text-align: center;
-  margin-top: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 6px;
-}
-footer a { color: var(--muted); text-decoration: none; transition: color 0.15s; }
-footer a:hover { color: var(--fg); }
-
-/* =========================================
-   TOAST
-========================================= */
-.toast {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: var(--fg);
-  color: var(--bg);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
-  padding: 10px 20px;
-  border-radius: 3px;
-  opacity: 0;
-  transition: all 0.2s ease;
-  pointer-events: none;
-  z-index: 999;
-  letter-spacing: 0.05em;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* =========================================
-   NO RESULTS
-========================================= */
-.no-results {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--muted);
-  text-align: center;
-  padding: 40px 0;
-  grid-column: 1 / -1;
-}
-
-/* =========================================
-   RESPONSIVE
-========================================= */
-@media (max-width: 700px) {
-  body { padding: 0 14px 60px; }
-  .dash-grid { grid-template-columns: 1fr; }
-  .grid-layout { grid-template-columns: 1fr 1fr; }
-  .dash-stats { gap: 16px; flex-wrap: wrap; }
-  .action-row { flex-direction: column; }
-  .btn-primary, .btn-secondary { justify-content: center; }
-  .dash-hero h1 { font-size: 2rem; }
-}
-
-@media (max-width: 500px) {
-  .grid-layout { grid-template-columns: 1fr; }
-}
-
-/* =========================================
-   SCROLLBAR
-========================================= */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-/* =========================================
-   SELECTION
-========================================= */
-::selection { background: var(--accent); color: #fff; }
+#howto-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;}
+#howto-overlay.open{display:flex;}
+#howto-modal{width:min(680px,92vw);max-height:82vh;overflow-y:auto;background:var(--panel-bg);border:1px solid var(--border2);border-radius:6px;box-shadow:var(--shadow-lg);animation:fadeUp 0.18s ease-out;}
+#howto-modal::-webkit-scrollbar{width:3px;}
+#howto-modal::-webkit-scrollbar-thumb{background:var(--border2);}
+.howto-header{padding:22px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--panel-bg);z-index:2;}
+.howto-title{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:800;color:var(--fg);letter-spacing:-0.03em;}
+.howto-title span{color:var(--accent);}
+.howto-close{background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--muted);font-size:0.8rem;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.howto-close:hover{background:var(--fg);color:var(--bg);}
+.howto-body{padding:24px;}
+.howto-section{margin-bottom:28px;}
+.howto-section-title{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.howto-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:500px){.howto-grid{grid-template-columns:1fr;}}
+.howto-card{background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:14px;transition:border-color 0.15s;}
+.howto-card:hover{border-color:var(--border2);}
+.howto-card-title{font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--accent2);margin-bottom:8px;}
+.howto-card-body{font-family:'Space Mono',monospace;font-size:0.66rem;color:var(--fg2);line-height:1.7;}
+.howto-kb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+.howto-kb-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--card-bg);border:1px solid var(--border);border-radius:3px;}
+.howto-kb-key{font-family:'Space Mono',monospace;font-size:0.56rem;background:var(--bg2);border:1px solid var(--border2);border-radius:2px;padding:2px 6px;color:var(--fg2);white-space:nowrap;}
+.howto-kb-desc{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);}
+.howto-tip{background:var(--card-bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:3px;padding:12px 14px;margin-top:8px;font-family:'Space Mono',monospace;font-size:0.66rem;color:var(--fg2);line-height:1.7;}
+.howto-tip strong{color:var(--accent);}
 </style>
 </head>
 <body>
-<canvas id="bg-canvas"></canvas>
-<div class="wrap">
 
+<canvas id="bg-canvas"></canvas>
+
+<div class="wrap">
   <header>
     <div class="header-left">
       <div class="wordmark" onclick="switchView('dashboard')">
@@ -697,62 +607,50 @@ footer a:hover { color: var(--fg); }
       <button class="btn-back" id="backBtn" onclick="switchView('dashboard')">← back</button>
     </div>
     <div class="header-right">
+      <button class="export-btn" id="exportBtn" onclick="exportDorks()" style="display:none;">⬇ export</button>
+      <button id="history-btn" onclick="toggleHistoryPanel()">⏱ history <span class="hist-count" id="hist-count">0</span></button>
+      <button class="export-btn" onclick="openHowTo()">? help</button>
       <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">◐ light</button>
     </div>
   </header>
 
+  <!-- BREADCRUMB -->
+  <div id="breadcrumb">
+    <span class="bc-item" onclick="switchView('dashboard')">DarkDork</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item current" id="bc-current"></span>
+  </div>
+
   <!-- ===== DASHBOARD ===== -->
   <main id="view-dashboard" class="view active">
     <div class="dash-hero">
-      <h1>Find What<br>Shouldn't Be <em>Found.</em></h1>
-      <div class="dash-sub">for the ones who dig deeper.</div>
+      <h1>Search Beyond<br>the <em>Surface.</em></h1>
+      <p class="dash-sub">Advanced OSINT, Google Dorking, and Bug Bounty reconnaissance in one unified toolkit.</p>
     </div>
-
     <div class="dash-grid">
       <button class="dash-card" onclick="switchView('dorking')">
         <div class="dash-card-num">01</div>
         <div class="dash-title">Google Dorking</div>
-        <div class="dash-desc">Query builder for exposed files, credentials, admin panels, and vulnerabilities.</div>
-        <div class="dash-card-foot">
-          <span class="dash-tag">dorks</span>
-          <span class="dash-arrow">↗</span>
-        </div>
+        <div class="dash-desc">100+ hand-picked search operators to surface exposed files, admin panels, login pages, and sensitive data indexed by Google.</div>
+        <div class="dash-card-foot"><span class="dash-tag">dorks</span><span class="dash-arrow">↗</span></div>
       </button>
-
       <button class="dash-card" onclick="switchView('bugbounty')">
         <div class="dash-card-num">02</div>
         <div class="dash-title">Bug Bounty Search</div>
         <div class="dash-desc">Automated recon queries for Wayback, crt.sh, GitHub, subdomains & more.</div>
-        <div class="dash-card-foot">
-          <span class="dash-tag">recon</span>
-          <span class="dash-arrow">↗</span>
-        </div>
+        <div class="dash-card-foot"><span class="dash-tag">recon</span><span class="dash-arrow">↗</span></div>
       </button>
-
       <button class="dash-card" onclick="switchView('osint')">
         <div class="dash-card-num">03</div>
         <div class="dash-title">OSINT Toolkit</div>
-        <div class="dash-desc">Curated library of 20+ external intelligence platforms by use case.</div>
-        <div class="dash-card-foot">
-          <span class="dash-tag">intel</span>
-          <span class="dash-arrow">↗</span>
-        </div>
+        <div class="dash-desc">200+ intelligence tools mapped across 12 categories — from WHOIS and DNS to social, dark web, and threat intel.</div>
+        <div class="dash-card-foot"><span class="dash-tag">intel</span><span class="dash-arrow">↗</span></div>
       </button>
     </div>
-
     <div class="dash-stats">
-      <div class="stat-item">
-        <span class="stat-num" id="stat-dorks">0</span>
-        <span class="stat-lbl">Dork Presets</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" id="stat-bb">0</span>
-        <span class="stat-lbl">BB Queries</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" id="stat-osint">0</span>
-        <span class="stat-lbl">OSINT Tools</span>
-      </div>
+      <div class="stat-item"><span class="stat-num" id="stat-dorks">0</span><span class="stat-lbl">Dork Presets</span></div>
+      <div class="stat-item"><span class="stat-num" id="stat-bb">0</span><span class="stat-lbl">BB Queries</span></div>
+      <div class="stat-item"><span class="stat-num" id="stat-osint">0</span><span class="stat-lbl">OSINT Tools</span></div>
     </div>
   </main>
 
@@ -773,9 +671,17 @@ footer a:hover { color: var(--fg); }
   <!-- ===== DORKING VIEW ===== -->
   <main id="view-dorking" class="view">
     <div class="sec-label">Google Dorks</div>
-    <div class="filter-row">
-      <input class="search-box" type="search" id="dorkFilter" placeholder="Filter dorks..." oninput="renderDorks('dorking')">
+    <!-- Recent dorks -->
+    <div id="recent-section-dorking" class="recent-section-wrap">
+      <div class="recent-label">recently used</div>
+      <div id="recent-grid-dorking" class="recent-grid-inner"></div>
     </div>
+    <!-- Custom builder -->
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <input class="search-box" type="search" id="dorkFilter" placeholder="Filter dorks..." oninput="renderDorks('dorking')" style="flex:1;min-width:150px;">
+      <button id="builder-toggle-dorking" class="export-btn" onclick="toggleBuilder('dorking')">⊕ custom</button>
+    </div>
+    <div id="custom-builder-dorking" class="custom-builder-wrap" style="display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:3px;padding:14px 16px;margin-bottom:12px;"></div>
     <nav class="tabs-wrapper"><div class="tabs" id="dorkingTabs"></div></nav>
     <div class="grid-layout" id="dorkingGrid"></div>
   </main>
@@ -783,680 +689,1593 @@ footer a:hover { color: var(--fg); }
   <!-- ===== BUG BOUNTY VIEW ===== -->
   <main id="view-bugbounty" class="view">
     <div class="sec-label">Bug Bounty & Recon</div>
-    <div class="filter-row">
-      <input class="search-box" type="search" id="bbFilter" placeholder="Filter recon queries..." oninput="renderDorks('bugbounty')">
+    <!-- Recent dorks -->
+    <div id="recent-section-bugbounty" class="recent-section-wrap">
+      <div class="recent-label">recently used</div>
+      <div id="recent-grid-bugbounty" class="recent-grid-inner"></div>
     </div>
+    <!-- Custom builder -->
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <input class="search-box" type="search" id="bbFilter" placeholder="Filter recon queries..." oninput="renderDorks('bugbounty')" style="flex:1;min-width:150px;">
+      <button id="builder-toggle-bugbounty" class="export-btn" onclick="toggleBuilder('bugbounty')">⊕ custom</button>
+    </div>
+    <div id="custom-builder-bugbounty" class="custom-builder-wrap" style="display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:3px;padding:14px 16px;margin-bottom:12px;"></div>
     <nav class="tabs-wrapper"><div class="tabs" id="bbTabs"></div></nav>
     <div class="grid-layout" id="bbGrid"></div>
-  </main>
-
-  <!-- ===== OSINT VIEW ===== -->
-  <main id="view-osint" class="view">
-    <div class="sec-label">OSINT Resources</div>
-    <nav class="tabs-wrapper"><div class="tabs" id="toolTabs"></div></nav>
-    <div class="grid-layout" id="toolsGrid"></div>
   </main>
 
   <footer>
     <p>for authorized security research & osint only · © 2026 <a href="https://0xcgz.github.io" target="_blank">0xcgz</a></p>
   </footer>
+</div><!-- /wrap -->
+
+<!-- ===== OSINT MINDMAP VIEW — full-screen ===== -->
+<div id="view-osint" class="view">
+
+  <!-- Header bar -->
+  <div id="osint-header">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="osint-wordmark"><span>Dark</span><span>Dork</span></div>
+      <button class="ohbtn" onclick="switchView('dashboard')" style="display:inline-flex;align-items:center;gap:5px;">← back</button>
+    </div>
+    <div id="osint-search-wrap">
+      <input id="osintSearchInput" type="search" placeholder="search tools & categories..." autocomplete="off">
+    </div>
+    <div class="osint-hbtns">
+      <button class="ohbtn" id="osintLabelBtn" onclick="cycleLabels()">⊞ labels</button>
+      <button class="ohbtn" onclick="osintResetView()">⊙ reset</button>
+      <button class="ohbtn" id="themeBtn2" onclick="toggleTheme()">◐ light</button>
+    </div>
+  </div>
+
+  <!-- Tag filters bar -->
+  <div id="osint-tag-filters">
+    <span style="font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);letter-spacing:0.08em;align-self:center;margin-right:4px;">FILTER:</span>
+    <button class="tag-filter-btn tf-all active" onclick="setOsintTagFilter('all',this)">All</button>
+    <button class="tag-filter-btn tf-free" onclick="setOsintTagFilter('free',this)">⬤ Free only</button>
+    <button class="tag-filter-btn tf-r" onclick="setOsintTagFilter('R',this)">[R] Registration</button>
+    <button class="tag-filter-btn tf-t" onclick="setOsintTagFilter('T',this)">[T] Local tool</button>
+    <button class="tag-filter-btn tf-d" onclick="setOsintTagFilter('D',this)">[D] Dork</button>
+  </div>
+
+  <!-- Map area -->
+  <div id="osint-map-area">
+    <canvas id="osint-bg-canvas"></canvas>
+    <svg id="osint-tree-svg"></svg>
+
+    <!-- Search dropdown -->
+    <div id="osint-search-results"></div>
+
+    <!-- Stats -->
+    <div id="osint-stats">
+      <div class="ostat"><div class="ostat-dot" style="background:var(--accent);"></div><span id="ostat-nodes">— nodes</span></div>
+      <div class="ostat"><div class="ostat-dot" style="background:var(--accent2);"></div><span id="ostat-tools">— tools</span></div>
+    </div>
+
+    <!-- Legend -->
+    <div id="osint-legend">
+      <div class="leg-title">legend</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#e85535;"></div>Root</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#e0ac3a;"></div>Category</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#6aaccc;"></div>Sub-category</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#4aaa6a;"></div>Tool / URL</div>
+    </div>
+
+    <!-- Zoom controls -->
+    <div id="osint-controls">
+      <button class="map-ctrl" onclick="osintZoom(1.25)">+</button>
+      <button class="map-ctrl" onclick="osintZoom(0.8)">−</button>
+      <button class="map-ctrl" onclick="osintResetView()">⌂</button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="osint-sidebar">
+      <div id="osint-sb-header">
+        <div id="osint-sb-title"></div>
+        <div id="osint-sb-path"></div>
+        <button id="osint-sb-close" onclick="closeOsintSidebar()">×</button>
+      </div>
+      <div id="osint-sb-body"></div>
+    </div>
+  </div><!-- /osint-map-area -->
+</div><!-- /view-osint -->
+
+<!-- Tooltip (shared, above everything) -->
+<div id="osint-tooltip">
+  <div class="tt-name" id="ott-name"></div>
+  <div class="tt-cat" id="ott-cat"></div>
+  <div class="tt-url" id="ott-url"></div>
+  <div class="tt-hint" id="ott-hint"></div>
 </div>
 
-<div class="toast" id="toast">copied!</div>
+<div class="toast" id="toast"></div>
 
+<!-- ═══════════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════════ -->
 <script>
-// --- STATE ---
-var currentView = 'dashboard';
-var activeTab = { dorking: 'all', bugbounty: 'all', osint: 'all' };
-var selected = null;
 
-// --- DATA ---
-var DORKING_DATA = [
-  { name:'Open directories',             cat:'files', q:'intitle:"index of /"' },
-  { name:'Exposed .env files',           cat:'files', q:'intitle:"index of" ".env"' },
-  { name:'Exposed .git config',          cat:'files', q:'inurl:".git/config" intitle:"index of"' },
-  { name:'Exposed .htpasswd',            cat:'files', q:'intitle:"index of" ".htpasswd"' },
-  { name:'Exposed .bash_history',        cat:'files', q:'intitle:"index of" ".bash_history"' },
-  { name:'Exposed .ssh directory',       cat:'files', q:'intitle:"index of /.ssh"' },
-  { name:'Private SSH keys',             cat:'files', q:'intitle:"index of" "id_rsa"' },
-  { name:'Exposed .DS_Store',            cat:'files', q:'intitle:"index of" ".DS_Store"' },
-  { name:'config.php exposed',           cat:'files', q:'intitle:"index of" "config.php"' },
-  { name:'Backup files (.bak)',          cat:'files', q:'intitle:"index of" ext:bak' },
-  { name:'SQL dumps',                    cat:'files', q:'intitle:"index of" ext:sql' },
-  { name:'ZIP archives',                 cat:'files', q:'intitle:"index of" ext:zip' },
-  { name:'Docker compose files',         cat:'files', q:'intitle:"index of" "docker-compose.yml"' },
-  { name:'Kubernetes configs',           cat:'files', q:'intitle:"index of" "kubeconfig"' },
-  { name:'Terraform state files',        cat:'files', q:'intitle:"index of" "terraform.tfstate"' },
-  { name:'Passwords in .txt',            cat:'creds', q:'inurl:password ext:txt' },
-  { name:'Credentials in logs',          cat:'creds', q:'intext:"password" ext:log' },
-  { name:'DB credentials (.env)',        cat:'creds', q:'intext:"DB_PASSWORD" filetype:env' },
-  { name:'AWS access keys',              cat:'creds', q:'intext:"AKIA" ext:env OR ext:cfg OR ext:yml' },
-  { name:'AWS secret in config',         cat:'creds', q:'intext:"aws_secret_access_key" ext:txt OR ext:cfg' },
-  { name:'API keys in .env',             cat:'creds', q:'intext:"API_KEY" filetype:env' },
-  { name:'Slack bot tokens',             cat:'creds', q:'intext:"xoxb-" OR intext:"xoxp-" ext:env' },
-  { name:'GitHub personal tokens',       cat:'creds', q:'intext:"ghp_" ext:env OR ext:cfg' },
-  { name:'JWT secrets',                  cat:'creds', q:'intext:"JWT_SECRET" ext:env OR ext:cfg' },
-  { name:'Private RSA keys',             cat:'creds', q:'intext:"BEGIN RSA PRIVATE KEY" ext:txt OR ext:pem' },
-  { name:'Generic admin login',          cat:'login', q:'inurl:admin intitle:login' },
-  { name:'phpMyAdmin',                   cat:'login', q:'intitle:"phpMyAdmin" inurl:phpmyadmin' },
-  { name:'WordPress admin',              cat:'login', q:'inurl:wp-login.php' },
-  { name:'cPanel login',                 cat:'login', q:'intitle:"cPanel" inurl:2082 OR inurl:2083' },
-  { name:'Jenkins CI',                   cat:'login', q:'intitle:"Dashboard [Jenkins]"' },
-  { name:'Kibana dashboard',             cat:'login', q:'intitle:"Kibana" inurl:5601' },
-  { name:'Grafana login',                cat:'login', q:'intitle:"Grafana" inurl:3000' },
-  { name:'Elasticsearch open',           cat:'login', q:'intitle:"Elasticsearch" inurl:9200' },
-  { name:'MySQL errors',                 cat:'vulns', q:'intext:"mysql_fetch_array()" intext:"SQL syntax"' },
-  { name:'PHP fatal errors',             cat:'vulns', q:'intext:"Fatal error:" intext:"on line" ext:php' },
-  { name:'Stack traces exposed',         cat:'vulns', q:'intext:"Stack trace:" intext:"Exception"' },
-  { name:'Django debug mode',            cat:'vulns', q:'intext:"DEBUG = True" ext:py OR intitle:"Django Debug"' },
-  { name:'Laravel whoops page',          cat:'vulns', q:'intitle:"Whoops!" intext:"Laravel"' },
-  { name:'phpinfo() exposed',            cat:'vulns', q:'intitle:"phpinfo()" intext:"PHP Version"' },
-  { name:'/etc/passwd exposed',          cat:'vulns', q:'intext:"root:x:0:0:" filetype:txt' },
-  { name:'Spring Boot actuator',         cat:'vulns', q:'inurl:actuator/env OR inurl:actuator/dump' },
-  { name:'S3 bucket listing',            cat:'cloud', q:'site:s3.amazonaws.com intitle:"index of"' },
-  { name:'Azure blob public',            cat:'cloud', q:'site:blob.core.windows.net intitle:"index of"' },
-  { name:'Live webcams',                 cat:'iot',   q:'inurl:view/index.shtml intitle:webcam' },
-  { name:'Hikvision cameras',            cat:'iot',   q:'inurl:"/doc/page/login.asp" intitle:login' },
-  { name:'Email lists in .txt',          cat:'osint', q:'filetype:txt intext:"@gmail.com" OR intext:"@yahoo.com"' },
-  { name:'Customer CSV databases',       cat:'osint', q:'filetype:csv intext:"email" intext:"password"' },
-  { name:'VPN config files',             cat:'osint', q:'filetype:ovpn OR filetype:conf intext:"remote"' },
-  { name:'Google Docs leaks',            cat:'osint', q:'site:docs.google.com intext:"password" OR intext:"confidential"' }
+var DORKING_DATA=[
+  {name:'Open directories',cat:'files',q:'intitle:"index of /"'},
+  {name:'Exposed .env files',cat:'files',q:'intitle:"index of" ".env"'},
+  {name:'Exposed .git config',cat:'files',q:'inurl:".git/config" intitle:"index of"'},
+  {name:'Exposed .htpasswd',cat:'files',q:'intitle:"index of" ".htpasswd"'},
+  {name:'Exposed .bash_history',cat:'files',q:'intitle:"index of" ".bash_history"'},
+  {name:'Exposed .ssh directory',cat:'files',q:'intitle:"index of /.ssh"'},
+  {name:'Private SSH keys',cat:'files',q:'intitle:"index of" "id_rsa"'},
+  {name:'Exposed .DS_Store',cat:'files',q:'intitle:"index of" ".DS_Store"'},
+  {name:'config.php exposed',cat:'files',q:'intitle:"index of" "config.php"'},
+  {name:'Backup files (.bak)',cat:'files',q:'intitle:"index of" ext:bak'},
+  {name:'SQL dumps',cat:'files',q:'intitle:"index of" ext:sql'},
+  {name:'ZIP archives',cat:'files',q:'intitle:"index of" ext:zip'},
+  {name:'Docker compose files',cat:'files',q:'intitle:"index of" "docker-compose.yml"'},
+  {name:'Kubernetes configs',cat:'files',q:'intitle:"index of" "kubeconfig"'},
+  {name:'Terraform state files',cat:'files',q:'intitle:"index of" "terraform.tfstate"'},
+  {name:'Passwords in .txt',cat:'creds',q:'inurl:password ext:txt'},
+  {name:'Credentials in logs',cat:'creds',q:'intext:"password" ext:log'},
+  {name:'DB credentials (.env)',cat:'creds',q:'intext:"DB_PASSWORD" filetype:env'},
+  {name:'AWS access keys',cat:'creds',q:'intext:"AKIA" ext:env OR ext:cfg OR ext:yml'},
+  {name:'AWS secret in config',cat:'creds',q:'intext:"aws_secret_access_key" ext:txt OR ext:cfg'},
+  {name:'API keys in .env',cat:'creds',q:'intext:"API_KEY" filetype:env'},
+  {name:'Slack bot tokens',cat:'creds',q:'intext:"xoxb-" OR intext:"xoxp-" ext:env'},
+  {name:'GitHub personal tokens',cat:'creds',q:'intext:"ghp_" ext:env OR ext:cfg'},
+  {name:'JWT secrets',cat:'creds',q:'intext:"JWT_SECRET" ext:env OR ext:cfg'},
+  {name:'Private RSA keys',cat:'creds',q:'intext:"BEGIN RSA PRIVATE KEY" ext:txt OR ext:pem'},
+  {name:'Generic admin login',cat:'login',q:'inurl:admin intitle:login'},
+  {name:'phpMyAdmin',cat:'login',q:'intitle:"phpMyAdmin" inurl:phpmyadmin'},
+  {name:'WordPress admin',cat:'login',q:'inurl:wp-login.php'},
+  {name:'cPanel login',cat:'login',q:'intitle:"cPanel" inurl:2082 OR inurl:2083'},
+  {name:'Jenkins CI',cat:'login',q:'intitle:"Dashboard [Jenkins]"'},
+  {name:'Kibana dashboard',cat:'login',q:'intitle:"Kibana" inurl:5601'},
+  {name:'Grafana login',cat:'login',q:'intitle:"Grafana" inurl:3000'},
+  {name:'Elasticsearch open',cat:'login',q:'intitle:"Elasticsearch" inurl:9200'},
+  {name:'MySQL errors',cat:'vulns',q:'intext:"mysql_fetch_array()" intext:"SQL syntax"'},
+  {name:'PHP fatal errors',cat:'vulns',q:'intext:"Fatal error:" intext:"on line" ext:php'},
+  {name:'Stack traces exposed',cat:'vulns',q:'intext:"Stack trace:" intext:"Exception"'},
+  {name:'Django debug mode',cat:'vulns',q:'intext:"DEBUG = True" ext:py OR intitle:"Django Debug"'},
+  {name:'Laravel whoops page',cat:'vulns',q:'intitle:"Whoops!" intext:"Laravel"'},
+  {name:'phpinfo() exposed',cat:'vulns',q:'intitle:"phpinfo()" intext:"PHP Version"'},
+  {name:'/etc/passwd exposed',cat:'vulns',q:'intext:"root:x:0:0:" filetype:txt'},
+  {name:'Spring Boot actuator',cat:'vulns',q:'inurl:actuator/env OR inurl:actuator/dump'},
+  {name:'S3 bucket listing',cat:'cloud',q:'site:s3.amazonaws.com intitle:"index of"'},
+  {name:'Azure blob public',cat:'cloud',q:'site:blob.core.windows.net intitle:"index of"'},
+  {name:'Live webcams',cat:'iot',q:'inurl:view/index.shtml intitle:webcam'},
+  {name:'Hikvision cameras',cat:'iot',q:'inurl:"/doc/page/login.asp" intitle:login'},
+  {name:'Email lists in .txt',cat:'osint',q:'filetype:txt intext:"@gmail.com" OR intext:"@yahoo.com"'},
+  {name:'Customer CSV databases',cat:'osint',q:'filetype:csv intext:"email" intext:"password"'},
+  {name:'VPN config files',cat:'osint',q:'filetype:ovpn OR filetype:conf intext:"remote"'},
+  {name:'Google Docs leaks',cat:'osint',q:'site:docs.google.com intext:"password" OR intext:"confidential"'}
 ];
 
-var BUGBOUNTY_DATA = [
-  { name:'Directory listing vulns', cat:'recon', q:'intitle:index.of' },
-  { name:'Exposed Configuration files', cat:'files', q:'ext:xml | ext:conf | ext:cnf | ext:reg | ext:inf | ext:rdp | ext:cfg | ext:txt | ext:ora | ext:ini' },
-  { name:'Exposed Database files', cat:'files', q:'ext:sql | ext:dbf | ext:mdb' },
-  { name:'Exposed log files', cat:'files', q:'ext:log' },
-  { name:'Backup and old files', cat:'files', q:'ext:bkf | ext:bkp | ext:bak | ext:old | ext:backup' },
-  { name:'Login pages', cat:'recon', q:'inurl:login' },
-  { name:'SQL errors', cat:'vulns', q:'intext:"sql syntax near" | intext:"syntax error has occurred" | intext:"incorrect syntax near" | intext:"unexpected end of SQL command" | intext:"Warning: mysql_connect()" | intext:"Warning: mysql_query()" | intext:"Warning: pg_connect()"' },
-  { name:'Publicly exposed documents', cat:'docs', q:'ext:doc | ext:docx | ext:odt | ext:pdf | ext:rtf | ext:sxw | ext:psw | ext:ppt | ext:pptx | ext:pps | ext:csv' },
-  { name:'phpinfo()', cat:'vulns', q:'ext:php intitle:phpinfo "published by the PHP Group"' },
-  { name:'Find WordPress', cat:'recon', q:'inurl:wp- | inurl:wp-content | inurl:plugins | inurl:uploads | inurl:themes | inurl:download' },
-  { name:'Finding Backdoors', cat:'vulns', q:'inurl:shell | inurl:backdoor | inurl:wso | inurl:cmd | shadow | passwd | boot.ini | inurl:backdoor' },
-  { name:'Install / Setup files', cat:'files', q:'inurl:readme | inurl:license | inurl:install | inurl:setup | inurl:config' },
-  { name:'Open Redirects', cat:'vulns', q:'inurl:redir | inurl:url | inurl:redirect | inurl:return | inurl:src=http | inurl:r=http' },
-  { name:'Apache STRUTS RCE', cat:'vulns', q:'ext:action | ext:struts | ext:do' },
-  { name:'Find Pastebin entries', cat:'recon', q:'site:pastebin.com {domain}', needsDomain:true },
-  { name:'Employees on LINKEDIN', cat:'recon', q:'site:linkedin.com employees {domain}', needsDomain:true },
-  { name:'.htaccess sensitive files', cat:'files', q:'inurl:"/phpinfo.php" | inurl:".htaccess" | inurl:"/.git" {domain} -github', needsDomain:true },
-  { name:'Find Subdomains', cat:'recon', q:'site:*.{domain}', needsDomain:true },
-  { name:'Find Sub-Subdomains', cat:'recon', q:'site:*.*.{domain}', needsDomain:true },
-  { name:'Find WordPress #2', cat:'recon', q:'inurl:wp-content | inurl:wp-includes {domain}', needsDomain:true },
-  { name:'Search in GITHUB', cat:'external', ext:true, engine:'github', needsDomain:true },
-  { name:'Test CrossDomain', cat:'external', ext:true, engine:'crossdomain', needsDomain:true },
-  { name:'Check in ThreatCrowd', cat:'external', ext:true, engine:'threatcrowd', needsDomain:true },
-  { name:'Find SWF', cat:'recon', q:'+inurl:{domain} +ext:swf', needsDomain:true },
-  { name:'Find MIME-SWF', cat:'external', ext:true, engine:'yandex_swf', needsDomain:true },
-  { name:'Find SWF links in the past', cat:'external', ext:true, engine:'wayback_swf1', needsDomain:true },
-  { name:'Find MIME-SWF links in the past', cat:'external', ext:true, engine:'wayback_swf2', needsDomain:true },
-  { name:'Search in Web Archive #1', cat:'external', ext:true, engine:'wayback1', needsDomain:true },
-  { name:'Search in Web Archive #2', cat:'external', ext:true, engine:'wayback2', needsDomain:true },
-  { name:'Certificate Transparency', cat:'external', ext:true, engine:'crtsh', needsDomain:true },
-  { name:'Search OpenBugBounty', cat:'external', ext:true, engine:'openbugbounty', needsDomain:true },
-  { name:'Search in Reddit', cat:'external', ext:true, engine:'reddit', needsDomain:true },
-  { name:'Search WP Config Backup', cat:'external', ext:true, engine:'wayback_wp', needsDomain:true },
-  { name:'Search in Censys (IPv4)', cat:'external', ext:true, engine:'censys_ip', needsDomain:true },
-  { name:'Search in Censys (Domain)', cat:'external', ext:true, engine:'censys_domain', needsDomain:true },
-  { name:'Search in Censys (Certificates)', cat:'external', ext:true, engine:'censys_cert', needsDomain:true },
-  { name:'Search in SHODAN', cat:'external', ext:true, engine:'shodan', needsDomain:true },
-  { name:'Vulnerable Servers (GeoServer)', cat:'vulns', q:'inurl:"/geoserver/ows?service=wfs"' },
-  { name:'ArcGIS REST Services Directory', cat:'recon', q:'intext:"ArcGIS REST Services Directory" intitle:"Folder: /"' },
-  { name:'wp-content Juicy Info', cat:'files', q:'inurl:/wp-content/uploads/wpo_wcpdf' },
-  { name:'main.yml file', cat:'files', q:'intitle:"index of "main.yml"' },
-  { name:'Admin Portal', cat:'login', q:'inurl:/admin.aspx' },
-  { name:'File Upload', cat:'recon', q:'inurl:uploadimage.php' },
-  { name:'Vulnerable Wordpress Plugin', cat:'vulns', q:'inurl:*/wp-content/plugins/contact-form-7/' },
-  { name:'Sensitive File (conf.php)', cat:'files', q:'intitle:index.of conf.php' },
-  { name:'Sharing API Info', cat:'files', q:'intitle:"Sharing API Info"' },
-  { name:'Sensitive Admin Backup', cat:'files', q:'intitle:"Index of" inurl:/backup/ "admin.zip"' },
-  { name:'Github API', cat:'files', q:'intitle:"index of" github-api' },
-  { name:'Drupal Login', cat:'login', q:'inurl:user intitle:"Drupal" intext:"Log in" -"powered by"' },
-  { name:'Joomla Database/', cat:'files', q:'inurl: /libraries/joomla/database/' },
-  { name:'Sql File Injection', cat:'vulns', q:'inurl:"php?sql=select" ext:php' },
-  { name:'Remote procedure call protocol', cat:'recon', q:'intext:"index of" inurl:json-rpc' },
-  { name:'Sensitive File Download', cat:'files', q:'intitle:"index of" "download.php?file="' },
-  { name:'Wordpress Backup', cat:'files', q:'inurl:"wp-content" intitle:"index.of" intext:backup' },
-  { name:'Mysql file', cat:'files', q:'intitle:index.of conf.mysql' },
-  { name:'Sensitive File (users/admin)', cat:'files', q:'intitle:"index of" "users.yml" | "admin.yml" | "config.yml"' },
-  { name:'Docker-Compose yml file', cat:'files', q:'intitle:"index of" "docker-compose.yml"' },
-  { name:'Sensitive File (pom.xml)', cat:'files', q:'intext:pom.xml intitle:"index of /"' },
-  { name:'Sensitive File (/etc)', cat:'files', q:'intext:"Index of" intext:"/etc"' },
-  { name:'SQL Installs/Databases', cat:'files', q:'"sql" "parent" intitle:index.of -injection' }
+var BUGBOUNTY_DATA=[
+  {name:'Directory listing vulns',cat:'recon',q:'intitle:index.of'},
+  {name:'Exposed Configuration files',cat:'files',q:'ext:xml | ext:conf | ext:cnf | ext:reg | ext:inf | ext:rdp | ext:cfg | ext:txt | ext:ora | ext:ini'},
+  {name:'Exposed Database files',cat:'files',q:'ext:sql | ext:dbf | ext:mdb'},
+  {name:'Exposed log files',cat:'files',q:'ext:log'},
+  {name:'Backup and old files',cat:'files',q:'ext:bkf | ext:bkp | ext:bak | ext:old | ext:backup'},
+  {name:'Login pages',cat:'recon',q:'inurl:login'},
+  {name:'SQL errors',cat:'vulns',q:'intext:"sql syntax near" | intext:"syntax error has occurred" | intext:"incorrect syntax near" | intext:"unexpected end of SQL command" | intext:"Warning: mysql_connect()" | intext:"Warning: mysql_query()" | intext:"Warning: pg_connect()"'},
+  {name:'Publicly exposed documents',cat:'docs',q:'ext:doc | ext:docx | ext:odt | ext:pdf | ext:rtf | ext:sxw | ext:psw | ext:ppt | ext:pptx | ext:pps | ext:csv'},
+  {name:'phpinfo()',cat:'vulns',q:'ext:php intitle:phpinfo "published by the PHP Group"'},
+  {name:'Find WordPress',cat:'recon',q:'inurl:wp- | inurl:wp-content | inurl:plugins | inurl:uploads | inurl:themes | inurl:download'},
+  {name:'Finding Backdoors',cat:'vulns',q:'inurl:shell | inurl:backdoor | inurl:wso | inurl:cmd | shadow | passwd | boot.ini | inurl:backdoor'},
+  {name:'Install / Setup files',cat:'files',q:'inurl:readme | inurl:license | inurl:install | inurl:setup | inurl:config'},
+  {name:'Open Redirects',cat:'vulns',q:'inurl:redir | inurl:url | inurl:redirect | inurl:return | inurl:src=http | inurl:r=http'},
+  {name:'Apache STRUTS RCE',cat:'vulns',q:'ext:action | ext:struts | ext:do'},
+  {name:'Find Pastebin entries',cat:'recon',q:'site:pastebin.com {domain}',needsDomain:true},
+  {name:'Employees on LINKEDIN',cat:'recon',q:'site:linkedin.com employees {domain}',needsDomain:true},
+  {name:'.htaccess sensitive files',cat:'files',q:'inurl:"/phpinfo.php" | inurl:".htaccess" | inurl:"/.git" {domain} -github',needsDomain:true},
+  {name:'Find Subdomains',cat:'recon',q:'site:*.{domain}',needsDomain:true},
+  {name:'Find Sub-Subdomains',cat:'recon',q:'site:*.*.{domain}',needsDomain:true},
+  {name:'Find WordPress #2',cat:'recon',q:'inurl:wp-content | inurl:wp-includes {domain}',needsDomain:true},
+  {name:'Search in GITHUB',cat:'external',ext:true,engine:'github',needsDomain:true},
+  {name:'Test CrossDomain',cat:'external',ext:true,engine:'crossdomain',needsDomain:true},
+  {name:'Check in ThreatCrowd',cat:'external',ext:true,engine:'threatcrowd',needsDomain:true},
+  {name:'Find SWF',cat:'recon',q:'+inurl:{domain} +ext:swf',needsDomain:true},
+  {name:'Find MIME-SWF',cat:'external',ext:true,engine:'yandex_swf',needsDomain:true},
+  {name:'Find SWF links in the past',cat:'external',ext:true,engine:'wayback_swf1',needsDomain:true},
+  {name:'Find MIME-SWF links in the past',cat:'external',ext:true,engine:'wayback_swf2',needsDomain:true},
+  {name:'Search in Web Archive #1',cat:'external',ext:true,engine:'wayback1',needsDomain:true},
+  {name:'Search in Web Archive #2',cat:'external',ext:true,engine:'wayback2',needsDomain:true},
+  {name:'Certificate Transparency',cat:'external',ext:true,engine:'crtsh',needsDomain:true},
+  {name:'Search OpenBugBounty',cat:'external',ext:true,engine:'openbugbounty',needsDomain:true},
+  {name:'Search in Reddit',cat:'external',ext:true,engine:'reddit',needsDomain:true},
+  {name:'Search WP Config Backup',cat:'external',ext:true,engine:'wayback_wp',needsDomain:true},
+  {name:'Search in Censys (IPv4)',cat:'external',ext:true,engine:'censys_ip',needsDomain:true},
+  {name:'Search in Censys (Domain)',cat:'external',ext:true,engine:'censys_domain',needsDomain:true},
+  {name:'Search in Censys (Certificates)',cat:'external',ext:true,engine:'censys_cert',needsDomain:true},
+  {name:'Search in SHODAN',cat:'external',ext:true,engine:'shodan',needsDomain:true},
+  {name:'Vulnerable Servers (GeoServer)',cat:'vulns',q:'inurl:"/geoserver/ows?service=wfs"'},
+  {name:'ArcGIS REST Services Directory',cat:'recon',q:'intext:"ArcGIS REST Services Directory" intitle:"Folder: /"'},
+  {name:'wp-content Juicy Info',cat:'files',q:'inurl:/wp-content/uploads/wpo_wcpdf'},
+  {name:'main.yml file',cat:'files',q:'intitle:"index of "main.yml"'},
+  {name:'Admin Portal',cat:'login',q:'inurl:/admin.aspx'},
+  {name:'File Upload',cat:'recon',q:'inurl:uploadimage.php'},
+  {name:'Vulnerable Wordpress Plugin',cat:'vulns',q:'inurl:*/wp-content/plugins/contact-form-7/'},
+  {name:'Sensitive File (conf.php)',cat:'files',q:'intitle:index.of conf.php'},
+  {name:'Sharing API Info',cat:'files',q:'intitle:"Sharing API Info"'},
+  {name:'Sensitive Admin Backup',cat:'files',q:'intitle:"Index of" inurl:/backup/ "admin.zip"'},
+  {name:'Github API',cat:'files',q:'intitle:"index of" github-api'},
+  {name:'Drupal Login',cat:'login',q:'inurl:user intitle:"Drupal" intext:"Log in" -"powered by"'},
+  {name:'Joomla Database/',cat:'files',q:'inurl: /libraries/joomla/database/'},
+  {name:'Sql File Injection',cat:'vulns',q:'inurl:"php?sql=select" ext:php'},
+  {name:'Remote procedure call protocol',cat:'recon',q:'intext:"index of" inurl:json-rpc'},
+  {name:'Sensitive File Download',cat:'files',q:'intitle:"index of" "download.php?file="'},
+  {name:'Wordpress Backup',cat:'files',q:'inurl:"wp-content" intitle:"index.of" intext:backup'},
+  {name:'Mysql file',cat:'files',q:'intitle:index.of conf.mysql'},
+  {name:'Sensitive File (users/admin)',cat:'files',q:'intitle:"index of" "users.yml" | "admin.yml" | "config.yml"'},
+  {name:'Docker-Compose yml file',cat:'files',q:'intitle:"index of" "docker-compose.yml"'},
+  {name:'Sensitive File (pom.xml)',cat:'files',q:'intext:pom.xml intitle:"index of /"'},
+  {name:'Sensitive File (/etc)',cat:'files',q:'intext:"Index of" intext:"/etc"'},
+  {name:'SQL Installs/Databases',cat:'files',q:'"sql" "parent" intitle:index.of -injection'}
 ];
 
-var OSINT_TOOLS = [
-  // --- RECON & SEARCH ENGINES ---
-  {name:'Shodan',              url:'https://www.shodan.io',                        desc:'Internet device & IoT search engine',    cat:'recon'},
-  {name:'Censys',              url:'https://censys.io',                            desc:'Attack surface search engine',           cat:'recon'},
-  {name:'FOFA',                url:'https://fofa.info',                            desc:'Cyberspace mapping & search (CN)',        cat:'recon'},
-  {name:'ZoomEye',             url:'https://www.zoomeye.org',                      desc:'Global cyberspace search engine',        cat:'recon'},
-  {name:'GreyNoise',           url:'https://www.greynoise.io',                     desc:'Internet background noise & scan intel', cat:'recon'},
-  {name:'BinaryEdge',          url:'https://app.binaryedge.io',                    desc:'Real-time threat intelligence',          cat:'recon'},
-  {name:'Onyphe',              url:'https://www.onyphe.io',                        desc:'Cyber defense search engine',            cat:'recon'},
-  {name:'PublicWWW',           url:'https://publicwww.com',                        desc:'Source code search engine',              cat:'recon'},
-  {name:'Netlas',              url:'https://app.netlas.io',                        desc:'Internet intelligence platform',         cat:'recon'},
-  {name:'LeakIX',              url:'https://leakix.net',                           desc:'Publicly indexed leaks & services',      cat:'recon'},
-  {name:'Wayback Machine',     url:'https://web.archive.org',                      desc:'Historical web snapshots & archives',    cat:'recon'},
-  {name:'Archive.today',       url:'https://archive.ph',                           desc:'Webpage capture & archiving tool',       cat:'recon'},
-  {name:'URLScan.io',          url:'https://urlscan.io',                           desc:'Website scanner & visual analyzer',      cat:'recon'},
-  {name:'VirusTotal',          url:'https://www.virustotal.com',                   desc:'Malware, IP, and URL scanner',           cat:'recon'},
-  {name:'crt.sh',              url:'https://crt.sh',                               desc:'Certificate transparency logs',          cat:'recon'},
-  {name:'FullHunt',            url:'https://fullhunt.io',                          desc:'Attack surface management DB',           cat:'recon'},
-  {name:'IntelligenceX',       url:'https://intelx.io',                            desc:'Search engine for leaked & historic data',cat:'recon'},
-  {name:'Recon.dev',           url:'https://recon.dev',                            desc:'Passive subdomain discovery',            cat:'recon'},
-  {name:'Hunter.how',          url:'https://hunter.how',                           desc:'Network asset search engine',            cat:'recon'},
-  {name:'grep.app',            url:'https://grep.app',                             desc:'Search across public GitHub repos',      cat:'recon'},
-  {name:'OSINT Framework',     url:'https://osintframe.work',                      desc:'Visual OSINT tool directory & map',      cat:'recon'},
-  {name:'CIRCL Lookyloo',      url:'https://lookyloo.circl.lu',                    desc:'Web forensics & page capture tool',      cat:'recon'},
-  {name:'OATHnet',             url:'https://oathnet.org',                          desc:'Open source threat hunting network',     cat:'recon'},
+var OSINT_TREE={name:"OSINT Framework",children:[
+  {name:"Username",color:"#e0ac3a",children:[
+    {name:"Username Search",children:[
+      {name:"WhatsMyName",url:"https://whatsmyname.app",type:"url"},
+      {name:"Namechk",url:"https://namechk.com",type:"url"},
+      {name:"KnowEm",url:"https://knowem.com",type:"url"},
+      {name:"CheckUsernames",url:"https://checkusernames.com",type:"url"},
+      {name:"Instant Username Search",url:"https://instantusername.com",type:"url"},
+      {name:"Usersearch.org",url:"https://usersearch.org",type:"url"},
+      {name:"Sherlock",url:"https://github.com/sherlock-project/sherlock",type:"url",tag:"T"},
+      {name:"Social-Analyzer",url:"https://github.com/qeeqbox/social-analyzer",type:"url",tag:"T"},
+    ]},
+    {name:"People Aggregators",children:[
+      {name:"Spokeo",url:"https://www.spokeo.com",type:"url",tag:"R"},
+      {name:"Pipl",url:"https://pipl.com",type:"url",tag:"R"},
+      {name:"PeekYou",url:"https://www.peekyou.com",type:"url"},
+      {name:"IDCrawl",url:"https://www.idcrawl.com",type:"url"},
+      {name:"TruePeopleSearch",url:"https://www.truepeoplesearch.com",type:"url"},
+      {name:"WebMii",url:"https://webmii.com",type:"url"},
+    ]},
+    {name:"Social Media",children:[
+      {name:"Social-Searcher",url:"https://www.social-searcher.com",type:"url"},
+      {name:"Followerwonk",url:"https://followerwonk.com",type:"url",tag:"R"},
+      {name:"BoardReader",url:"https://boardreader.com",type:"url"},
+    ]},
+  ]},
+  {name:"Email Address",color:"#9b72cf",children:[
+    {name:"Email Search",children:[
+      {name:"Hunter.io",url:"https://hunter.io",type:"url",tag:"R"},
+      {name:"Epieos",url:"https://epieos.com",type:"url"},
+      {name:"Phonebook.cz",url:"https://phonebook.cz",type:"url",tag:"R"},
+      {name:"EmailRep.io",url:"https://emailrep.io",type:"url"},
+      {name:"Snov.io",url:"https://snov.io/email-finder",type:"url",tag:"R"},
+      {name:"VoilaNorbert",url:"https://www.voilanorbert.com",type:"url",tag:"R"},
+      {name:"RocketReach",url:"https://rocketreach.co",type:"url",tag:"R"},
+    ]},
+    {name:"Breach / Leaks",children:[
+      {name:"HaveIBeenPwned",url:"https://haveibeenpwned.com",type:"url"},
+      {name:"DeHashed",url:"https://dehashed.com",type:"url",tag:"R"},
+      {name:"LeakCheck",url:"https://leakcheck.io",type:"url"},
+      {name:"Snusbase",url:"https://snusbase.com",type:"url",tag:"R"},
+      {name:"BreachDirectory",url:"https://breachdirectory.org",type:"url"},
+      {name:"GhostProject",url:"https://ghostproject.fr",type:"url",tag:"R"},
+      {name:"IntelligenceX",url:"https://intelx.io",type:"url",tag:"R"},
+    ]},
+    {name:"Header Analysis",children:[
+      {name:"MXToolbox",url:"https://mxtoolbox.com/EmailHeaders.aspx",type:"url"},
+      {name:"Google Header Analyzer",url:"https://toolbox.googleapps.com/apps/messageheader",type:"url"},
+    ]},
+  ]},
+  {name:"Domain / IP",color:"#6aaccc",children:[
+    {name:"DNS Records",children:[
+      {name:"MXToolbox",url:"https://mxtoolbox.com",type:"url"},
+      {name:"DNSdumpster",url:"https://dnsdumpster.com",type:"url"},
+      {name:"ViewDNS.info",url:"https://viewdns.info",type:"url"},
+      {name:"SecurityTrails",url:"https://securitytrails.com",type:"url",tag:"R"},
+      {name:"DNSlytics",url:"https://dnslytics.com",type:"url"},
+      {name:"RiskIQ Community",url:"https://community.riskiq.com",type:"url",tag:"R"},
+    ]},
+    {name:"IP Geolocation",children:[
+      {name:"IPinfo.io",url:"https://ipinfo.io",type:"url"},
+      {name:"IP2Location",url:"https://www.ip2location.com",type:"url"},
+      {name:"IPLocation.net",url:"https://iplocation.net",type:"url"},
+      {name:"MaxMind",url:"https://www.maxmind.com/en/geoip-demo",type:"url"},
+    ]},
+    {name:"Threat Intel",children:[
+      {name:"AbuseIPDB",url:"https://www.abuseipdb.com",type:"url"},
+      {name:"Pulsedive",url:"https://pulsedive.com",type:"url"},
+      {name:"Criminal IP",url:"https://www.criminalip.io",type:"url",tag:"R"},
+      {name:"GreyNoise",url:"https://www.greynoise.io",type:"url",tag:"R"},
+      {name:"IBM X-Force",url:"https://exchange.xforce.ibmcloud.com",type:"url"},
+      {name:"OTX AlienVault",url:"https://otx.alienvault.com",type:"url"},
+      {name:"ThreatMiner",url:"https://www.threatminer.org",type:"url"},
+    ]},
+    {name:"WHOIS",children:[
+      {name:"ARIN Whois",url:"https://search.arin.net",type:"url"},
+      {name:"DomainTools Whois",url:"https://whois.domaintools.com",type:"url"},
+      {name:"CentralOps",url:"https://centralops.net/co",type:"url"},
+      {name:"Robtex",url:"https://www.robtex.com",type:"url"},
+    ]},
+    {name:"Certificates",children:[
+      {name:"crt.sh",url:"https://crt.sh",type:"url"},
+      {name:"Censys",url:"https://censys.io",type:"url",tag:"R"},
+      {name:"SSL Labs",url:"https://www.ssllabs.com/ssltest",type:"url"},
+    ]},
+  ]},
+  {name:"Search Engines",color:"#4ab8aa",children:[
+    {name:"IoT / Device Search",children:[
+      {name:"Shodan",url:"https://www.shodan.io",type:"url",tag:"R"},
+      {name:"Censys",url:"https://censys.io",type:"url",tag:"R"},
+      {name:"FOFA",url:"https://fofa.info",type:"url",tag:"R"},
+      {name:"ZoomEye",url:"https://www.zoomeye.org",type:"url",tag:"R"},
+      {name:"BinaryEdge",url:"https://app.binaryedge.io",type:"url",tag:"R"},
+      {name:"Netlas",url:"https://app.netlas.io",type:"url",tag:"R"},
+      {name:"Hunter.how",url:"https://hunter.how",type:"url"},
+    ]},
+    {name:"Source Code",children:[
+      {name:"grep.app",url:"https://grep.app",type:"url"},
+      {name:"PublicWWW",url:"https://publicwww.com",type:"url"},
+      {name:"GitHub Code Search",url:"https://github.com/search",type:"url"},
+      {name:"Searchcode",url:"https://searchcode.com",type:"url"},
+    ]},
+    {name:"Dark Web",children:[
+      {name:"Ahmia",url:"https://ahmia.fi",type:"url"},
+      {name:"DarkSearch",url:"https://darksearch.io",type:"url"},
+      {name:"IntelligenceX TOR",url:"https://intelx.io/?did=7",type:"url",tag:"R"},
+      {name:"OnionSearch",url:"https://onionsearchengine.com",type:"url"},
+    ]},
+    {name:"Meta Search",children:[
+      {name:"Google",url:"https://www.google.com",type:"url"},
+      {name:"Bing",url:"https://www.bing.com",type:"url"},
+      {name:"DuckDuckGo",url:"https://duckduckgo.com",type:"url"},
+      {name:"Yandex",url:"https://www.yandex.com",type:"url"},
+      {name:"Startpage",url:"https://www.startpage.com",type:"url"},
+    ]},
+  ]},
+  {name:"Images / Video",color:"#e06aaa",children:[
+    {name:"Reverse Image",children:[
+      {name:"TinEye",url:"https://tineye.com",type:"url"},
+      {name:"Google Images",url:"https://images.google.com",type:"url"},
+      {name:"Yandex Images",url:"https://yandex.com/images",type:"url"},
+      {name:"Bing Visual Search",url:"https://www.bing.com/visualsearch",type:"url"},
+    ]},
+    {name:"Face Recognition",children:[
+      {name:"PimEyes",url:"https://pimeyes.com",type:"url",tag:"R"},
+      {name:"FaceCheck.ID",url:"https://facecheck.id",type:"url"},
+      {name:"Search4Faces",url:"https://search4faces.com",type:"url"},
+    ]},
+    {name:"Metadata / Forensics",children:[
+      {name:"ExifTool Online",url:"https://exif.tools",type:"url"},
+      {name:"Jeffrey's Exif",url:"https://exif.regex.info/exif.cgi",type:"url"},
+      {name:"Forensically",url:"https://29a.ch/photo-forensics",type:"url"},
+      {name:"FotoForensics",url:"https://fotoforensics.com",type:"url"},
+      {name:"Metadata2go",url:"https://www.metadata2go.com",type:"url"},
+    ]},
+    {name:"Video Verification",children:[
+      {name:"InVID WeVerify",url:"https://weverify.eu/tools/",type:"url"},
+      {name:"YouTube DataViewer",url:"https://citizenevidence.amnestyusa.org",type:"url"},
+    ]},
+  ]},
+  {name:"Social Networks",color:"#e0ac3a",children:[
+    {name:"Twitter / X",children:[
+      {name:"Advanced Search",url:"https://twitter.com/search-advanced",type:"url"},
+      {name:"Followerwonk",url:"https://followerwonk.com",type:"url",tag:"R"},
+      {name:"Twint",url:"https://github.com/twintproject/twint",type:"url",tag:"T"},
+    ]},
+    {name:"Facebook",children:[
+      {name:"StalkFace",url:"https://stalkface.com/en",type:"url"},
+      {name:"Sowsearch",url:"https://sowsearch.info",type:"url"},
+      {name:"Lookup-ID",url:"https://lookup-id.com",type:"url"},
+    ]},
+    {name:"Instagram",children:[
+      {name:"Picuki",url:"https://www.picuki.com",type:"url"},
+      {name:"StoriesIG",url:"https://storiesig.info",type:"url"},
+      {name:"Osintgram",url:"https://github.com/Datalux/Osintgram",type:"url",tag:"T"},
+    ]},
+    {name:"LinkedIn",children:[
+      {name:"LinkedIn Search",url:"https://www.linkedin.com/search/results/people",type:"url",tag:"R"},
+      {name:"Google Dork",url:"https://www.google.com/search?q=site:linkedin.com",type:"url",tag:"D"},
+    ]},
+    {name:"Reddit",children:[
+      {name:"Reddit Search",url:"https://www.reddit.com/search",type:"url"},
+      {name:"RedditMetis",url:"https://redditmetis.com",type:"url"},
+      {name:"Reddit Investigator",url:"https://www.redditinvestigator.com",type:"url"},
+    ]},
+    {name:"TikTok",children:[
+      {name:"TikTok Viewer",url:"https://www.tikvid.com",type:"url"},
+      {name:"Exolyt",url:"https://exolyt.com",type:"url"},
+    ]},
+    {name:"Telegram",children:[
+      {name:"TGstat",url:"https://tgstat.com",type:"url"},
+      {name:"Lyzem",url:"https://lyzem.com",type:"url"},
+    ]},
+  ]},
+  {name:"Geolocation",color:"#4aaa6a",children:[
+    {name:"Maps & Satellite",children:[
+      {name:"Google Maps",url:"https://maps.google.com",type:"url"},
+      {name:"Bing Maps",url:"https://www.bing.com/maps",type:"url"},
+      {name:"Yandex Maps",url:"https://yandex.com/maps",type:"url"},
+      {name:"Wikimapia",url:"https://wikimapia.org",type:"url"},
+      {name:"OpenStreetMap",url:"https://www.openstreetmap.org",type:"url"},
+      {name:"Zoom.Earth",url:"https://zoom.earth",type:"url"},
+      {name:"Sentinel Hub",url:"https://www.sentinel-hub.com",type:"url"},
+    ]},
+    {name:"Street Level",children:[
+      {name:"Google Street View",url:"https://www.google.com/maps",type:"url"},
+      {name:"Mapillary",url:"https://www.mapillary.com",type:"url"},
+      {name:"EarthCam",url:"https://www.earthcam.com",type:"url"},
+    ]},
+    {name:"Photo Geolocation",children:[
+      {name:"SunCalc",url:"https://www.suncalc.org",type:"url"},
+      {name:"PeakVisor",url:"https://peakvisor.com",type:"url"},
+    ]},
+    {name:"Transportation",children:[
+      {name:"FlightAware",url:"https://flightaware.com",type:"url"},
+      {name:"Flightradar24",url:"https://www.flightradar24.com",type:"url"},
+      {name:"MarineTraffic",url:"https://www.marinetraffic.com",type:"url"},
+      {name:"VesselFinder",url:"https://www.vesselfinder.com",type:"url"},
+      {name:"RadarBox",url:"https://www.radarbox.com",type:"url"},
+    ]},
+    {name:"Wireless Networks",children:[
+      {name:"WiGLE",url:"https://wigle.net",type:"url",tag:"R"},
+    ]},
+  ]},
+  {name:"Archives",color:"#6aaccc",children:[
+    {name:"Web Archives",children:[
+      {name:"Wayback Machine",url:"https://web.archive.org",type:"url"},
+      {name:"Archive.today",url:"https://archive.ph",type:"url"},
+      {name:"CachedView",url:"https://cachedview.nl",type:"url"},
+      {name:"TimeTravel",url:"http://timetravel.mementoweb.org",type:"url"},
+    ]},
+    {name:"Document Archives",children:[
+      {name:"Internet Archive",url:"https://archive.org",type:"url"},
+      {name:"DocumentCloud",url:"https://www.documentcloud.org",type:"url"},
+    ]},
+  ]},
+  {name:"Phone Numbers",color:"#e85535",children:[
+    {name:"Reverse Lookup",children:[
+      {name:"Truecaller",url:"https://www.truecaller.com",type:"url"},
+      {name:"NumVerify",url:"https://numverify.com",type:"url"},
+      {name:"Thatsthem",url:"https://thatsthem.com",type:"url"},
+      {name:"Sync.me",url:"https://sync.me",type:"url"},
+      {name:"WhoCallsMe",url:"https://www.whocallsme.com",type:"url"},
+    ]},
+    {name:"Carrier / Info",children:[
+      {name:"FreeCarrierLookup",url:"https://freecarrierlookup.com",type:"url"},
+      {name:"HLR Lookup",url:"https://hlrlookup.com",type:"url"},
+    ]},
+  ]},
+  {name:"Dark Web",color:"#e06aaa",children:[
+    {name:"Search Engines",children:[
+      {name:"Ahmia",url:"https://ahmia.fi",type:"url"},
+      {name:"DarkSearch",url:"https://darksearch.io",type:"url"},
+      {name:"OnionLand Search",url:"https://onionlandsearchengine.com",type:"url"},
+      {name:"Tor66",url:"https://tor66.org",type:"url"},
+      {name:"Dark.fail",url:"https://dark.fail",type:"url"},
+    ]},
+    {name:"Leak Intelligence",children:[
+      {name:"IntelligenceX TOR",url:"https://intelx.io/?did=7",type:"url",tag:"R"},
+      {name:"PSBDMP",url:"https://psbdmp.ws",type:"url"},
+      {name:"LeakIX",url:"https://leakix.net",type:"url"},
+      {name:"Onyphe",url:"https://www.onyphe.io",type:"url",tag:"R"},
+    ]},
+  ]},
+  {name:"Threat Intel",color:"#4ab8aa",children:[
+    {name:"CVE / Exploits",children:[
+      {name:"NIST NVD",url:"https://nvd.nist.gov",type:"url"},
+      {name:"CVE Mitre",url:"https://cve.mitre.org",type:"url"},
+      {name:"CVEdetails",url:"https://www.cvedetails.com",type:"url"},
+      {name:"Exploit-DB",url:"https://www.exploit-db.com",type:"url"},
+      {name:"Sploitus",url:"https://sploitus.com",type:"url"},
+      {name:"Vulners",url:"https://vulners.com",type:"url"},
+      {name:"AttackerKB",url:"https://attackerkb.com",type:"url"},
+      {name:"Packet Storm",url:"https://packetstormsecurity.com",type:"url"},
+    ]},
+    {name:"Malware / IOC",children:[
+      {name:"VirusTotal",url:"https://www.virustotal.com",type:"url"},
+      {name:"MalwareBazaar",url:"https://bazaar.abuse.ch",type:"url"},
+      {name:"Hybrid Analysis",url:"https://www.hybrid-analysis.com",type:"url"},
+      {name:"URLScan.io",url:"https://urlscan.io",type:"url"},
+      {name:"Any.run",url:"https://app.any.run",type:"url",tag:"R"},
+    ]},
+    {name:"Threat Platforms",children:[
+      {name:"ThreatCrowd",url:"https://www.threatcrowd.org",type:"url"},
+      {name:"OpenCTI",url:"https://www.opencti.io",type:"url",tag:"T"},
+      {name:"IBM X-Force",url:"https://exchange.xforce.ibmcloud.com",type:"url"},
+    ]},
+  ]},
+]};
 
-  // --- IP & DNS ---
-  {name:'MXToolbox',           url:'https://mxtoolbox.com',                        desc:'DNS, SMTP & mail server diagnostics',    cat:'ip & dns'},
-  {name:'DNSdumpster',         url:'https://dnsdumpster.com',                      desc:'DNS recon & mapping tool',               cat:'ip & dns'},
-  {name:'ViewDNS.info',        url:'https://viewdns.info',                         desc:'Reverse IP, WHOIS, & DNS toolkit',       cat:'ip & dns'},
-  {name:'SecurityTrails',      url:'https://securitytrails.com',                   desc:'DNS history & subdomains',               cat:'ip & dns'},
-  {name:'IPinfo.io',           url:'https://ipinfo.io',                            desc:'IP geolocation, ASN & ownership',        cat:'ip & dns'},
-  {name:'AbuseIPDB',           url:'https://www.abuseipdb.com',                    desc:'IP abuse & blacklist reports',           cat:'ip & dns'},
-  {name:'Criminal IP',         url:'https://www.criminalip.io',                    desc:'Cyber threat intelligence & IP search',  cat:'ip & dns'},
-  {name:'Robtex',              url:'https://www.robtex.com',                       desc:'IP, DNS, and routing research',          cat:'ip & dns'},
-  {name:'HackerTarget',        url:'https://hackertarget.com',                     desc:'DNS, ping, and network recon tools',     cat:'ip & dns'},
-  {name:'DNSlytics',           url:'https://dnslytics.com',                        desc:'Reverse DNS & IP analytics',             cat:'ip & dns'},
-  {name:'BGP.he.net',          url:'https://bgp.he.net',                           desc:'Hurricane Electric BGP/ASN toolkit',     cat:'ip & dns'},
-  {name:'Whois DomainTools',   url:'https://whois.domaintools.com',                desc:'Premium WHOIS lookup & history',         cat:'ip & dns'},
-  {name:'Pulsedive',           url:'https://pulsedive.com',                        desc:'Community threat intelligence IOCs',     cat:'ip & dns'},
-  {name:'PassiveDNS',          url:'https://passivedns.mnemonic.no',               desc:'Mnemonic passive DNS database',          cat:'ip & dns'},
-  {name:'RiskIQ',              url:'https://community.riskiq.com',                 desc:'PassiveTotal threat hunting platform',   cat:'ip & dns'},
-  {name:'IP2Location',         url:'https://www.ip2location.com',                  desc:'Advanced IP geolocation lookup',         cat:'ip & dns'},
-  {name:'ARIN Whois',          url:'https://search.arin.net',                      desc:'American Registry for Internet Numbers', cat:'ip & dns'},
-  {name:'IPLocation.net',      url:'https://iplocation.net/ip-lookup',             desc:'Fast IP location & ISP lookup',          cat:'ip & dns'},
-  {name:'CentralOps',          url:'https://centralops.net/co',                    desc:'Network recon & diagnostic tools',       cat:'ip & dns'},
-  {name:'SubdomainFinder',     url:'https://subdomainfinder.c99.nl',               desc:'Fast passive subdomain finder',          cat:'ip & dns'},
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 
-  // --- EMAIL ---
-  {name:'Hunter.io',           url:'https://hunter.io',                            desc:'Find email addresses by domain',         cat:'email'},
-  {name:'Epieos',              url:'https://epieos.com',                           desc:'Reverse email lookup (Google/Skype)',    cat:'email'},
-  {name:'Phonebook.cz',        url:'https://phonebook.cz',                         desc:'Email, domain, URL intelligence',        cat:'email'},
-  {name:'EmailRep.io',         url:'https://emailrep.io',                          desc:'Email address reputation check',         cat:'email'},
-  {name:'Snov.io',             url:'https://snov.io/email-finder',                 desc:'Email finder & verifier',                cat:'email'},
-  {name:'VoilaNorbert',        url:'https://www.voilanorbert.com',                 desc:'Corporate email lookup tool',            cat:'email'},
-  {name:'Email-format.com',    url:'https://www.email-format.com',                 desc:'Company email format structures',        cat:'email'},
-  {name:'Skymem',              url:'https://www.skymem.info',                      desc:'Email search from the web',              cat:'email'},
-  {name:'MailTester',          url:'https://mailtester.com',                       desc:'Check if an email address exists',       cat:'email'},
-  {name:'Clearbit Connect',    url:'https://connect.clearbit.com',                 desc:'B2B email lookup extension/web',         cat:'email'},
-  {name:'RocketReach',         url:'https://rocketreach.co',                       desc:'Professional email & contact search',    cat:'email'},
-  {name:'Lusha',               url:'https://www.lusha.com',                        desc:'B2B contact information finder',         cat:'email'},
-  {name:'Thatsthem',           url:'https://thatsthem.com',                        desc:'Reverse email & phone lookup',           cat:'email'},
+var currentView='dashboard';
+var activeTab={dorking:'all',bugbounty:'all'};
+var selected=null;
 
-  // --- USERNAME & PEOPLE ---
-  {name:'WhatsMyName',         url:'https://whatsmyname.app',                      desc:'Username enumeration across 500+ sites', cat:'username'},
-  {name:'Namechk',             url:'https://namechk.com',                          desc:'Check username & domain availability',   cat:'username'},
-  {name:'KnowEm',              url:'https://knowem.com',                           desc:'Username search on social networks',     cat:'username'},
-  {name:'CheckUsernames',      url:'https://checkusernames.com',                   desc:'Social media username search',           cat:'username'},
-  {name:'InstantUsername',     url:'https://instantusername.com',                  desc:'Fast username availability check',       cat:'username'},
-  {name:'Usersearch.org',      url:'https://usersearch.org',                       desc:'Find social profiles by username',       cat:'username'},
-  {name:'IDCrawl',             url:'https://www.idcrawl.com',                      desc:'Free people search engine',              cat:'username'},
-  {name:'Spokeo',              url:'https://www.spokeo.com',                       desc:'People & social profile lookup',         cat:'username'},
-  {name:'Social-Searcher',     url:'https://www.social-searcher.com',              desc:'Social media real-time search',          cat:'username'},
-  {name:'Pipl',                url:'https://pipl.com',                             desc:'Deep web people search engine',          cat:'username'},
-  {name:'PeekYou',             url:'https://www.peekyou.com',                      desc:'People search & public records',         cat:'username'},
-  {name:'TruePeopleSearch',    url:'https://www.truepeoplesearch.com',             desc:'US-based public record search',          cat:'username'},
-  {name:'FastPeopleSearch',    url:'https://www.fastpeoplesearch.com',             desc:'Free US people directory',               cat:'username'},
-  {name:'WebMii',              url:'https://webmii.com',                           desc:'Public information people search',       cat:'username'},
+function getActiveData(){return currentView==='dorking'?DORKING_DATA:BUGBOUNTY_DATA;}
+function getSelectedDork(){return selected===null?null:getActiveData()[selected];}
 
-  // --- BREACH & LEAKS ---
-  {name:'HaveIBeenPwned',      url:'https://haveibeenpwned.com',                   desc:'Global email & phone breach check',      cat:'breach'},
-  {name:'DeHashed',            url:'https://dehashed.com',                         desc:'Advanced leaked database search',        cat:'breach'},
-  {name:'LeakCheck',           url:'https://leakcheck.io',                         desc:'Data breach search engine',              cat:'breach'},
-  {name:'Snusbase',            url:'https://snusbase.com',                         desc:'Data breach & leak lookup',              cat:'breach'},
-  {name:'BreachDirectory',     url:'https://breachdirectory.org',                  desc:'Free breach & credential lookup',        cat:'breach'},
-  {name:'Leak-Lookup',         url:'https://leak-lookup.com',                      desc:'Data breach lookup service',             cat:'breach'},
-  {name:'PSBDMP',              url:'https://psbdmp.ws',                            desc:'Pastebin dump search & alerts',          cat:'breach'},
-  {name:'GhostProject',        url:'https://ghostproject.fr',                      desc:'Email & password plaintext search',      cat:'breach'},
-  {name:'Spycloud',            url:'https://spycloud.com',                         desc:'Employee credential exposure check',     cat:'breach'},
-  {name:'Vigilante.pw',        url:'https://vigilante.pw',                         desc:'Breached database directory',            cat:'breach'},
-
-  // --- NETWORK & THREAT INTEL ---
-  {name:'Exploit-DB',          url:'https://www.exploit-db.com',                   desc:'Public exploit & payload archive',       cat:'network'},
-  {name:'NIST NVD',            url:'https://nvd.nist.gov',                         desc:'National vulnerability database',        cat:'network'},
-  {name:'CVE Mitre',           url:'https://cve.mitre.org/cve',                    desc:'Official CVE list by MITRE',             cat:'network'},
-  {name:'CVEdetails',          url:'https://www.cvedetails.com',                   desc:'CVE security vulnerability data',        cat:'network'},
-  {name:'Vulners',             url:'https://vulners.com',                          desc:'Security database & vuln scanner',       cat:'network'},
-  {name:'Sploitus',            url:'https://sploitus.com',                         desc:'Exploit & hacking tool search',          cat:'network'},
-  {name:'AttackerKB',          url:'https://attackerkb.com',                       desc:'Crowdsourced vulnerability assessments', cat:'network'},
-  {name:'ThreatCrowd',         url:'https://www.threatcrowd.org',                  desc:'Search engine for threats',              cat:'network'},
-  {name:'OTX AlienVault',      url:'https://otx.alienvault.com',                   desc:'Open threat exchange platform',          cat:'network'},
-  {name:'MalwareBazaar',       url:'https://bazaar.abuse.ch',                      desc:'Malware sample database by abuse.ch',    cat:'network'},
-  {name:'Hybrid Analysis',     url:'https://www.hybrid-analysis.com',              desc:'Free malware analysis sandbox',          cat:'network'},
-  {name:'SSL Labs',            url:'https://www.ssllabs.com/ssltest',              desc:'Deep SSL/TLS configuration test',        cat:'network'},
-  {name:'Packet Storm',        url:'https://packetstormsecurity.com',              desc:'Security tools, exploits, advisories',   cat:'network'},
-  {name:'IBM X-Force',         url:'https://exchange.xforce.ibmcloud.com',         desc:'Threat intelligence sharing platform',   cat:'network'},
-  {name:'ThreatMiner',         url:'https://www.threatminer.org',                  desc:'Data mining for threat intel',           cat:'network'},
-  {name:'ThreatYeti',          url:'https://www.threatyeti.com',                   desc:'DNS & threat intelligence lookup',       cat:'network'},
-  {name:'Threat Intel Platform',url:'https://threatintelligenceplatform.com',      desc:'Domain & IP threat intelligence',        cat:'network'},
-
-  // --- GEO & TRACKING ---
-  {name:'Google Maps',         url:'https://maps.google.com',                      desc:'Satellite & street view imagery',        cat:'geo'},
-  {name:'Bing Maps',           url:'https://www.bing.com/maps',                    desc:'High-res bird\'s eye aerial view',       cat:'geo'},
-  {name:'Yandex Maps',         url:'https://yandex.com/maps',                      desc:'Street-level imagery (Russia/EU)',        cat:'geo'},
-  {name:'Wikimapia',           url:'https://wikimapia.org',                        desc:'Crowdsourced mapping project',           cat:'geo'},
-  {name:'SunCalc',             url:'https://www.suncalc.org',                      desc:'Sun position & shadow analysis',         cat:'geo'},
-  {name:'Sentinel Hub',        url:'https://www.sentinel-hub.com/explore/eobrowser',desc:'Current satellite imagery platform',    cat:'geo'},
-  {name:'OpenStreetMap',       url:'https://www.openstreetmap.org',                desc:'Open source world map data',             cat:'geo'},
-  {name:'Overpass Turbo',      url:'https://overpass-turbo.eu',                    desc:'OSM data query & export tool',           cat:'geo'},
-  {name:'FlightAware',         url:'https://flightaware.com',                      desc:'Live flight & aircraft tracking',        cat:'geo'},
-  {name:'Flightradar24',       url:'https://www.flightradar24.com',                desc:'Global real-time flight tracker',        cat:'geo'},
-  {name:'MarineTraffic',       url:'https://www.marinetraffic.com',                desc:'Live ship & vessel tracking',            cat:'geo'},
-  {name:'VesselFinder',        url:'https://www.vesselfinder.com',                 desc:'AIS vessel tracking network',            cat:'geo'},
-  {name:'RadarBox',            url:'https://www.radarbox.com',                     desc:'Aircraft tracking & ADS-B data',         cat:'geo'},
-  {name:'Mapillary',           url:'https://www.mapillary.com',                    desc:'Crowdsourced street-level photos',       cat:'geo'},
-  {name:'EarthCam',            url:'https://www.earthcam.com',                     desc:'Network of live public webcams',         cat:'geo'},
-  {name:'Zoom.Earth',          url:'https://zoom.earth',                           desc:'Live weather & satellite tracking',      cat:'geo'},
-  {name:'WiGLE',               url:'https://wigle.net',                            desc:'Wireless network mapping database',      cat:'geo'},
-
-  // --- METADATA & FORENSICS ---
-  {name:'ExifTool online',     url:'https://exif.tools',                           desc:'Image & document metadata viewer',       cat:'metadata'},
-  {name:'Jeffrey\'s Exif',     url:'https://exif.regex.info/exif.cgi',             desc:'Comprehensive EXIF data viewer',         cat:'metadata'},
-  {name:'Metadata2go',         url:'https://www.metadata2go.com',                  desc:'Hidden file metadata extractor',         cat:'metadata'},
-  {name:'Forensically',        url:'https://29a.ch/photo-forensics',               desc:'Image forensics & clone detection',      cat:'metadata'},
-  {name:'FotoForensics',       url:'https://fotoforensics.com',                    desc:'ELA (Error Level Analysis) images',      cat:'metadata'},
-  {name:'TinEye',              url:'https://tineye.com',                           desc:'Reverse image search engine',            cat:'metadata'},
-  {name:'Google Images',       url:'https://images.google.com',                    desc:'Reverse image & visual search',          cat:'metadata'},
-  {name:'Yandex Images',       url:'https://yandex.com/images',                    desc:'Powerful facial/reverse image search',   cat:'metadata'},
-  {name:'PimEyes',             url:'https://pimeyes.com',                          desc:'Face recognition search engine',         cat:'metadata'},
-  {name:'FaceCheck.ID',        url:'https://facecheck.id',                         desc:'Find people by face search',             cat:'metadata'},
-
-  // --- DARKWEB & ARCHIVES ---
-  {name:'Ahmia',               url:'https://ahmia.fi',                             desc:'.onion search engine (Clearweb)',        cat:'darkweb'},
-  {name:'DarkSearch',          url:'https://darksearch.io',                        desc:'Real-time darkweb search',               cat:'darkweb'},
-  {name:'OnionSearch',         url:'https://onionsearchengine.com',                desc:'Tor search aggregator',                  cat:'darkweb'},
-  {name:'OnionLand Search',    url:'https://onionlandsearchengine.com',            desc:'Dark web search engine',                 cat:'darkweb'},
-  {name:'IntelligenceX TOR',   url:'https://intelx.io/?did=7',                     desc:'Tor & i2p content search',               cat:'darkweb'},
-  {name:'Dark.fail',           url:'https://dark.fail',                            desc:'Verified .onion link directory',         cat:'darkweb'},
-  {name:'Tor66',               url:'https://tor66.org',                            desc:'Fresh Tor network search',               cat:'darkweb'},
-  {name:'I2P Search',          url:'https://i2psearch.com',                        desc:'Invisible Internet Project search',      cat:'darkweb'}
-];
-
-// --- UTILS ---
-function esc(s) {
-  return String(s||'').replace(/[&<>"']/g, function(m){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
-  });
+function engineLabel(e){
+  var m={github:'github.com',crossdomain:'crossdomain.xml',threatcrowd:'threatcrowd.org',yandex_swf:'yandex.com',wayback_swf1:'web.archive.org',wayback_swf2:'web.archive.org',wayback1:'web.archive.org',wayback2:'web.archive.org',crtsh:'crt.sh',openbugbounty:'openbugbounty.org',reddit:'reddit.com',wayback_wp:'archive.org',censys_ip:'censys.io',censys_domain:'censys.io',censys_cert:'censys.io',shodan:'shodan.io'};
+  return m[e]||e;
 }
-function toast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2000);
+function resolveExt(dork,d){
+  var e=dork.engine;
+  if(e==='github') return 'https://github.com/search?q='+encodeURIComponent('"*.'+d+'"')+'&type=host';
+  if(e==='crossdomain') return 'http://'+d+'/crossdomain.xml';
+  if(e==='threatcrowd') return 'http://threatcrowd.org/domain.php?domain='+d;
+  if(e==='yandex_swf') return 'https://yandex.com/search/?text='+encodeURIComponent('site:'+d+' mime:swf');
+  if(e==='wayback_swf1') return 'https://web.archive.org/cdx/search?url='+encodeURIComponent(d)+'/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=urlkey:.*swf&limit=100000';
+  if(e==='wayback_swf2') return 'https://web.archive.org/cdx/search?url='+encodeURIComponent(d)+'/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=mimetype:application/x-shockwave-flash&limit=100000';
+  if(e==='wayback1') return 'https://web.archive.org/web/*/(' +encodeURIComponent('.'+d)+')';
+  if(e==='wayback2') return 'https://web.archive.org/web/*/'+encodeURIComponent(d)+'/*';
+  if(e==='crtsh') return 'https://crt.sh/?q=%25.'+d;
+  if(e==='openbugbounty') return 'https://www.openbugbounty.org/search/?search='+encodeURIComponent(d)+'&type=host';
+  if(e==='reddit') return 'https://www.reddit.com/search/?q='+encodeURIComponent(d)+'&source=recent';
+  if(e==='wayback_wp') return 'http://wwwb-dedup.us.archive.org:8083/cdx/search?url='+encodeURIComponent('+inurl:'+d+' +ext:wp- | +inurl:'+d+' +ext:wp-content')+'/&matchType=domain&collapse=digest&output=text&fl=original,timestamp&filter=urlkey:.*wp[-].*&limit=1000000';
+  if(e==='censys_ip') return 'https://censys.io/ipv4?q='+d;
+  if(e==='censys_domain') return 'https://censys.io/domain?q='+d;
+  if(e==='censys_cert') return 'https://censys.io/certificates?q='+d;
+  if(e==='shodan') return 'https://www.shodan.io/search?query='+d;
+  return 'https://google.com/search?q='+d;
 }
 
-function getActiveData() { return currentView === 'dorking' ? DORKING_DATA : BUGBOUNTY_DATA; }
-function getSelectedDork() { if(selected === null) return null; return getActiveData()[selected]; }
+// ─── VIEW ROUTER ─────────────────────────────────────────
+function switchView(view){
+  currentView=view;
+  // Hide all standard views
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
 
-function engineLabel(e) {
-  var m = {
-    github:'github.com', crossdomain:'crossdomain.xml', threatcrowd:'threatcrowd.org',
-    yandex_swf:'yandex.com', wayback_swf1:'web.archive.org', wayback_swf2:'web.archive.org',
-    wayback1:'web.archive.org', wayback2:'web.archive.org', crtsh:'crt.sh',
-    openbugbounty:'openbugbounty.org', reddit:'reddit.com', wayback_wp:'archive.org',
-    censys_ip:'censys.io', censys_domain:'censys.io', censys_cert:'censys.io', shodan:'shodan.io'
-  };
-  return m[e] || e;
-}
+  var backBtn=document.getElementById('backBtn');
+  var wrap=document.querySelector('.wrap');
+  var body=document.body;
 
-function resolveExt(dork, d) {
-  var e = dork.engine;
-  if(e==='github') return 'https://github.com/search?q=' + encodeURIComponent('"*.'+d+'"') + '&type=host';
-  if(e==='crossdomain') return 'http://' + d + '/crossdomain.xml';
-  if(e==='threatcrowd') return 'http://threatcrowd.org/domain.php?domain=' + d;
-  if(e==='yandex_swf') return 'https://yandex.com/search/?text=' + encodeURIComponent('site:' + d + ' mime:swf');
-  if(e==='wayback_swf1') return 'https://web.archive.org/cdx/search?url=' + encodeURIComponent(d) + '/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=urlkey:.*swf&limit=100000';
-  if(e==='wayback_swf2') return 'https://web.archive.org/cdx/search?url=' + encodeURIComponent(d) + '/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=mimetype:application/x-shockwave-flash&limit=100000';
-  if(e==='wayback1') return 'https://web.archive.org/web/*/(' + encodeURIComponent('.' + d) + ')';
-  if(e==='wayback2') return 'https://web.archive.org/web/*/' + encodeURIComponent(d) + '/*';
-  if(e==='crtsh') return 'https://crt.sh/?q=%25.' + d;
-  if(e==='openbugbounty') return 'https://www.openbugbounty.org/search/?search=' + encodeURIComponent(d) + '&type=host';
-  if(e==='reddit') return 'https://www.reddit.com/search/?q=' + encodeURIComponent(d) + '&source=recent';
-  if(e==='wayback_wp') return 'http://wwwb-dedup.us.archive.org:8083/cdx/search?url=' + encodeURIComponent('+inurl:'+d+' +ext:wp- | +inurl:'+d+' +ext:wp-content') + '/&matchType=domain&collapse=digest&output=text&fl=original,timestamp&filter=urlkey:.*wp[-].*&limit=1000000';
-  if(e==='censys_ip') return 'https://censys.io/ipv4?q=' + d;
-  if(e==='censys_domain') return 'https://censys.io/domain?q=' + d;
-  if(e==='censys_cert') return 'https://censys.io/certificates?q=' + d;
-  if(e==='shodan') return 'https://www.shodan.io/search?query=' + d;
-  return 'https://google.com/search?q=' + d;
-}
-
-// --- ROUTING ---
-function switchView(view) {
-  currentView = view;
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + view).classList.add('active');
-
-  var backBtn = document.getElementById('backBtn');
-  view === 'dashboard' ? backBtn.classList.remove('show') : backBtn.classList.add('show');
-
-  var panel = document.getElementById('shared-panel');
-  if(view === 'dorking' || view === 'bugbounty') {
-    panel.classList.add('active');
-    selected = null; buildPreview();
-    renderDorks(view);
+  if(view==='osint'){
+    backBtn.classList.remove('show');
+    wrap.style.display='none';
+    body.style.overflow='hidden';
+    body.style.padding='0';
+    setTimeout(osintMapActivated, 50);
   } else {
-    panel.classList.remove('active');
-    if(view === 'osint') renderOSINT();
+    wrap.style.display='';
+    body.style.overflow='';
+    body.style.padding='';
+    view==='dashboard'?backBtn.classList.remove('show'):backBtn.classList.add('show');
+    var panel=document.getElementById('shared-panel');
+    if(view==='dorking'||view==='bugbounty'){
+      panel.classList.add('active');
+      selected=null;buildPreview();renderDorks(view);
+      updateRecentSection(view);
+    } else {
+      panel.classList.remove('active');
+    }
+    window.scrollTo(0,0);
+    updateBreadcrumb(view);
+    var expBtn=document.getElementById('exportBtn');
+    if(expBtn)expBtn.style.display=(view==='dorking'||view==='bugbounty')?'inline-flex':'none';
   }
-
-  window.scrollTo(0, 0);
 }
 
-// --- PREVIEW BUILDER ---
-function buildPreview() {
-  var box = document.getElementById('preview');
-  var dork = getSelectedDork();
-  if (!dork) { box.innerHTML = '<span class="ph">← select a preset below to build query</span>'; return; }
-
-  var domain = document.getElementById('siteInput').value.trim();
-
-  if (dork.ext && dork.engine !== 'google') {
-    var url = domain ? resolveExt(dork, domain) : null;
-    box.innerHTML = domain
-      ? `<span class="q-site">${esc(domain)}</span> → <span class="q-val">${esc(url)}</span>`
-      : '<span class="ph">set a target domain above ↑</span>';
-    document.getElementById('searchBtn').textContent = '↗ Open ' + engineLabel(dork.engine);
+// ─── DORK PREVIEW ────────────────────────────────────────
+function buildPreview(){
+  var box=document.getElementById('preview');
+  var dork=getSelectedDork();
+  if(!dork){box.innerHTML='<span class="ph">← select a preset below to build query</span>';return;}
+  var domain=document.getElementById('siteInput').value.trim();
+  if(dork.ext&&dork.engine!=='google'){
+    var url=domain?resolveExt(dork,domain):null;
+    box.innerHTML=domain?`<span class="q-site">${esc(domain)}</span> → <span class="q-val">${esc(url)}</span>`:'<span class="ph">set a target domain above ↑</span>';
+    document.getElementById('searchBtn').textContent='↗ Open '+engineLabel(dork.engine);
     return;
   }
-
-  var raw = dork.q || '';
-  if (dork.needsDomain && domain) raw = raw.replace(/{domain}/g, domain);
-  var siteToken = (!dork.needsDomain && domain) ? `<span class="q-site">site:${esc(domain)}</span> ` : '';
-  box.innerHTML = siteToken + raw.replace(/(site:|inurl:|intitle:|intext:|filetype:|ext:)(\S+)/g,
-    '<span class="q-op">$1</span><span class="q-val">$2</span>');
-
-  document.getElementById('searchBtn').textContent = '↗ Search Google';
+  var raw=dork.q||'';
+  if(dork.needsDomain&&domain) raw=raw.replace(/{domain}/g,domain);
+  var siteToken=(!dork.needsDomain&&domain)?`<span class="q-site">site:${esc(domain)}</span> `:'';
+  box.innerHTML=siteToken+raw.replace(/(site:|inurl:|intitle:|intext:|filetype:|ext:)(\S+)/g,'<span class="q-op">$1</span><span class="q-val">$2</span>');
+  document.getElementById('searchBtn').textContent='↗ Search Google';
 }
-
-function selectDork(idx) { selected = idx; buildPreview(); }
-
-function doSearch() {
-  var dork = getSelectedDork();
-  if (!dork) return false;
-  var domain = document.getElementById('siteInput').value.trim();
-  if (dork.ext && dork.engine !== 'google') {
-    if (!domain) return alert('Enter a target domain first.');
-    window.open(resolveExt(dork, domain), '_blank');
+function selectDork(idx){selected=idx;buildPreview();}
+function doSearch(){
+  var dork=getSelectedDork();if(!dork)return false;
+  var domain=document.getElementById('siteInput').value.trim();
+  var finalQ='';
+  if(dork.ext&&dork.engine!=='google'){
+    if(!domain)return alert('Enter a target domain first.');
+    finalQ=resolveExt(dork,domain);
+    window.open(finalQ,'_blank');
   } else {
-    var q = dork.q || '';
-    if (dork.needsDomain && !domain) return alert('Enter a target domain first.');
-    if (dork.needsDomain) q = q.replace(/{domain}/g, domain);
-    var finalQ = (!dork.needsDomain && domain) ? 'site:' + domain + ' ' + q : q;
-    window.open('https://www.google.com/search?q=' + encodeURIComponent(finalQ), '_blank');
+    var q=dork.q||'';
+    if(dork.needsDomain&&!domain)return alert('Enter a target domain first.');
+    if(dork.needsDomain) q=q.replace(/{domain}/g,domain);
+    finalQ=(!dork.needsDomain&&domain)?'site:'+domain+' '+q:q;
+    window.open('https://www.google.com/search?q='+encodeURIComponent(finalQ),'_blank');
   }
+  if(finalQ) addToHistory(dork,finalQ);
 }
-
-function copyQ() {
-  var dork = getSelectedDork(); if(!dork) return;
-  var domain = document.getElementById('siteInput').value.trim();
-  var txt = '';
-  if(dork.ext && dork.engine !== 'google') {
-    if (!domain) return alert('Enter a target domain first.');
-    txt = resolveExt(dork, domain);
-  } else {
-    txt = dork.q || '';
-    if (dork.needsDomain && !domain) return alert('Enter a target domain first.');
-    if (dork.needsDomain) txt = txt.replace(/{domain}/g, domain);
-    txt = (!dork.needsDomain && domain) ? 'site:' + domain + ' ' + txt : txt;
+function copyQ(){
+  var dork=getSelectedDork();if(!dork)return;
+  var domain=document.getElementById('siteInput').value.trim();
+  var txt='';
+  if(dork.ext&&dork.engine!=='google'){if(!domain)return alert('Enter a target domain first.');txt=resolveExt(dork,domain);}
+  else{
+    txt=dork.q||'';
+    if(dork.needsDomain&&!domain)return alert('Enter a target domain first.');
+    if(dork.needsDomain) txt=txt.replace(/{domain}/g,domain);
+    txt=(!dork.needsDomain&&domain)?'site:'+domain+' '+txt:txt;
   }
-  if(txt) navigator.clipboard.writeText(txt).then(()=>toast('copied to clipboard!')).catch(()=>toast('copy failed'));
+  if(txt){navigator.clipboard.writeText(txt).then(()=>showToast('copied!')).catch(()=>showToast('copy failed'));addToHistory(dork,txt);}
 }
 
-// --- RENDER ---
-function renderTabs(view, data) {
-  var cats = ['all', ...new Set(data.map(d => d.cat))];
-  var tabsId = view === 'dorking' ? 'dorkingTabs' : 'bbTabs';
-  document.getElementById(tabsId).innerHTML = cats.map(c =>
-    `<button class="tab ${activeTab[view]===c?'active':''}" onclick="activeTab['${view}']='${c}'; renderDorks('${view}')">${esc(c)}</button>`
-  ).join('');
+// ─── DORK RENDER ─────────────────────────────────────────
+function renderTabs(view,data){
+  var cats=['all',...new Set(data.map(d=>d.cat))];
+  var tabsId=view==='dorking'?'dorkingTabs':'bbTabs';
+  document.getElementById(tabsId).innerHTML=cats.map(c=>`<button class="tab ${activeTab[view]===c?'active':''}" onclick="activeTab['${view}']='${c}';renderDorks('${view}')">${esc(c)}</button>`).join('');
 }
-
-function renderDorks(view) {
-  var data = view === 'dorking' ? DORKING_DATA : BUGBOUNTY_DATA;
-  var filterId = view === 'dorking' ? 'dorkFilter' : 'bbFilter';
-  var gridId = view === 'dorking' ? 'dorkingGrid' : 'bbGrid';
-  var tabsId = view === 'dorking' ? 'dorkingTabs' : 'bbTabs';
-  var filter = document.getElementById(filterId).value.toLowerCase();
-
-  if(!document.getElementById(tabsId).innerHTML) renderTabs(view, data);
-
-  var html = '';
-  data.forEach((d, i) => {
-    if (activeTab[view] !== 'all' && d.cat !== activeTab[view]) return;
-    if (filter && !d.name.toLowerCase().includes(filter) && !(d.q||'').toLowerCase().includes(filter)) return;
-
-    var isSel = selected === i ? ' sel' : '';
-    var badge = d.ext ? '<span class="badge badge-ext">ext</span>' : '';
-    var dom = d.needsDomain ? '<span class="badge badge-dom">domain</span>' : '';
-
-    html += `<button class="card-base${isSel}" onclick="selectDork(${i})">
-      <div class="pc-name">${esc(d.name)}${badge}${dom}</div>
-      <div class="pc-query">${esc(d.q || engineLabel(d.engine))}</div>
-      <div class="pc-cat">${esc(d.cat)}</div>
-    </button>`;
+function renderDorks(view){
+  var data=view==='dorking'?DORKING_DATA:BUGBOUNTY_DATA;
+  var filterId=view==='dorking'?'dorkFilter':'bbFilter';
+  var gridId=view==='dorking'?'dorkingGrid':'bbGrid';
+  var tabsId=view==='dorking'?'dorkingTabs':'bbTabs';
+  var filter=document.getElementById(filterId).value.toLowerCase();
+  if(!document.getElementById(tabsId).innerHTML) renderTabs(view,data);
+  var html='';
+  data.forEach((d,i)=>{
+    if(activeTab[view]!=='all'&&d.cat!==activeTab[view])return;
+    if(filter&&!d.name.toLowerCase().includes(filter)&&!(d.q||'').toLowerCase().includes(filter))return;
+    var isSel=selected===i?' sel':'';
+    var badge=d.ext?'<span class="badge badge-ext">ext</span>':'';
+    var dom=d.needsDomain?'<span class="badge badge-dom">domain</span>':'';
+    html+=`<div class="card-base${isSel}" onclick="selectDork(${i})"><div class="pc-name">${esc(d.name)}${badge}${dom}</div><div class="pc-query">${esc(d.q||engineLabel(d.engine))}</div><div class="pc-cat">${esc(d.cat)}</div><button class="card-copy-btn" title="Copy" onclick="event.stopPropagation();quickCopyDork(${i},'${view}')">⎈</button></div>`;
   });
-  document.getElementById(gridId).innerHTML = html || '<div class="no-results">no matches found</div>';
+  document.getElementById(gridId).innerHTML=html||'<div class="no-results">no matches found</div>';
 }
 
-function renderOSINT() {
-  var cats = ['all', ...new Set(OSINT_TOOLS.map(t => t.cat))];
-  document.getElementById('toolTabs').innerHTML = cats.map(c =>
-    `<button class="tab ${activeTab.osint===c?'active':''}" onclick="activeTab.osint='${c}'; renderOSINT()">${esc(c)}</button>`
-  ).join('');
-
-  var html = OSINT_TOOLS.filter(t => activeTab.osint === 'all' || t.cat === activeTab.osint)
-    .map(t => `<a class="tool-card" href="${esc(t.url)}" target="_blank" rel="noopener">
-      <div class="tool-name">${esc(t.name)}</div>
-      <div class="tool-desc">${esc(t.desc)}</div>
-      <div class="tool-tag">${esc(t.cat)}</div>
-    </a>`).join('');
-  document.getElementById('toolsGrid').innerHTML = html;
+// ─── THEME ───────────────────────────────────────────────
+function toggleTheme(){
+  var cur=document.documentElement.getAttribute('data-theme')||'dark';
+  var order=['dark','light'];
+  var next=order[(order.indexOf(cur)+1)%order.length];
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('dd-theme',next);
+  var labels={dark:'◐ light',light:'◉ dark'};
+  var label=labels[next];
+  var b1=document.getElementById('themeBtn');
+  var b2=document.getElementById('themeBtn2');
+  if(b1)b1.textContent=label;
+  if(b2)b2.textContent=label;
+  if(currentView==='osint'&&omMapReady) osintRender();
 }
 
-// --- THEME ---
-function toggleTheme() {
-  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  var next = dark ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  document.getElementById('themeBtn').textContent = next === 'dark' ? '◐ light' : '◐ dark';
-  try { localStorage.setItem('dd-theme', next); } catch(e){}
+// ─── INIT STATS ──────────────────────────────────────────
+function countOsintTools(node){
+  if(!node.children||node.children.length===0) return node.url?1:0;
+  return node.children.reduce((s,c)=>s+countOsintTools(c),0);
 }
+document.getElementById('stat-dorks').textContent=DORKING_DATA.length;
+document.getElementById('stat-bb').textContent=BUGBOUNTY_DATA.length;
+document.getElementById('stat-osint').textContent=countOsintTools(OSINT_TREE);
 
+// ─── THEME RESTORE ───────────────────────────────────────
 (function(){
-  try {
-    var s = localStorage.getItem('dd-theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', s);
-    var b = document.getElementById('themeBtn');
-    if (b) b.textContent = s === 'dark' ? '◐ light' : '◐ dark';
-  } catch(e){}
+  try{
+    var s=localStorage.getItem('dd-theme')||'dark';
+    document.documentElement.setAttribute('data-theme',s);
+    var labels={dark:'◐ light',light:'◉ dark'};
+    var label=labels[s]||'◐ light';
+    document.getElementById('themeBtn').textContent=label;
+    document.getElementById('themeBtn2').textContent=label;
+  }catch(e){}
 })();
 
-// --- INIT ---
-document.getElementById('stat-dorks').textContent = DORKING_DATA.length;
-document.getElementById('stat-bb').textContent = BUGBOUNTY_DATA.length;
-document.getElementById('stat-osint').textContent = OSINT_TOOLS.length;
-renderOSINT();
+// ════════════════════════════════════════════
+//  ENHANCEMENTS — v4
+// ════════════════════════════════════════════
+
+// ── SESSION HISTORY ───────────────────────────────────
+var sessionHistory=[];
+function addToHistory(dork,resolvedQuery){
+  var entry={name:dork.name,cat:dork.cat||'',query:resolvedQuery,view:currentView,time:Date.now()};
+  sessionHistory=sessionHistory.filter(h=>!(h.name===entry.name&&h.query===entry.query));
+  sessionHistory.unshift(entry);
+  if(sessionHistory.length>30)sessionHistory=sessionHistory.slice(0,30);
+  updateHistoryUI();
+  updateRecentSection(currentView);
+}
+function updateHistoryUI(){
+  var count=sessionHistory.length;
+  var btn=document.getElementById('history-btn');
+  if(btn)btn.innerHTML='⏱ history'+(count>0?' <span style="background:var(--accent);color:#fff;border-radius:2px;padding:0 5px;font-size:0.52rem;margin-left:3px;">'+count+'</span>':'');
+  renderHistoryPanel();
+}
+function renderHistoryPanel(){
+  var list=document.getElementById('history-list');if(!list)return;
+  var empty=document.getElementById('history-empty');
+  if(!sessionHistory.length){if(empty)empty.style.display='block';list.querySelectorAll('.hist-item').forEach(el=>el.remove());return;}
+  if(empty)empty.style.display='none';
+  list.querySelectorAll('.hist-item').forEach(el=>el.remove());
+  sessionHistory.forEach((h)=>{
+    var item=document.createElement('div');item.className='hist-item';
+    item.innerHTML='<div class="hist-item-body">'+
+      '<div class="hist-name">'+esc(h.name)+'</div>'+
+      '<div class="hist-query">'+esc(h.query.slice(0,55))+(h.query.length>55?'…':'')+'</div>'+
+      '<div class="hist-time">'+timeAgo(h.time)+' · '+esc(h.view)+'</div></div>'+
+      '<div class="hist-actions">'+
+      '<button class="hist-act-btn" title="Copy" onclick="copyText(&quot;'+h.query.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'&quot;)">⎈</button>'+
+      '<button class="hist-act-btn" title="Search" onclick="window.open(&quot;https://www.google.com/search?q='+encodeURIComponent(h.query)+'&quot;,&quot;_blank&quot;)">↗</button>'+
+      '</div>';
+    list.appendChild(item);
+  });
+}
+function timeAgo(ts){
+  var s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';return Math.floor(s/3600)+'h ago';
+}
+function clearHistory(){sessionHistory=[];updateHistoryUI();updateRecentSection('dorking');updateRecentSection('bugbounty');}
+function toggleHistoryPanel(){document.getElementById('history-panel').classList.toggle('open');}
+function copyText(txt){navigator.clipboard.writeText(txt).then(()=>showToast('copied!')).catch(()=>showToast('copy failed'));}
+
+// ── RECENT DORKS SECTION ──────────────────────────────
+function updateRecentSection(view){
+  var sec=document.getElementById('recent-section-'+view);
+  var grid=document.getElementById('recent-grid-'+view);
+  if(!sec||!grid)return;
+  var items=sessionHistory.filter(h=>h.view===view).slice(0,6);
+  if(!items.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  grid.innerHTML=items.map(h=>{
+    var safe=h.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return '<div class="recent-chip" onclick="recentClick('+JSON.stringify(h.name)+','+JSON.stringify(view)+')" title="'+safe+'">'+safe+'</div>';
+  }).join('');
+}
+function recentClick(name,view){
+  var data=view==='dorking'?DORKING_DATA:BUGBOUNTY_DATA;
+  var idx=data.findIndex(d=>d.name===name);
+  if(idx>=0){selectDork(idx);window.scrollTo({top:0,behavior:'smooth'});}
+}
+
+var VIEW_LABELS={dashboard:'Dashboard',dorking:'Google Dorking',bugbounty:'Bug Bounty',osint:'OSINT Toolkit'};
+function updateBreadcrumb(view){
+  var bc=document.getElementById('breadcrumb');
+  var cur=document.getElementById('bc-current');
+  if(!bc)return;
+  if(view==='dashboard'){bc.classList.remove('show');}
+  else{bc.classList.add('show');if(cur)cur.textContent=VIEW_LABELS[view]||view;}
+}
+
+var kbdTimer=null;
+document.addEventListener('keydown',function(e){
+  var tag=document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'){
+    if(e.key==='Escape')document.activeElement.blur();
+    return;
+  }
+  switch(e.key.toLowerCase()){
+    case'g':if(currentView!=='dorking')switchView('dorking');break;
+    case'b':if(currentView!=='bugbounty')switchView('bugbounty');break;
+    case'o':if(currentView!=='osint')switchView('osint');break;
+    case'h':toggleHistoryPanel();break;
+    case'/':
+      e.preventDefault();
+      if(currentView==='dorking')document.getElementById('dorkFilter').focus();
+      else if(currentView==='bugbounty')document.getElementById('bbFilter').focus();
+      else if(currentView==='osint')document.getElementById('osintSearchInput').focus();
+      break;
+    case'escape':
+      if(document.getElementById('cmd-overlay').classList.contains('open')){closePalette();break;}
+      if(document.getElementById('howto-overlay').classList.contains('open')){closeHowTo();break;}
+      if(document.getElementById('history-panel').classList.contains('open')){document.getElementById('history-panel').classList.remove('open');break;}
+      if(currentView!=='dashboard')switchView('dashboard');break;
+  }
+});
+window.addEventListener('load',function(){
+  var h=document.getElementById('kbd-hints');
+  if(h){setTimeout(()=>h.classList.add('show'),800);setTimeout(()=>h.classList.remove('show'),4500);}
+});
+
+var builderTokens={dorking:[],bugbounty:[]};
+var OPERATORS=['intitle:','inurl:','intext:','filetype:','ext:','site:','OR','AND','-','"..."'];
+function toggleBuilder(view){
+  var wrap=document.getElementById('custom-builder-'+view);
+  var btn=document.getElementById('builder-toggle-'+view);
+  if(!wrap)return;
+  var isOpen=wrap.style.display!=='none';
+  if(isOpen){
+    wrap.style.display='none';
+    btn.style.background='';btn.style.color='';btn.style.borderColor='';
+  }else{
+    wrap.style.display='block';
+    btn.style.background='var(--fg)';btn.style.color='var(--bg)';btn.style.borderColor='var(--fg)';
+    if(!wrap.dataset.built){buildBuilderUI(wrap,view);wrap.dataset.built='1';}
+    renderBuilderTokens(view);
+  }
+}
+function buildBuilderUI(wrap,view){
+  var opOpts=OPERATORS.map(function(op){return '<option value="'+esc(op)+'">'+esc(op)+'</option>';}).join('')+'<option value="">free text</option>';
+  var opBtns=OPERATORS.map(function(op){
+    var safeOp=op.replace(/\\/g,'\\\\').replace(/"/g,'&quot;');
+    return '<button class="op-btn" onclick="insertBuilderOp(&quot;'+view+'&quot;,&quot;'+safeOp+'&quot;)">'+esc(op)+'</button>';
+  }).join('');
+  wrap.innerHTML=
+    '<div style="font-family:Space Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Custom Dork Builder</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">'+opBtns+'</div>'+
+    '<div style="display:flex;gap:6px;margin-bottom:8px;">'+
+    '<select id="bop-'+view+'" class="site-input" style="flex:0 0 auto;width:auto;padding:7px 10px;">'+opOpts+'</select>'+
+    '<input id="bval-'+view+'" class="site-input" type="text" placeholder="value..." onkeydown="if(event.key===&quot;Enter&quot;)addBuilderToken(&quot;'+view+'&quot;)">'+
+    '<button class="btn-primary" style="padding:7px 12px;font-size:0.65rem;" onclick="addBuilderToken(&quot;'+view+'&quot;)">+ add</button>'+
+    '</div>'+
+    '<div id="btokens-'+view+'" style="display:flex;flex-wrap:wrap;gap:5px;min-height:22px;margin-bottom:8px;"></div>'+
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;">'+
+    '<button class="btn-primary" style="font-size:0.65rem;padding:7px 14px;" onclick="useCustomBuilder(&quot;'+view+'&quot;)">Search</button>'+
+    '<button class="btn-secondary" style="font-size:0.65rem;padding:7px 14px;" onclick="copyBuilderQuery(&quot;'+view+'&quot;)">Copy</button>'+
+    '<button class="btn-secondary" style="font-size:0.65rem;padding:7px 14px;" onclick="clearBuilderTokens(&quot;'+view+'&quot;)">Clear</button>'+
+    '</div>';
+}
+function insertBuilderOp(view,op){
+  var sel=document.getElementById('bop-'+view);var val=document.getElementById('bval-'+view);
+  if(sel)sel.value=op;if(val){val.value='';val.focus();}
+}
+function addBuilderToken(view){
+  var sel=document.getElementById('bop-'+view);var val=document.getElementById('bval-'+view);
+  if(!val)return;var op=sel?sel.value:'';var v=val.value.trim();
+  if(!v&&op!=='OR'&&op!=='AND'&&op!=='-')return;
+  var token;
+  if(op==='OR'||op==='AND')token={op,val:'',display:op};
+  else if(op==='"..."')token={op:'',val:'"'+v+'"',display:'"'+v+'"'};
+  else if(op==='-')token={op:'-',val:v,display:'-'+v};
+  else token={op,val:v,display:op+(v?(v.includes(' ')?'"'+v+'"':v):'')};
+  builderTokens[view].push(token);val.value='';renderBuilderTokens(view);
+}
+function renderBuilderTokens(view){
+  var wrap=document.getElementById('btokens-'+view);if(!wrap)return;
+  wrap.innerHTML=builderTokens[view].map((t,i)=>
+    '<span style="font-family:Space Mono,monospace;font-size:0.64rem;background:var(--bg2);border:1px solid var(--border2);border-radius:2px;padding:2px 8px;display:inline-flex;align-items:center;gap:4px;">'+
+    '<span style="color:var(--accent2);">'+esc(t.op)+'</span>'+
+    '<span>'+esc(t.val)+'</span>'+
+    '<span style="cursor:pointer;color:var(--muted);margin-left:2px;" onclick="removeBuilderToken(&quot;'+view+'&quot;,'+i+')">x</span>'+
+    '</span>'
+  ).join('')||'<span style="font-family:Space Mono,monospace;font-size:0.6rem;color:var(--muted);">add tokens above to build your query…</span>';
+}
+function removeBuilderToken(view,i){builderTokens[view].splice(i,1);renderBuilderTokens(view);}
+function getBuilderQuery(view){return builderTokens[view].map(t=>t.display).join(' ').trim();}
+function useCustomBuilder(view){
+  var q=getBuilderQuery(view);if(!q)return showToast('add tokens first');
+  var domain=document.getElementById('siteInput').value.trim();
+  var final=domain?'site:'+domain+' '+q:q;
+  window.open('https://www.google.com/search?q='+encodeURIComponent(final),'_blank');
+  addToHistory({name:'Custom: '+q.slice(0,28),cat:'custom'},final);
+}
+function copyBuilderQuery(view){
+  var q=getBuilderQuery(view);if(!q)return showToast('nothing to copy');
+  var domain=document.getElementById('siteInput').value.trim();
+  copyText(domain?'site:'+domain+' '+q:q);
+}
+function clearBuilderTokens(view){builderTokens[view]=[];renderBuilderTokens(view);}
+
+// ── EXPORT DORKS ─────────────────────────────────────
+function exportDorks(){
+  var data=currentView==='dorking'?DORKING_DATA:BUGBOUNTY_DATA;
+  var tab=activeTab[currentView]||'all';
+  var filtered=tab==='all'?data:data.filter(d=>d.cat===tab);
+  var domain=document.getElementById('siteInput').value.trim();
+  var lines=['# DarkDork Export — '+(currentView==='dorking'?'Google Dorks':'Bug Bounty')+(tab!=='all'?' ['+tab+']':''),
+    '# Generated: '+new Date().toISOString(),'# Target: '+(domain||'none'),'',''];
+  filtered.forEach(d=>{
+    if(d.ext){lines.push('# '+d.name+' [external]');if(domain)lines.push(resolveExt(d,domain));}
+    else{
+      var q=d.q||'';if(d.needsDomain&&domain)q=q.replace(/{domain}/g,domain);
+      var final=(!d.needsDomain&&domain)?'site:'+domain+' '+q:q;
+      lines.push('# '+d.name+' ['+d.cat+']');lines.push(final);
+    }
+    lines.push('');
+  });
+  var blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='darkdork-'+currentView+(tab!=='all'?'-'+tab:'')+'.txt';a.click();
+  showToast('exported '+filtered.length+' queries');
+}
+
+// ── PER-CARD COPY ────────────────────────────────────
+function quickCopyDork(idx,view){
+  var data=view==='dorking'?DORKING_DATA:BUGBOUNTY_DATA;
+  var d=data[idx];if(!d)return;
+  var domain=document.getElementById('siteInput').value.trim();
+  var txt='';
+  if(d.ext){if(!domain)return showToast('set a domain first');txt=resolveExt(d,domain);}
+  else{
+    txt=d.q||'';if(d.needsDomain&&!domain)return showToast('set a domain first');
+    if(d.needsDomain)txt=txt.replace(/{domain}/g,domain);
+    txt=(!d.needsDomain&&domain)?'site:'+domain+' '+txt:txt;
+  }
+  copyText(txt);
+}
+
+// ── OSINT TAG FILTER ─────────────────────────────────
+var osintTagFilter='all';
+function setOsintTagFilter(tag,btn){
+  osintTagFilter=tag;
+  document.querySelectorAll('.tag-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(typeof omGnodes!=='undefined'&&omGnodes)osintApplyTagFilter();
+}
+function osintApplyTagFilter(){
+  omGnodes.querySelectorAll('g[data-idx]').forEach(g=>{
+    var idx=parseInt(g.getAttribute('data-idx'));
+    var node=omNodes[idx];if(!node)return;
+    var isLeaf=!node.children||!node.children.length;
+    if(!isLeaf){g.style.opacity='1';return;}
+    var passes=osintTagFilter==='all'||(osintTagFilter==='free'&&!node.tag)||(node.tag===osintTagFilter);
+    g.style.opacity=passes?'1':'0.1';
+  });
+}
+
 </script>
 
+<!-- ═══ OSINT MAP ENGINE ═══ -->
 <script>
-// ═══════════════════════════════════════════════════════════════
-//  3D INTERACTIVE RECON NETWORK  —  pure Canvas 2D, no deps
-// ═══════════════════════════════════════════════════════════════
-(function () {
-  var canvas = document.getElementById('bg-canvas');
-  var ctx = canvas.getContext('2d');
-  var W, H;
 
-  var nodes = [];
-  var numNodes = 250;
-  var focal = 1000;
-  var mouseX = 0, mouseY = 0;
-  var rx = 0, ry = 0;
+var omNodes=[], omLinks=[];
+var omTransform={x:0,y:0,k:1};
+var omLabelMode=0; 
+var omMapReady=false;
 
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
+var omSvg=document.getElementById('osint-tree-svg');
+var omGmain,omGlinks,omGnodes;
 
-  window.addEventListener('resize', resize);
-  window.addEventListener('mousemove', function(e) {
-    mouseX = (e.clientX / W - 0.5) * 2;
-    mouseY = (e.clientY / H - 0.5) * 2;
-  });
+function countN(node){return 1+(node.children||[]).reduce((s,c)=>s+countN(c),0);}
+function countL(node){if(!node.children||!node.children.length)return 1;return node.children.reduce((s,c)=>s+countL(c),0);}
 
-  function init() {
-    nodes = [];
-    for (var i = 0; i < numNodes; i++) {
-      // Fibonacci sphere distribution for a global recon radar look
-      var phi   = Math.acos(-1 + (2 * i) / numNodes);
-      var theta = Math.sqrt(numNodes * Math.PI) * phi;
-      // Randomize radius slightly to create a data cloud depth
-      var r = 380 + Math.random() * 120 * (Math.random() > 0.5 ? 1 : -1);
-      nodes.push({
-        ox: r * Math.cos(theta) * Math.sin(phi),
-        oy: r * Math.sin(theta) * Math.sin(phi),
-        oz: r * Math.cos(phi),
-        // 10% of nodes act as "High Value Targets" (red/orange accent)
-        isTarget: Math.random() > 0.9,
-        pulseOffset: Math.random() * Math.PI * 2
+function omNodeColor(node){
+  if(node.depth===0) return '#e85535';
+  if(node.depth===1) return node.color||'#e0ac3a';
+  if(node.depth===2) return '#6aaccc';
+  return '#4aaa6a';
+}
+function omNodeR(node){
+  if(node.depth===0) return 20;
+  if(node.depth===1) return 9;
+  if(node.depth===2) return 6;
+  return 4;
+}
+
+function omBuildLayout(){
+  omNodes=[];omLinks=[];
+  var area=document.getElementById('osint-map-area');
+  var W=area.offsetWidth, H=area.offsetHeight;
+  var cx=W/2, cy=H/2;
+  var RADII=[0,190,340,470,580];
+
+  function place(node,depth,a0,a1,parent){
+    var ang=(a0+a1)/2;
+    var r=RADII[Math.min(depth,RADII.length-1)];
+    var x=cx+r*Math.cos(ang), y=cy+r*Math.sin(ang);
+    var n=Object.assign({},node,{x,y,depth,angle:ang,r});
+    omNodes.push(n);
+    if(parent) omLinks.push({source:parent,target:n});
+    if(node.children&&node.children.length){
+      var total=Math.max(countL(node),1);
+      var cur=a0;
+      node.children.forEach(child=>{
+        var frac=Math.max(countL(child),1)/total;
+        var span=frac*(a1-a0);
+        place(child,depth+1,cur,cur+span,n);
+        cur+=span;
       });
     }
   }
+  place(OSINT_TREE,0,0,Math.PI*2,null);
+}
 
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
+function omInitSVG(){
+  omSvg.innerHTML='';
+  omGmain=document.createElementNS('http://www.w3.org/2000/svg','g');
+  omGlinks=document.createElementNS('http://www.w3.org/2000/svg','g');
+  omGnodes=document.createElementNS('http://www.w3.org/2000/svg','g');
+  omGmain.appendChild(omGlinks);
+  omGmain.appendChild(omGnodes);
+  omSvg.appendChild(omGmain);
+}
+function omApplyT(){omGmain.setAttribute('transform',`translate(${omTransform.x},${omTransform.y}) scale(${omTransform.k})`);}
 
-    var time = Date.now() * 0.001;
+function omRenderLinks(){
+  omGlinks.innerHTML='';
+  omLinks.forEach(l=>{
+    var path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    var dx=l.target.x-l.source.x,dy=l.target.y-l.source.y;
+    var mx=l.source.x+dx*0.5,my=l.source.y+dy*0.5;
+    path.setAttribute('d',`M${l.source.x},${l.source.y} Q${mx},${my} ${l.target.x},${l.target.y}`);
+    path.setAttribute('fill','none');
+    var col=omNodeColor(l.target);
+    path.setAttribute('stroke',col);
+    path.setAttribute('stroke-opacity',l.target.depth<=1?'0.5':'0.22');
+    path.setAttribute('stroke-width',l.target.depth<=1?'1.5':'0.8');
+    omGlinks.appendChild(path);
+  });
+}
 
-    // Auto-rotation + Mouse Influence
-    rx += (mouseY * 0.3 - rx) * 0.05;
-    ry += (mouseX * 0.3 + 0.0015 - ry) * 0.05; // 0.0015 forces constant slow spin
+function omRenderNodes(){
+  omGnodes.innerHTML='';
+  var isDark=document.documentElement.getAttribute('data-theme')!=='light';
+  omNodes.forEach((node,idx)=>{
+    var g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('transform',`translate(${node.x},${node.y})`);
+    g.setAttribute('data-idx',idx);
+    g.style.cursor=node.url?'pointer':(node.children?'pointer':'default');
 
-    var cx = Math.cos(rx), sx = Math.sin(rx);
-    var cy = Math.cos(ry), sy = Math.sin(ry);
+    if(node.depth<=1){
+      var glow=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      glow.setAttribute('r',omNodeR(node)+7);
+      glow.setAttribute('fill',omNodeColor(node));
+      glow.setAttribute('opacity','0.1');
+      g.appendChild(glow);
+    }
+    var circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('r',omNodeR(node));
+    circle.setAttribute('fill',omNodeColor(node));
+    circle.setAttribute('opacity',node.depth>=3?'0.75':'0.9');
+    circle.setAttribute('stroke',isDark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)');
+    circle.setAttribute('stroke-width','1');
+    g.appendChild(circle);
 
-    var projected = [];
-
-    // Rotate and project points
-    for (var i = 0; i < nodes.length; i++) {
-      var n = nodes[i];
-
-      // Gentle floating effect per node
-      var fx = n.ox + Math.sin(time + n.pulseOffset) * 12;
-      var fy = n.oy + Math.cos(time + n.pulseOffset) * 12;
-      var fz = n.oz;
-
-      // Y-axis rotation
-      var x1 = fx * cy - fz * sy;
-      var z1 = fz * cy + fx * sy;
-
-      // X-axis rotation
-      var y2 = fy * cx - z1 * sx;
-      var z2 = z1 * cx + fy * sx;
-
-      var z3 = z2 + 900; // Move globe back from the camera
-
-      if (z3 > 100) {
-        var scale = focal / z3;
-        projected.push({
-          idx: i,
-          x: W / 2 + x1 * scale,
-          y: H / 2 + y2 * scale,
-          z: z3,
-          scale: scale,
-          target: n.isTarget,
-          po: n.pulseOffset,
-          ox: x1, oy: y2, oz: z2
-        });
+    var showLbl=omLabelMode===1||(omLabelMode===0&&node.depth<=2);
+    if(showLbl&&node.name){
+      var text=document.createElementNS('http://www.w3.org/2000/svg','text');
+      var r=omNodeR(node),ang=node.angle||0;
+      var anchor='start',ox=r+5,oy=3;
+      if(node.depth===0){anchor='middle';ox=0;oy=-(r+8);}
+      else{
+        var deg=((ang*180/Math.PI)+360)%360;
+        if(deg>90&&deg<270){anchor='end';ox=-(r+5);}
       }
+      text.setAttribute('x',ox);text.setAttribute('y',oy);
+      text.setAttribute('text-anchor',anchor);
+      text.setAttribute('fill',isDark?'#d8d4c8':'#2a2925');
+      text.setAttribute('font-size',node.depth===0?'11':node.depth===1?'9':'8');
+      text.setAttribute('font-weight',node.depth<=1?'700':'400');
+      text.setAttribute('font-family',node.depth<=1?'DM Sans,sans-serif':'Space Mono,monospace');
+      text.setAttribute('pointer-events','none');
+      text.setAttribute('user-select','none');
+      text.textContent=node.name.length>22?node.name.slice(0,20)+'…':node.name;
+      g.appendChild(text);
     }
 
-    // Draw network connections (Plexus)
-    ctx.lineWidth = 1;
-    for (var i = 0; i < projected.length; i++) {
-      var p1 = projected[i];
-      for (var j = i + 1; j < projected.length; j++) {
-        var p2 = projected[j];
+    g.addEventListener('mouseenter',e=>omShowTip(e,node));
+    g.addEventListener('mouseleave',omHideTip);
+    g.addEventListener('click',e=>{e.stopPropagation();omNodeClick(node,idx);});
+    omGnodes.appendChild(g);
+  });
+}
 
-        var dx = p1.ox - p2.ox;
-        var dy = p1.oy - p2.oy;
-        var dz = p1.oz - p2.oz;
-        var distSq = dx*dx + dy*dy + dz*dz;
+function osintRender(){omRenderLinks();omRenderNodes();omApplyT();}
 
-        var maxDist = 25000;
-        if (distSq < maxDist) {
-          var alpha = (1 - distSq / maxDist) * 0.35;
-          var isSpecial = p1.target || p2.target;
+var omBgAnimRunning=false;
+function osintMapActivated(){
+  if(!omMapReady){
+    omInitSVG();
+    omBuildLayout();
+    var area=document.getElementById('osint-map-area');
+    var W=area.offsetWidth, H=area.offsetHeight;
+    omTransform={x:0,y:0,k:Math.min(W,H)/680};
+    omMapReady=true;
+    osintRender();
+    omUpdateStats();
+    omStartBg();
+    omBindEvents();
+  } else {
+    
+    omBuildLayout();
+    osintRender();
+  }
+}
 
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
+function omStartBg(){
+  if(omBgAnimRunning) return;
+  omBgAnimRunning=true;
+  var canvas=document.getElementById('osint-bg-canvas');
+  var ctx=canvas.getContext('2d');
+  var pts=[];
 
-          if (isSpecial) {
-            // Pulse the opacity of lines connected to target nodes
-            var p = (Math.sin(time * 3 + p1.po) + 1) / 2;
-            ctx.strokeStyle = 'rgba(212, 79, 46, ' + (alpha * 1.5 * (0.5 + p * 0.5)) + ')';
-            ctx.lineWidth = 1.2 * Math.min(p1.scale, p2.scale);
-          } else {
-            ctx.strokeStyle = 'rgba(154, 150, 144, ' + alpha + ')';
-            ctx.lineWidth = 0.8 * Math.min(p1.scale, p2.scale);
-          }
+  function resize(){
+    var area=document.getElementById('osint-map-area');
+    canvas.width=area.offsetWidth;
+    canvas.height=area.offsetHeight;
+    pts=Array.from({length:60},()=>({
+      x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+      vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,
+    }));
+  }
+  _resize();
+  window.addEventListener('resize',_resize);
+
+  function draw(){
+    if(currentView!=='osint'){requestAnimationFrame(draw);return;}
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    var isDark=document.documentElement.getAttribute('data-theme')!=='light';
+    var col=isDark?'154,150,144':'80,76,70';
+    var lineAlpha=isDark?0.10:0.18;
+    var dotAlpha=isDark?0.25:0.45;
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>canvas.width)p.vx*=-1;
+      if(p.y<0||p.y>canvas.height)p.vy*=-1;
+    });
+    for(var i=0;i<pts.length;i++){
+      for(var j=i+1;j<pts.length;j++){
+        var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+        var d=Math.sqrt(dx*dx+dy*dy);
+        if(d<110){
+          ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(${col},${(1-d/110)*lineAlpha})`;ctx.lineWidth=0.5;ctx.stroke();
+        }
+      }
+      ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,1,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${col},${dotAlpha})`;ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+var omDragging=false,omDragStart=null,omTransformStart=null;
+var omVelX=0,omVelY=0,omLastX=0,omLastY=0,omMomentumId=null;
+var omEventsbound=false;
+
+function omHitTest(clientX,clientY){
+  var area=document.getElementById('osint-map-area');
+  var rect=area.getBoundingClientRect();
+  var sx=(clientX-rect.left-omTransform.x)/omTransform.k;
+  var sy=(clientY-rect.top-omTransform.y)/omTransform.k;
+  var best=null,bestD=Infinity;
+  for(var i=0;i<omNodes.length;i++){
+    var node=omNodes[i];
+    var dx=sx-node.x,dy=sy-node.y;
+    var d=Math.sqrt(dx*dx+dy*dy);
+    var r=omNodeR(node)+8;
+    if(d<r&&d<bestD){bestD=d;best={node,idx:i};}
+  }
+  return best;
+}
+
+function omBindEvents(){
+  if(omEventsbound)return;
+  omEventsbound=true;
+  omSvg.addEventListener('mousedown',e=>{
+    if(e.button!==0)return;
+    omDragging=true;
+    omDragStart={x:e.clientX,y:e.clientY};
+    omTransformStart={...omTransform};
+    omLastX=e.clientX;omLastY=e.clientY;
+    omVelX=0;omVelY=0;
+    if(omMomentumId){cancelAnimationFrame(omMomentumId);omMomentumId=null;}
+    omSvg.classList.add('dragging');
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!omDragging)return;
+    omVelX=e.clientX-omLastX;omVelY=e.clientY-omLastY;
+    omLastX=e.clientX;omLastY=e.clientY;
+    omTransform.x=omTransformStart.x+(e.clientX-omDragStart.x);
+    omTransform.y=omTransformStart.y+(e.clientY-omDragStart.y);
+    omApplyT();
+  });
+  window.addEventListener('mouseup',e=>{
+    if(!omDragging)return;
+    omDragging=false;
+    omSvg.classList.remove('dragging');
+    (function momentum(){
+      omVelX*=0.90;omVelY*=0.90;
+      if(Math.abs(omVelX)<0.3&&Math.abs(omVelY)<0.3)return;
+      omTransform.x+=omVelX;omTransform.y+=omVelY;
+      omApplyT();
+      omMomentumId=requestAnimationFrame(momentum);
+    })();
+  });
+  omSvg.addEventListener('wheel',e=>{
+    e.preventDefault();
+    var delta=e.deltaY>0?0.9:1.1;
+    var rect=omSvg.getBoundingClientRect();
+    var mx=e.clientX-rect.left,my=e.clientY-rect.top;
+    omTransform.x=mx-(mx-omTransform.x)*delta;
+    omTransform.y=my-(my-omTransform.y)*delta;
+    omTransform.k=Math.max(0.2,Math.min(4,omTransform.k*delta));
+    omApplyT();
+  },{passive:false});
+  var lastDist=null;
+  omSvg.addEventListener('touchstart',e=>{
+    if(e.touches.length===1){omDragging=true;omDragStart={x:e.touches[0].clientX,y:e.touches[0].clientY};omTransformStart={...omTransform};}
+    else if(e.touches.length===2){lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);}
+  });
+  omSvg.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(e.touches.length===1&&omDragging){omTransform.x=omTransformStart.x+(e.touches[0].clientX-omDragStart.x);omTransform.y=omTransformStart.y+(e.touches[0].clientY-omDragStart.y);omApplyT();}
+    else if(e.touches.length===2){
+      var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      if(lastDist){omTransform.k=Math.max(0.2,Math.min(4,omTransform.k*(d/lastDist)));omApplyT();}
+      lastDist=d;
+    }
+  },{passive:false});
+  omSvg.addEventListener('touchend',()=>{omDragging=false;lastDist=null;});
+}
+
+function osintZoom(f){
+  var area=document.getElementById('osint-map-area');
+  var W=area.offsetWidth,H=area.offsetHeight;
+  omTransform.x=W/2-(W/2-omTransform.x)*f;
+  omTransform.y=H/2-(H/2-omTransform.y)*f;
+  omTransform.k=Math.max(0.2,Math.min(4,omTransform.k*f));
+  omApplyT();
+}
+function osintResetView(){
+  var area=document.getElementById('osint-map-area');
+  var W=area.offsetWidth,H=area.offsetHeight;
+  omTransform={x:0,y:0,k:Math.min(W,H)/680};
+  omApplyT();
+}
+
+var omTip=document.getElementById('osint-tooltip');
+var omTagLabels={T:'Local Tool',D:'Google Dork',R:'Registration Required',M:'Manual URL'};
+
+function omGetPath(target,node,path=[]){
+  var cur=[...path,node.name];
+  if(node===target||node.name===target.name)return cur;
+  if(node.children)for(var c of node.children){var r=omGetPath(target,c,cur);if(r)return r;}
+  return null;
+}
+function omShowTip(e,node){
+  document.getElementById('ott-name').textContent=node.name;
+  var path=omGetPath(node,OSINT_TREE);
+  document.getElementById('ott-cat').textContent=path?path.slice(1,-1).join(' › '):'';
+  document.getElementById('ott-url').textContent=node.url||(node.children?node.children.length+' items':'');
+  var hint=node.url?'click to open':(node.children?'click to browse':'');
+  if(node.tag) hint='['+node.tag+'] '+omTagLabels[node.tag]+' · '+hint;
+  document.getElementById('ott-hint').textContent=hint;
+  omTip.classList.add('show');
+  omMoveTip(e);
+}
+function omMoveTip(e){
+  var x=Math.min(e.clientX+14,window.innerWidth-320);
+  var y=Math.min(e.clientY+14,window.innerHeight-140);
+  omTip.style.left=x+'px';omTip.style.top=y+'px';
+}
+function omHideTip(){omTip.classList.remove('show');}
+omSvg.addEventListener('mousemove',e=>{if(omTip.classList.contains('show'))omMoveTip(e);});
+
+
+function omNodeClick(node,idx){
+  if(node.url){window.open(node.url,'_blank','noopener');return;}
+  if(node.children) omOpenSidebar(node);
+}
+
+var omTagColors={T:'#e0ac3a',D:'#6aaccc',R:'#e85535',M:'#9b72cf'};
+function omOpenSidebar(node){
+  var sb=document.getElementById('osint-sidebar');
+  document.getElementById('osint-sb-title').textContent=node.name;
+  var path=omGetPath(node,OSINT_TREE);
+  document.getElementById('osint-sb-path').textContent=path?path.slice(0,-1).join(' › '):'';
+  var body=document.getElementById('osint-sb-body');
+  body.innerHTML='';
+
+  function renderItems(items,depth){
+    items.forEach(item=>{
+      if(item.url){
+        var a=document.createElement('a');
+        a.className='sb-item';a.href=item.url;a.target='_blank';a.rel='noopener';
+        a.style.marginLeft=depth*10+'px';
+        var icon=document.createElement('span');icon.className='sb-icon';icon.textContent='↗';
+        icon.style.color=omNodeColor(item)||'#4aaa6a';
+        var info=document.createElement('div');info.className='sb-info';
+        var name=document.createElement('div');name.className='sb-name';name.textContent=item.name;
+        if(item.tag){var badge=document.createElement('span');badge.className='sb-badge';badge.textContent=item.tag;badge.style.borderColor=omTagColors[item.tag]||'#8a8680';badge.style.color=omTagColors[item.tag]||'#8a8680';name.appendChild(badge);}
+        var url=document.createElement('div');url.className='sb-url';
+        try{url.textContent=new URL(item.url).hostname;}catch{url.textContent=item.url;}
+        info.appendChild(name);info.appendChild(url);a.appendChild(icon);a.appendChild(info);body.appendChild(a);
+      } else if(item.children){
+        var sec=document.createElement('div');
+        sec.style.cssText='font-family:Space Mono,monospace;font-size:0.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;padding:9px 0 5px '+depth*10+'px;'+(depth===0&&body.children.length>0?'border-top:1px solid var(--border);':'');
+        sec.textContent=item.name;body.appendChild(sec);
+        renderItems(item.children,depth+1);
+      }
+    });
+  }
+  renderItems(node.children||[],0);
+  sb.classList.add('open');
+}
+function closeOsintSidebar(){document.getElementById('osint-sidebar').classList.remove('open');}
+
+function omFlatten(node,path=[]){
+  var cur=[...path,node.name];
+  var res=[{node,path:cur}];
+  if(node.children) node.children.forEach(c=>res=res.concat(omFlatten(c,cur)));
+  return res;
+}
+var omFlat=omFlatten(OSINT_TREE);
+
+var osintSI=document.getElementById('osintSearchInput');
+var osintSR=document.getElementById('osint-search-results');
+
+osintSI.addEventListener('input',()=>{
+  var q=osintSI.value.trim().toLowerCase();
+  if(!q){osintSR.style.display='none';return;}
+  var matches=omFlat.filter(f=>f.node.name.toLowerCase().includes(q)).slice(0,12);
+  if(!matches.length){osintSR.style.display='none';return;}
+  osintSR.innerHTML=matches.map((m,i)=>`<div class="sr-item" data-idx="${i}"><span>${m.node.name}</span><span class="sr-path">${m.path.slice(1,-1).join(' › ')}</span></div>`).join('');
+  osintSR.style.display='block';
+  osintSR.querySelectorAll('.sr-item').forEach((el,i)=>{
+    el.addEventListener('click',()=>{
+      osintSR.style.display='none';osintSI.value='';
+      omFocusNode(matches[i].node);
+    });
+  });
+});
+document.addEventListener('click',e=>{if(!e.target.closest('#osintSearchInput'))osintSR.style.display='none';});
+osintSI.addEventListener('keydown',e=>{if(e.key==='Escape'){osintSR.style.display='none';osintSI.value='';}});
+
+function omFocusNode(node){
+  var found=omNodes.find(n=>n.name===node.name&&n.url===node.url);
+  if(!found)return;
+  var area=document.getElementById('osint-map-area');
+  var W=area.offsetWidth,H=area.offsetHeight;
+  var k=1.8;
+  omTransform={x:W/2-found.x*k,y:H/2-found.y*k,k};
+  omApplyT();
+  var idx=omNodes.indexOf(found);
+  var el=omGnodes.querySelector('[data-idx="'+idx+'"]');
+  if(el){var c=el.querySelector('circle');if(c){var orig=c.getAttribute('fill');c.setAttribute('fill','#fff');setTimeout(()=>c.setAttribute('fill',orig),600);}}
+  if(found.children) omOpenSidebar(found);
+}
+
+function cycleLabels(){
+  omLabelMode=(omLabelMode+1)%3;
+  document.getElementById('osintLabelBtn').textContent=['⊞ labels','⊞ all','⊞ none'][omLabelMode];
+  omRenderNodes();
+}
+
+function omUpdateStats(){
+  document.getElementById('ostat-nodes').textContent=countN(OSINT_TREE)+' nodes';
+  document.getElementById('ostat-tools').textContent=countOsintTools(OSINT_TREE)+' tools';
+}
+
+window.addEventListener('resize',()=>{
+  if(currentView==='osint'&&omMapReady){omBuildLayout();osintRender();}
+});
+
+</script>
+
+<!-- BACKGROUND SPHERE for dashboard/dork views -->
+<script>
+
+(function(){
+  var canvas=document.getElementById('bg-canvas');
+  var ctx=canvas.getContext('2d');
+  var W,H,nodes=[],focal=1000,mouseX=0,mouseY=0,rx=0,ry=0;
+
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  window.addEventListener('resize',resize);
+  window.addEventListener('mousemove',e=>{mouseX=(e.clientX/W-0.5)*2;mouseY=(e.clientY/H-0.5)*2;});
+
+  function init(){
+    nodes=[];
+    for(var i=0;i<250;i++){
+      var phi=Math.acos(-1+(2*i)/250);
+      var theta=Math.sqrt(250*Math.PI)*phi;
+      var r=380+Math.random()*120*(Math.random()>0.5?1:-1);
+      nodes.push({ox:r*Math.cos(theta)*Math.sin(phi),oy:r*Math.sin(theta)*Math.sin(phi),oz:r*Math.cos(phi),isTarget:Math.random()>0.9,pulseOffset:Math.random()*Math.PI*2});
+    }
+  }
+
+  function draw(){
+    if(currentView==='osint'){requestAnimationFrame(draw);return;}
+    ctx.clearRect(0,0,W,H);
+    var time=Date.now()*0.001;
+    rx+=(mouseY*0.3-rx)*0.05;ry+=(mouseX*0.3+0.0015-ry)*0.05;
+    var cx2=Math.cos(rx),sx2=Math.sin(rx),cy2=Math.cos(ry),sy2=Math.sin(ry);
+    var proj=[];
+    for(var i=0;i<nodes.length;i++){
+      var n=nodes[i];
+      var fx=n.ox+Math.sin(time+n.pulseOffset)*12,fy=n.oy+Math.cos(time+n.pulseOffset)*12,fz=n.oz;
+      var x1=fx*cy2-fz*sy2,z1=fz*cy2+fx*sy2,y2=fy*cx2-z1*sx2,z2=z1*cx2+fy*sx2;
+      var z3=z2+900;
+      if(z3>100){var sc=focal/z3;proj.push({x:W/2+x1*sc,y:H/2+y2*sc,z:z3,scale:sc,target:n.isTarget,po:n.pulseOffset,ox:x1,oy:y2,oz:z2});}
+    }
+    ctx.lineWidth=1;
+    for(var i=0;i<proj.length;i++){
+      var p1=proj[i];
+      for(var j=i+1;j<proj.length;j++){
+        var p2=proj[j];
+        var dx=p1.ox-p2.ox,dy=p1.oy-p2.oy,dz=p1.oz-p2.oz,dSq=dx*dx+dy*dy+dz*dz;
+        if(dSq<25000){
+          var alpha=(1-dSq/25000)*0.35;
+          ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);
+          if(p1.target||p2.target){var p=(Math.sin(time*3+p1.po)+1)/2;ctx.strokeStyle='rgba(212,79,46,'+(alpha*1.5*(0.5+p*0.5))+')';ctx.lineWidth=1.2*Math.min(p1.scale,p2.scale);}
+          else{ctx.strokeStyle='rgba(154,150,144,'+alpha+')';ctx.lineWidth=0.8*Math.min(p1.scale,p2.scale);}
           ctx.stroke();
         }
       }
     }
-
-    // Draw nodes
-    for (var i = 0; i < projected.length; i++) {
-      var p = projected[i];
-      var depthAlpha = Math.min(1, 1000 / p.z);
-
+    for(var i=0;i<proj.length;i++){
+      var p=proj[i];var da=Math.min(1,1000/p.z);
       ctx.beginPath();
-      if (p.target) {
-        // High Value Target nodes
-        var pulse = (Math.sin(time * 4 + p.po) + 1) / 2;
-        var rad = (2 + pulse * 2) * p.scale;
-
-        ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(212, 79, 46, ' + (depthAlpha * (0.6 + pulse * 0.4)) + ')';
-        ctx.fill();
-
-        // Target Radar Ring
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, rad * 2.5, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(212, 79, 46, ' + (depthAlpha * 0.3 * (1 - pulse)) + ')';
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
+      if(p.target){
+        var pulse=(Math.sin(time*4+p.po)+1)/2;var rad=(2+pulse*2)*p.scale;
+        ctx.arc(p.x,p.y,rad,0,Math.PI*2);ctx.fillStyle='rgba(212,79,46,'+(da*(0.6+pulse*0.4))+')';ctx.fill();
+        ctx.beginPath();ctx.arc(p.x,p.y,rad*2.5,0,Math.PI*2);ctx.strokeStyle='rgba(212,79,46,'+(da*0.3*(1-pulse))+')';ctx.lineWidth=0.8;ctx.stroke();
       } else {
-        // Standard nodes
-        ctx.arc(p.x, p.y, 1.2 * p.scale, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(154, 150, 144, ' + (depthAlpha * 0.8) + ')';
-        ctx.fill();
+        ctx.arc(p.x,p.y,1.2*p.scale,0,Math.PI*2);ctx.fillStyle='rgba(154,150,144,'+(da*0.8)+')';ctx.fill();
       }
     }
-
-    // Smooth vignette overlay blending into the background color
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    var bgColor = isDark ? '14, 13, 11' : '242, 240, 235';
-    var grad = ctx.createRadialGradient(W/2, H/2, Math.min(W,H)*0.2, W/2, H/2, Math.max(W,H)*0.75);
-    grad.addColorStop(0, 'rgba(' + bgColor + ', 0)');
-    grad.addColorStop(1, 'rgba(' + bgColor + ', 1)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-
+    var isDark=document.documentElement.getAttribute('data-theme')!=='light';
+    var bgColor=isDark?'14,13,11':'242,240,235';
+    var grad=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.2,W/2,H/2,Math.max(W,H)*0.75);
+    grad.addColorStop(0,'rgba('+bgColor+',0)');grad.addColorStop(1,'rgba('+bgColor+',1)');
+    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
     requestAnimationFrame(draw);
   }
-
-  resize();
-  init();
-  draw();
+  resize();init();draw();
 })();
+
 </script>
+
+<!-- HISTORY PANEL -->
+<div id="history-panel">
+  <div id="history-panel-header">
+    <div id="history-panel-title">⏱ Query History</div>
+    <button class="hist-panel-close" onclick="toggleHistoryPanel()">×</button>
+  </div>
+  <div id="history-list">
+    <div id="history-empty">no queries yet.<br>search or copy a dork<br>to start your history.</div>
+  </div>
+  <div id="hist-clear-row">
+    <button class="hist-clear-btn" onclick="clearHistory()">⊘ clear session history</button>
+  </div>
+</div>
+
+<!-- KBD HINTS -->
+<div id="kbd-hints">
+  <div class="kbd-row"><kbd>G</kbd><span>Dorking</span></div>
+  <div class="kbd-row"><kbd>B</kbd><span>Bug Bounty</span></div>
+  <div class="kbd-row"><kbd>O</kbd><span>OSINT Map</span></div>
+  <div class="kbd-row"><kbd>/</kbd><span>Search</span></div>
+  <div class="kbd-row"><kbd>Esc</kbd><span>Back</span></div>
+  <div class="kbd-row"><kbd>H</kbd><span>History</span></div>
+</div>
+
+<!-- ═══ COMMAND PALETTE ═══ -->
+<div id="cmd-overlay" onclick="if(event.target===this)closePalette()">
+  <div id="cmd-palette">
+    <div id="cmd-input-wrap">
+      <span id="cmd-input-icon">›_</span>
+      <input id="cmd-input" placeholder="search dorks, tools, actions..." autocomplete="off" oninput="cmdSearch(this.value)" onkeydown="cmdKeyNav(event)">
+      <span id="cmd-hint">esc to close</span>
+    </div>
+    <div id="cmd-results"></div>
+  </div>
+</div>
+
+<!-- ═══ HOW TO USE MODAL ═══ -->
+<div id="howto-overlay" onclick="if(event.target===this)closeHowTo()">
+  <div id="howto-modal">
+    <div class="howto-header">
+      <div class="howto-title"><span>Dark</span>Dork — usage</div>
+      <button class="howto-close" onclick="closeHowTo()">×</button>
+    </div>
+    <div class="howto-body">
+      <div class="howto-section">
+        <div class="howto-section-title">modules</div>
+        <div class="howto-grid">
+          <div class="howto-card">
+            <div class="howto-card-title">[ G ] dorking</div>
+            <div class="howto-card-body">Set a target domain. Pick a preset. Hit search or copy. Filter by category with the tabs, or build a custom query with the operator buttons.</div>
+          </div>
+          <div class="howto-card">
+            <div class="howto-card-title">[ B ] bug bounty</div>
+            <div class="howto-card-body">Same flow — but queries hit Wayback, crt.sh, GitHub, and other recon sources instead of Google.</div>
+          </div>
+          <div class="howto-card">
+            <div class="howto-card-title">[ O ] osint map</div>
+            <div class="howto-card-body">Radial map, 200+ tools across 12 categories. Scroll to zoom, drag to pan. Click any node to open it or expand its branch in the sidebar.</div>
+          </div>
+          <div class="howto-card">
+            <div class="howto-card-title">[ + ] custom builder</div>
+            <div class="howto-card-body">Open in any dork view. Chain operators token by token — intitle:, inurl:, filetype: etc. Search or copy the full assembled query.</div>
+          </div>
+        </div>
+      </div>
+      <div class="howto-section">
+        <div class="howto-section-title">shortcuts</div>
+        <div class="howto-kb-grid">
+          <div class="howto-kb-row"><span class="howto-kb-key">⌘K / Ctrl+K</span><span class="howto-kb-desc">command palette</span></div>
+          <div class="howto-kb-row"><span class="howto-kb-key">G</span><span class="howto-kb-desc">dorking</span></div>
+          <div class="howto-kb-row"><span class="howto-kb-key">B</span><span class="howto-kb-desc">bug bounty</span></div>
+          <div class="howto-kb-row"><span class="howto-kb-key">O</span><span class="howto-kb-desc">osint map</span></div>
+          <div class="howto-kb-row"><span class="howto-kb-key">H</span><span class="howto-kb-desc">history</span></div>
+          <div class="howto-kb-row"><span class="howto-kb-key">/</span><span class="howto-kb-desc">focus search</span></div>
+          <div class="howto-kb-row"><span class="howto-kb-key">Esc</span><span class="howto-kb-desc">back / close</span></div>
+          <div class="howto-kb-row"><span class="howto-kb-key">↑ ↓ Enter</span><span class="howto-kb-desc">palette nav</span></div>
+        </div>
+      </div>
+      <div class="howto-section">
+        <div class="howto-section-title">notes</div>
+        <div class="howto-tip"><strong>domain:</strong> set it once — carries over between dorking and bug bounty automatically.</div>
+        <div class="howto-tip"><strong>osint map:</strong> tag filters (free / [R] / [T] / [D]) fade non-matching nodes. search flies to any tool.</div>
+        <div class="howto-tip"><strong>history:</strong> every search and copy is logged this session. click any entry to re-run.</div>
+        <div class="howto-tip"><strong>export:</strong> downloads the current tab's dorks as a .txt — pipe into scripts.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+var cmdActive=-1, cmdIndex=null, cmdFiltered=[];
+function buildCmdIndex(){
+  var items=[];
+  items.push({icon:'›',label:'Dashboard',sub:'home',action:function(){switchView('dashboard');},kbd:'—',group:'navigate'});
+  items.push({icon:'›',label:'Google Dorking',sub:'dork presets',action:function(){switchView('dorking');},kbd:'G',group:'navigate'});
+  items.push({icon:'›',label:'Bug Bounty',sub:'recon queries',action:function(){switchView('bugbounty');},kbd:'B',group:'navigate'});
+  items.push({icon:'›',label:'OSINT Toolkit',sub:'mind map',action:function(){switchView('osint');},kbd:'O',group:'navigate'});
+  items.push({icon:'›',label:'History',sub:'toggle panel',action:function(){toggleHistoryPanel();},kbd:'H',group:'actions'});
+  items.push({icon:'›',label:'Export',sub:'download dorks .txt',action:function(){if(currentView==='dorking'||currentView==='bugbounty')exportDorks();else{switchView('dorking');setTimeout(exportDorks,300);}},kbd:'—',group:'actions'});
+  items.push({icon:'›',label:'Cycle Theme',sub:'dark / light',action:function(){toggleTheme();},kbd:'—',group:'actions'});
+  items.push({icon:'›',label:'Help',sub:'usage & shortcuts',action:function(){openHowTo();},kbd:'—',group:'actions'});
+  DORKING_DATA.slice(0,40).forEach(function(d,i){
+    items.push({icon:'·',label:d.name,sub:d.cat+' · dork',action:function(){switchView('dorking');setTimeout(function(){selectDork(i);},200);},kbd:'',group:'dorks'});
+  });
+  BUGBOUNTY_DATA.slice(0,30).forEach(function(d,i){
+    items.push({icon:'·',label:d.name,sub:d.cat+' · bb',action:function(){switchView('bugbounty');setTimeout(function(){selectDork(i);},200);},kbd:'',group:'bug bounty'});
+  });
+  return items;
+}
+function openPalette(){
+  if(!cmdIndex)cmdIndex=buildCmdIndex();
+  cmdActive=-1;
+  document.getElementById('cmd-input').value='';
+  document.getElementById('cmd-overlay').classList.add('open');
+  cmdSearch('');
+  setTimeout(function(){document.getElementById('cmd-input').focus();},50);
+}
+function closePalette(){document.getElementById('cmd-overlay').classList.remove('open');cmdActive=-1;}
+function cmdSearch(q){
+  q=q.toLowerCase().trim();
+  if(!cmdIndex)cmdIndex=buildCmdIndex();
+  cmdFiltered=q?cmdIndex.filter(function(item){
+    return item.label.toLowerCase().includes(q)||item.sub.toLowerCase().includes(q)||item.group.includes(q);
+  }):cmdIndex.filter(function(item){return item.group==='navigate'||item.group==='actions';});
+  cmdActive=cmdFiltered.length?0:-1;
+  renderCmdResults();
+}
+function renderCmdResults(){
+  var el=document.getElementById('cmd-results');
+  if(!cmdFiltered.length){el.innerHTML='<div id="cmd-empty">no results</div>';return;}
+  var html='',lastGroup='';
+  cmdFiltered.forEach(function(item,i){
+    if(item.group!==lastGroup){html+='<div class="cmd-section-label">'+esc(item.group)+'</div>';lastGroup=item.group;}
+    html+='<div class="cmd-item'+(i===cmdActive?' active':'')+'" data-idx="'+i+'" onclick="cmdRun('+i+')" onmouseover="cmdHover('+i+')">';
+    html+='<span class="cmd-item-icon">'+item.icon+'</span>';
+    html+='<span class="cmd-item-label">'+esc(item.label)+'</span>';
+    html+='<span class="cmd-item-sub">'+esc(item.sub)+'</span>';
+    if(item.kbd&&item.kbd!=='—')html+='<span class="cmd-item-kbd">'+esc(item.kbd)+'</span>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+  var active=el.querySelector('.cmd-item.active');
+  if(active)active.scrollIntoView({block:'nearest'});
+}
+function cmdHover(i){cmdActive=i;renderCmdResults();}
+function cmdRun(i){var item=cmdFiltered[i];if(item){closePalette();item.action();}}
+function cmdKeyNav(e){
+  if(e.key==='Escape'){closePalette();return;}
+  if(e.key==='ArrowDown'){e.preventDefault();cmdActive=Math.min(cmdActive+1,cmdFiltered.length-1);renderCmdResults();}
+  if(e.key==='ArrowUp'){e.preventDefault();cmdActive=Math.max(cmdActive-1,0);renderCmdResults();}
+  if(e.key==='Enter'){e.preventDefault();if(cmdActive>=0)cmdRun(cmdActive);}
+}
+
+function openHowTo(){document.getElementById('howto-overlay').classList.add('open');}
+function closeHowTo(){document.getElementById('howto-overlay').classList.remove('open');}
+
+document.addEventListener('keydown',function(e){
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){
+    e.preventDefault();
+    if(document.getElementById('cmd-overlay').classList.contains('open'))closePalette();
+    else openPalette();
+  }
+},true);
+
+</script>
+
 </body>
 </html>
